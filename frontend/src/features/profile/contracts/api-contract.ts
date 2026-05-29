@@ -1,9 +1,7 @@
 /**
  * Profile API Contract - Zod schemas with types
  */
-import { Update } from 'next/dist/build/swc/types';
 import { z } from 'zod'
-export namespace ProfileApiContract {
 
 export const Schema = z.object({
   id: z.number(),
@@ -18,11 +16,10 @@ export const UpdateSchema = z.object({
   email: z.string().email('Email tidak valid').optional(),
 });
 
-export type Response = z.infer<typeof Schema>
-export type Index = z.infer<typeof IndexSchema>
-export type Update = z.infer<typeof UpdateSchema>
+export type ProfileApiResponse = z.infer<typeof Schema>
+export type ProfileApiIndex = z.infer<typeof IndexSchema>
+export type ProfileApiUpdate = z.infer<typeof UpdateSchema>
 
-export const ValidateSchema = (payload: unknown): Response => Schema.parse(payload)
-export const ValidateUpdate = (payload: unknown): Update => UpdateSchema.parse(payload)
-export const validateIndex = (payload: unknown): Index => IndexSchema.parse(payload)
-}
+export const ValidateSchema = (payload: unknown): ProfileApiResponse => Schema.parse(payload)
+export const ValidateUpdate = (payload: unknown): ProfileApiUpdate => UpdateSchema.parse(payload)
+export const validateIndex = (payload: unknown): ProfileApiIndex => IndexSchema.parse(payload)

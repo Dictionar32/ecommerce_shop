@@ -1,26 +1,24 @@
 /**
  * Produk Read Types - API response types for produk feature
  */
-export namespace ProdukRead {
-  export interface ApiResponseTransformed {
-    id: number
-    nama: string
-    description: string
-    gambar: string
-    gambarUrl: string
-    categoryId: number
-    categoryNama: string
-    harga: number
-    hargaMin: number
-    stok: number
-    rating: number
-    reviewCount: number
-    firstItemId: number | undefined
-  }
-
-  export type Index = ApiResponseTransformed;
-  export type Show = ApiResponseTransformed;
+export interface ApiResponseTransformed {
+  id: number
+  nama: string
+  description: string
+  gambar: string
+  gambarUrl: string
+  categoryId: number
+  categoryNama: string
+  harga: number
+  hargaMin: number
+  stok: number
+  rating: number
+  reviewCount: number
+  firstItemId: number | undefined
 }
+
+export type ProdukIndex = ApiResponseTransformed;
+export type ProdukShow = ApiResponseTransformed;
 
 //features/produk/types/produk-read.ts
 //features/produk/types/produk-form.ts

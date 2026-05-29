@@ -1,25 +1,25 @@
-import { PromoApiContract } from "../contracts/api-contract";
+import { PromoApiResponse, PromoApiCreate, validateIndex, validateSchema, validateCreate } from "../contracts/api-contract";
 import { createBaseCrudService } from "@/lib/generic/generic-services";
 import { PromoFormValues } from "../contracts/api-schema";
-import { PromoRead } from "../types/promo-read";
-import { PromoMapper } from "../mappers/promo-mapper";
+import { PromoIndex, PromoShow } from "../types/promo-read";
+import { toApiReadList, toApiRead, toApiCreate } from "../mappers/promo-mapper";
 
 export const PromoService = createBaseCrudService<
-  PromoApiContract.Response,
-  PromoRead.Index,
-  PromoRead.Show,
-  PromoFormValues.Create,
+  PromoApiResponse,
+  PromoIndex,
+  PromoShow,
+  PromoFormValues['Create'],
   never,
-  PromoApiContract.Create,
+  PromoApiCreate,
   never
 >({
   basePath: "/cart/promo",
 
-  validateIndex: PromoApiContract.validateIndex,
-  validateShow: PromoApiContract.validateSchema,
-  validateCreate: PromoApiContract.validateCreate,
+  validateIndex,
+  validateShow: validateSchema,
+  validateCreate,
 
-  mapIndex: PromoMapper.toApiReadList,
-  mapShow: PromoMapper.toApiRead,
-  mapCreate: PromoMapper.toApiCreate,
+  mapIndex: toApiReadList,
+  mapShow: toApiRead,
+  mapCreate: toApiCreate,
 });

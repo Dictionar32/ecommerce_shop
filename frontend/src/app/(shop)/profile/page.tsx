@@ -11,7 +11,6 @@ import { User, Mail, Shield, LogOut, ShoppingBag, ChevronRight, Loader2, Edit2, 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
-import { Separator } from "@/components/ui/separator"
 import { AuthGuard } from "@/components/shared/auth-guard"
 import { SectionHeader } from "@/components/shared/section-header"
 
@@ -29,17 +28,17 @@ export default function ProfilePage() {
   const user = useAuthStore((s) => s.user)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const logoutMutation = useLogout()
-  const updateProfile = useProfile.update()
+  const updateProfile = useProfile.useUpdate()
   const [isEditing, setIsEditing] = useState(false)
 
-  const form = useForm<ProfileFormValues.Update>({
+  const form = useForm<ProfileFormValues['Update']>({
     resolver: zodResolver(UpdateSchema),
     values: { name: user?.name ?? "", email: user?.email ?? "" },
   })
 
-  const onSubmit = async (values: ProfileFormValues.Update) => {
+  const onSubmit = async (values: ProfileFormValues['Update']) => {
     try {
-      await updateProfile.mutateAsync([0, values] as any)
+      await updateProfile.mutateAsync({ id: 0, data: values })
       toast.success("Profil berhasil diperbarui")
       setIsEditing(false)
     } catch {

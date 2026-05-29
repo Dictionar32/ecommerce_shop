@@ -1,19 +1,19 @@
 import { z } from "zod"
 
-export namespace CategoryApiSchema {
-  export const Create = z.object({
+export const CategoryApiSchema = {
+  Create: z.object({
     nama: z.string().min(1, "Nama kategori wajib diisi"),
-  })
-  export const Update = z.object({
+  }),
+  Update: z.object({
     nama: z.string().min(1, "Nama kategori wajib diisi").optional(),
   })
 }
 
-export namespace CategoryFormValues {
-  export type Create = z.infer<typeof CategoryApiSchema.Create>
-  export type Update = z.infer<typeof CategoryApiSchema.Update>
+export type CategoryFormValues = {
+  Create: z.infer<typeof CategoryApiSchema.Create>
+  Update: z.infer<typeof CategoryApiSchema.Update>
 }
 
-export namespace CategoryDefaultValues {
-  export const create: CategoryFormValues.Create = { nama: "" }
+export const CategoryDefaultValues = {
+  create: { nama: "" } as CategoryFormValues['Create']
 }

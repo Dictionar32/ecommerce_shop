@@ -1,8 +1,8 @@
 /**
  * Produk Form Types - Form input types for produk feature
  */
-export namespace ProdukForm {
-  export type Create = {
+export type ProdukForm = {
+  Create: {
     nama: string
     deskripsi: string
     harga: number
@@ -11,7 +11,7 @@ export namespace ProdukForm {
     gambar: File
   }
 
-  export type Update = {
+  Update: {
     nama: string
     deskripsi: string
     harga: number

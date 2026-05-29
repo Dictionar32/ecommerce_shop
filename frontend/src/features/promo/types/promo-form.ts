@@ -1,7 +1,5 @@
-export namespace PromoForm {
-  export type Create = {
-    code: string
-  }
-  
-  export type Update = Partial<Create>
+export type PromoCreateForm = {
+  code: string
 }
+
+export type PromoUpdateForm = Partial<PromoCreateForm>

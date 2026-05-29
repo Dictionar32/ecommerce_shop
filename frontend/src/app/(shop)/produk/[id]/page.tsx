@@ -62,13 +62,13 @@ export default function ProdukDetailPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const { openCart } = useCartUiStore()
 
-  const { data: product, isLoading, isError } = useProduk.show(id)
-  const { data: reviewData } = useReview.index(id)
-  const addToCart    = useCartSummary.addItem()
-  const addToWishlist = useWishlist.create()
-  const submitReview = useReview.create(id)
+  const { data: product, isLoading, isError } = useProduk.useShow(id)
+  const { data: reviewData } = useReview.useIndex(id)
+  const addToCart    = useCartSummary.useAddItem()
+  const addToWishlist = useWishlist.useCreate()
+  const submitReview = useReview.useCreate(id)
 
-  const form = useForm<ReviewFormValues.Create>({
+  const form = useForm<ReviewFormValues['Create']>({
     resolver: zodResolver(ReviewSchema),
     defaultValues: { rating: 0, comment: "", title: "" },
   })
@@ -102,7 +102,7 @@ export default function ProdukDetailPage() {
     })
   }
 
-  const onReviewSubmit = async (values: ReviewFormValues.Create) => {
+  const onReviewSubmit = async (values: ReviewFormValues['Create']) => {
     if (!isAuthenticated) { toast.error("Masuk untuk menulis ulasan"); return }
     try {
       await submitReview.mutateAsync(values)
@@ -145,6 +145,7 @@ export default function ProdukDetailPage() {
           {/* Image */}
           <div className="aspect-square bg-obsidian-900 border border-obsidian-800 rounded-sm overflow-hidden">
             {product.gambarUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img src={product.gambarUrl} alt={product.nama} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">

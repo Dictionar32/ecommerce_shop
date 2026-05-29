@@ -1,27 +1,27 @@
 import { createBaseCrudService } from "@/lib/generic/generic-services";
-import type { CartRead } from "../types/cart-read";
+import { CartIndex, CartShow } from "../types/cart-read";
 import { CartFormValues } from "../contracts/api-schema";
-import { CartMapper } from "../mappers/cart-mapper";
-import { CartApiContract } from "../contracts/api-contract";
+import { toApiReadList, toApiRead, toApiCreate, toApiUpdate } from "../mappers/cart-mapper";
+import { CartApiResponse, CartApiCreate, CartApiUpdate, validateIndex, validateSchema, validateCreate, validateUpdate } from "../contracts/api-contract";
 
 export const CartService = createBaseCrudService<
-  CartApiContract.Response,
-  CartRead.Index,
-  CartRead.Show,
-  CartFormValues.Create,
-  CartFormValues.Update,
-  CartApiContract.Create,
-  CartApiContract.Update
+  CartApiResponse,
+  CartIndex,
+  CartShow,
+  CartFormValues['Create'],
+  CartFormValues['Update'],
+  CartApiCreate,
+  CartApiUpdate
 >({
   basePath: "/cart/items",
 
-  validateIndex: CartApiContract.validateIndex,
-  validateShow: CartApiContract.validateSchema,
-  validateCreate: CartApiContract.validateCreate,
-  validateUpdate: CartApiContract.validateUpdate,
+  validateIndex: validateIndex,
+  validateShow: validateSchema,
+  validateCreate: validateCreate,
+  validateUpdate: validateUpdate,
 
-  mapIndex: CartMapper.toApiReadList,
-  mapShow: CartMapper.toApiRead,
-  mapCreate: CartMapper.toApiCreate,
-  mapUpdate: CartMapper.toApiUpdate,
+  mapIndex: toApiReadList,
+  mapShow: toApiRead,
+  mapCreate: toApiCreate,
+  mapUpdate: toApiUpdate,
 });

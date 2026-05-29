@@ -1,25 +1,25 @@
 import { createBaseCrudService } from "@/lib/generic/generic-services";
-import { ProfileRead } from "../types/profile-read";
+import { ProfileIndex, ProfileShow } from "../types/profile-read";
 import { ProfileFormValues } from "../contracts/api-schema";
-import { ProfileApiContract } from "../contracts/api-contract";
-import { ProfileMapper } from "../mappers/profile-mapper";
+import { ProfileApiResponse, ProfileApiUpdate, ValidateSchema, ValidateUpdate, validateIndex } from "../contracts/api-contract";
+import { toApiReadList, toApiRead, toApiUpdate } from "../mappers/profile-mapper";
 
 export const ProfileService = createBaseCrudService<
-  ProfileApiContract.Response,
-  ProfileRead.Index,
-  ProfileRead.Show,
+  ProfileApiResponse,
+  ProfileIndex,
+  ProfileShow,
   never, // ❌ no create
-  ProfileFormValues.Update,
+  ProfileFormValues['Update'],
   never, // ❌ no create payload
-  ProfileApiContract.Update
+  ProfileApiUpdate
 >({
   basePath: "/profile",
 
-  validateIndex: ProfileApiContract.validateIndex,
-  validateShow: ProfileApiContract.ValidateSchema,
-  validateUpdate: ProfileApiContract.ValidateUpdate,
+  validateIndex: validateIndex,
+  validateShow: ValidateSchema,
+  validateUpdate: ValidateUpdate,
 
-  mapIndex: ProfileMapper.toApiReadList,
-  mapShow: ProfileMapper.toApiRead,
-  mapUpdate: ProfileMapper.toApiUpdate,
+  mapIndex: toApiReadList,
+  mapShow: toApiRead,
+  mapUpdate: toApiUpdate,
 });

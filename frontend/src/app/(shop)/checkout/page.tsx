@@ -5,7 +5,6 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 import { toast } from "sonner"
 import {
   Lock, Package, ArrowLeft, MapPin, Loader2,
@@ -72,24 +71,24 @@ export default function CheckoutPage() {
   const router = useRouter()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
 
-  const { data: cart, isLoading: cartLoading } = useCartSummary.get()
-  const createOrder = useOrder.create()
+  const { data: cart, isLoading: cartLoading } = useCartSummary.useGet()
+  const createOrder = useOrder.useCreate()
 
   // orderId diisi setelah step 1 selesai — dipakai untuk usePayment
   const [orderId, setOrderId] = useState<number>(0)
-  const createPayment = usePayment.create(orderId)
+  const createPayment = usePayment.useCreate(orderId)
 
   const [step, setStep] = useState<1 | 2>(1)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>("transfer_bank")
   const [savedOrder, setSavedOrder] = useState<{ id: number; invoice: string } | null>(null)
 
-  const form = useForm<OrderFormValues.Create>({
+  const form = useForm<OrderFormValues['Create']>({
     resolver: zodResolver(CheckoutSchema),
     defaultValues: OrderDefaultValues.create,
   })
 
   // ── Step 1: buat order ──────────────────────────────────
-  const onShippingSubmit = async (values: OrderFormValues.Create) => {
+  const onShippingSubmit = async (values: OrderFormValues['Create']) => {
     try {
       const order = await createOrder.mutateAsync(values)
       setOrderId(order.id)
@@ -317,6 +316,7 @@ export default function CheckoutPage() {
                   <div key={item.produkItemId} className="flex items-center gap-3">
                     <div className="w-12 h-12 shrink-0 bg-obsidian-800 rounded-sm overflow-hidden border border-obsidian-700/40">
                       {item.productImageUrl && (
+                        /* eslint-disable-next-line @next/next/no-img-element */
                         <img src={item.productImageUrl} alt={item.productName} className="w-full h-full object-cover" />
                       )}
                     </div>
@@ -337,12 +337,12 @@ export default function CheckoutPage() {
               </div>
               {(cart?.discountMinor ?? 0) > 0 && (
                 <div className="flex justify-between text-gold-500">
-                  <span>Diskon</span><span>-{formatPrice(cart.discountMinor)}</span>
+                  <span>Diskon</span><span>-{formatPrice(cart?.discountMinor ?? 0)}</span>
                 </div>
               )}
               {(cart?.shippingMinor ?? 0) > 0 && (
                 <div className="flex justify-between text-obsidian-400">
-                  <span>Ongkir</span><span>{formatPrice(cart.shippingMinor)}</span>
+                  <span>Ongkir</span><span>{formatPrice(cart?.shippingMinor ?? 0)}</span>
                 </div>
               )}
             </div>

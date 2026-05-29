@@ -1,5 +1,5 @@
 import { Http } from "../core/api-client";
-import { Validation } from "../core/validation";
+import { requireValidId } from "../core/validation";
 
 // Wrapper type API standar
 interface ApiResponseWrapper<T> {
@@ -41,7 +41,7 @@ export const createBaseCrudService = <
     },
 
     async show(id: number): Promise<ReadShow> {
-      const validId = Validation.requireValidId(id);
+      const validId = requireValidId(id);
       const res = await Http.get<ApiResponseWrapper<unknown>>(`${basePath}/${validId}`);
       const validated = config.validateShow(res.data);
       return config.mapShow(validated);
@@ -64,7 +64,7 @@ export const createBaseCrudService = <
             throw new Error("Update is not supported for this resource");
         }
 
-      const validId = Validation.requireValidId(id);
+      const validId = requireValidId(id);
       const payload = config.mapUpdate(data);
       const validatedPayload = config.validateUpdate(payload);
       const res = await Http.put<ApiResponseWrapper<unknown>>(`${basePath}/${validId}`,validatedPayload);
@@ -73,7 +73,7 @@ export const createBaseCrudService = <
     },
 
     async delete(id: number): Promise<void> {
-      const validId = Validation.requireValidId(id);
+      const validId = requireValidId(id);
       await Http.delete(`${basePath}/${validId}`);
     },
   };

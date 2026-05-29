@@ -1,5 +1,4 @@
 import { z } from "zod"
-export namespace WishlistApiContract {
 
 export const Schema = z.object({
   id: z.number(),
@@ -22,12 +21,11 @@ export const CreateSchema = z.object({
 export const WishlishttIndexSchema = z.array(Schema)
 
 // TypeScript types inferred from Zod
-export type Response = z.infer<typeof Schema>
-export type Index = z.infer<typeof WishlishttIndexSchema>
-export type Create = z.infer<typeof CreateSchema>
+export type WishlistApiResponse = z.infer<typeof Schema>
+export type WishlistApiIndex = z.infer<typeof WishlishttIndexSchema>
+export type WishlistApiCreate = z.infer<typeof CreateSchema>
 
 // Validation helpers
-export const validateSchema = (payload: unknown): Response => Schema.parse(payload)
-export const validateIndex = (payload: unknown): Index => WishlishttIndexSchema.parse(payload)
-export const validateCreate = (payload: unknown): Create => CreateSchema.parse(payload)
-}
+export const validateSchema = (payload: unknown): WishlistApiResponse => Schema.parse(payload)
+export const validateIndex = (payload: unknown): WishlistApiIndex => WishlishttIndexSchema.parse(payload)
+export const validateCreate = (payload: unknown): WishlistApiCreate => CreateSchema.parse(payload)

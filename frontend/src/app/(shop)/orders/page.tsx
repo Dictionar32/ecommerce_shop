@@ -14,7 +14,7 @@ import { PageLoader, ErrorState, AuthGuard, SectionHeader, StatusBadge } from "@
 import { useOrder } from "@/features/order/hooks/use-order"
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice, formatDate } from "@/lib/utils-frontend"
-import type { OrderRead } from "@/features/order/types/order-read"
+import { OrderIndex, OrderItem } from "@/features/order/types/order-read"
 import apiClient from "@/lib/core/api-client"
 
 export default function OrdersPage() {
@@ -23,8 +23,8 @@ export default function OrdersPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [downloadingId, setDownloadingId] = useState<number | null>(null)
 
-  const { data: orders, isLoading, isError } = useOrder.index()
-  const { data: detail, isLoading: detailLoading } = useOrder.show(selectedId ?? 0)
+  const { data: orders, isLoading, isError } = useOrder.useIndex()
+  const { data: detail, isLoading: detailLoading } = useOrder.useShow(selectedId ?? 0)
 
   const handleDownloadInvoice = async (orderId: number) => {
     setDownloadingId(orderId)
@@ -98,7 +98,7 @@ export default function OrdersPage() {
               ) : (
                 <ScrollArea className="max-h-[480px]">
                   <div className="space-y-2 pr-1">
-                    {orders.map((order: OrderRead.Index) => (
+                    {orders.map((order: OrderIndex) => (
                       <button key={order.id} onClick={() => setSelectedId(order.id)}
                         className={`w-full text-left p-3 rounded-sm border transition-all duration-150 ${
                           selectedId === order.id
@@ -174,12 +174,15 @@ export default function OrdersPage() {
                 {/* Items */}
                 <p className="text-xs font-semibold text-obsidian-500 uppercase tracking-widest mb-3">Item Pesanan</p>
                 <div className="space-y-2.5 mb-6">
-                  {detail.items?.map((item: OrderRead.Item) => (
+                  {detail.items?.map((item: OrderItem) => (
                     <div key={item.produkItemId}
                       className="flex items-center gap-4 p-3.5 border border-obsidian-800/40 bg-obsidian-900/30 rounded-sm">
                       <div className="w-14 h-14 bg-obsidian-800 rounded-sm shrink-0 overflow-hidden border border-obsidian-700/40">
                         {item.productImageUrl
-                          ? <img src={item.productImageUrl} alt={item.productName} className="w-full h-full object-cover" />
+                          ? (
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img src={item.productImageUrl} alt={item.productName} className="w-full h-full object-cover" />
+                          )
                           : <div className="w-full h-full flex items-center justify-center"><Package size={18} className="text-obsidian-600" /></div>
                         }
                       </div>

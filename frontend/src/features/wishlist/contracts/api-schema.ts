@@ -1,15 +1,15 @@
 import { z } from "zod"
 
-export namespace WishlistApiSchema {
-  export const Create = z.object({
-    produkItemId: z.number({ required_error: "Produk wajib dipilih" }),
+export const WishlistApiSchema = {
+  Create: z.object({
+    produkItemId: z.number(),
   })
 }
 
-export namespace WishlistFormValues {
-  export type Create = z.infer<typeof WishlistApiSchema.Create>
+export type WishlistFormValues = {
+  Create: z.infer<typeof WishlistApiSchema.Create>
 }
 
-export namespace WishlistDefaultValues {
-  export const create: WishlistFormValues.Create = { produkItemId: 0 }
+export const WishlistDefaultValues = {
+  create: { produkItemId: 0 } as WishlistFormValues['Create']
 }

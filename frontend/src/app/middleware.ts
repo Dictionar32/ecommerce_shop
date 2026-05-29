@@ -4,9 +4,8 @@
  * Middleware is kept minimal to avoid SSR/cookie mismatch issues.
  */
 import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
 
-export function middleware(request: NextRequest) {
+export function middleware() {
   return NextResponse.next()
 }
 

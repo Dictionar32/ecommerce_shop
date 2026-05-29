@@ -20,17 +20,18 @@ import { AuthService } from "@/features/auth/services/auth-service"
 export default function LoginPage() {
   const loginMutation = useLogin()
 
-  const form = useForm<AuthFormValues.Login>({
+  const form = useForm<AuthFormValues['Login']>({
     resolver: zodResolver(AuthApiSchema.Login),
     defaultValues: AuthDefaultValues.login,
   })
 
-  const onSubmit = async (values: AuthFormValues.Login) => {
+  const onSubmit = async (values: AuthFormValues['Login']) => {
     try {
       await loginMutation.mutateAsync(values)
       toast.success("Selamat datang kembali!")
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message ?? "Email atau password salah")
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err?.response?.data?.message ?? "Email atau password salah")
     }
   }
 
@@ -54,7 +55,7 @@ export default function LoginPage() {
           </Link>
           <div className="h-px w-24 bg-gold-500/40 my-6" />
           <p className="text-obsidian-300 text-lg font-heading italic">
-            "Belanja premium,<br />pengalaman luar biasa."
+            &ldquo;Belanja premium,<br />pengalaman luar biasa.&rdquo;
           </p>
           <p className="text-obsidian-600 text-sm mt-4">Ribuan produk pilihan menanti Anda</p>
         </div>

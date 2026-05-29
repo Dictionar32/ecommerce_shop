@@ -5,7 +5,7 @@ import { WishlistFormValues } from "../contracts/api-schema";
 
 export const useWishlist = {
   /** GET /wishlist */
-  index() {
+  useIndex() {
     return useQuery({
       queryKey: QueryKey.wishlist.list(),
       queryFn: () => WishlistService.index(),
@@ -13,10 +13,10 @@ export const useWishlist = {
   },
 
   /** POST /wishlist — mutationFn receives WishlistFormValues.Create { produkItemId } */
-  create() {
+  useCreate() {
     const qc = useQueryClient();
     return useMutation({
-      mutationFn: (form: WishlistFormValues.Create) => WishlistService.create(form),
+      mutationFn: (form: WishlistFormValues['Create']) => WishlistService.create(form),
       onSuccess: () => {
         qc.invalidateQueries({ queryKey: QueryKey.wishlist.list() });
         qc.invalidateQueries({ queryKey: QueryKey.produk.lists() });
@@ -25,7 +25,7 @@ export const useWishlist = {
   },
 
   /** DELETE /wishlist/{produkItemId} */
-  remove() {
+  useRemove() {
     const qc = useQueryClient();
     return useMutation({
       mutationFn: (produkItemId: number) => WishlistService.delete(produkItemId),

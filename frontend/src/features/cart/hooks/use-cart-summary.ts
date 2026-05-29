@@ -6,7 +6,7 @@ import { CartFormValues } from "../contracts/api-schema";
 
 export const useCartSummary = {
   /** GET /keranjang — only when authenticated */
-  get() {
+  useGet() {
     const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
     return useQuery({
       queryKey: QueryKey.cart.summary(),
@@ -17,10 +17,10 @@ export const useCartSummary = {
   },
 
   /** POST /cart/items — form: CartFormValues.Create { produkItemId, qty } */
-  addItem() {
+  useAddItem() {
     const qc = useQueryClient();
     return useMutation({
-      mutationFn: (form: CartFormValues.Create) => CartSummaryService.addItem(form),
+      mutationFn: (form: CartFormValues['Create']) => CartSummaryService.addItem(form),
       onSuccess: (data) => {
         qc.setQueryData(QueryKey.cart.summary(), data);
       },
@@ -28,7 +28,7 @@ export const useCartSummary = {
   },
 
   /** PATCH /cart/items/:id — form: CartFormValues.Update { qty } */
-  updateItem() {
+  useUpdateItem() {
     const qc = useQueryClient();
     return useMutation({
       mutationFn: ({ produkItemId, qty }: { produkItemId: number; qty: number }) =>
@@ -40,7 +40,7 @@ export const useCartSummary = {
   },
 
   /** DELETE /cart/items/:id */
-  removeItem() {
+  useRemoveItem() {
     const qc = useQueryClient();
     return useMutation({
       mutationFn: (produkItemId: number) => CartSummaryService.removeItem(produkItemId),
@@ -52,7 +52,7 @@ export const useCartSummary = {
   },
 
   /** POST /cart/promo */
-  applyPromo() {
+  useApplyPromo() {
     const qc = useQueryClient();
     return useMutation({
       mutationFn: (code: string) => CartSummaryService.applyPromo(code),
@@ -63,7 +63,7 @@ export const useCartSummary = {
   },
 
   /** DELETE /cart/promo */
-  removePromo() {
+  useRemovePromo() {
     const qc = useQueryClient();
     return useMutation({
       mutationFn: () => CartSummaryService.removePromo(),

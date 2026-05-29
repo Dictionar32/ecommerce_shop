@@ -1,10 +1,9 @@
-export namespace CategoryForm {
-
-  export type Create = {
+export type CategoryForm = {
+  Create: {
     nama: string
   }
 
-  export type Update = {
+  Update: {
     nama: string
   }
 }

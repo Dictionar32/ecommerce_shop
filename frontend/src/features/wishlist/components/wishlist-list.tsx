@@ -3,10 +3,10 @@
 import Link from "next/link"
 import { Trash2, Star, ShoppingCart } from "lucide-react"
 import { formatPrice } from "@/lib/utils-frontend"
-import type { WishlistRead } from "@/features/wishlist/types/wishlist-read"
+import { WishlistItem } from "@/features/wishlist/types/wishlist-read"
 
 interface WishlistListProps {
-  items: WishlistRead.Item[]
+  items: WishlistItem[]
   onRemove: (produkItemId: number) => void
   isRemoving: boolean
 }
@@ -21,6 +21,7 @@ export function WishlistList({ items, onRemove, isRemoving }: WishlistListProps)
         >
           {/* Image */}
           <div className="relative aspect-square bg-obsidian-800 overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={item.imageUrl}
               alt={item.name}

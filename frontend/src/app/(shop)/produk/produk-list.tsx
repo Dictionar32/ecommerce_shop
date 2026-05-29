@@ -17,14 +17,14 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { ProdukCard } from "@/features/produk/components/produk-card";
-import type { ProdukRead } from "@/features/produk/types/produk-read";
-import type { CategoryRead } from "@/features/category/types/category-read";
+import { ProdukIndex } from "@/features/produk/types/produk-read";
+import { CategoryIndex } from "@/features/category/types/category-read";
 
 type SortOption = "default" | "harga_asc" | "harga_desc" | "rating" | "nama_asc" | "nama_desc";
 
 interface ProdukListProps {
-  produk: ProdukRead.Index[];
-  categories?: CategoryRead.Index[];
+  produk: ProdukIndex[];
+  categories?: CategoryIndex[];
   wishlistData?: { id: number }[];
 }
 
@@ -35,7 +35,7 @@ function FilterSheet({
   sortBy,
   onSortChange,
 }: {
-  categories: CategoryRead.Index[];
+  categories: CategoryIndex[];
   selectedCategory: string;
   onCategoryChange: (value: string) => void;
   sortBy: SortOption;
@@ -114,7 +114,7 @@ export function ProdukList({ produk, categories = [], wishlistData = [] }: Produ
     return new Set(wishlistData.map((item) => item.id));
   }, [wishlistData]);
 
-  const filteredProducts = useMemo((): ProdukRead.Index[] => {
+  const filteredProducts = useMemo((): ProdukIndex[] => {
     let result = [...produk];
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
@@ -257,7 +257,7 @@ export function ProdukList({ produk, categories = [], wishlistData = [] }: Produ
               <span className="text-xs text-obsidian-500">Filter aktif:</span>
               {searchQuery && (
                 <span className="inline-flex items-center gap-1 bg-gold-500/10 border border-gold-800/50 text-gold-400 text-xs px-2 py-0.5 rounded-sm">
-                  "{searchQuery}"
+                  &ldquo;{searchQuery}&rdquo;
                   <button onClick={() => setSearchQuery("")} className="hover:text-gold-300"><X size={10} /></button>
                 </span>
               )}

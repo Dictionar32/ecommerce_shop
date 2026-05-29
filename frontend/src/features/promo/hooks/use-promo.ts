@@ -5,7 +5,7 @@ import { PromoService } from "../services/promo-service";
 export const usePromo = createCrudHooks({
     queryKey: {
         list: () => [QueryKey.promo.list],
-        detail: (id: number) => [QueryKey.promo.detail]
+        detail: (id: number) => [QueryKey.promo.detail, id]
     },
     service: {
         index: PromoService.index,

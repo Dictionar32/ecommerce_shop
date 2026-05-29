@@ -10,12 +10,12 @@ import { toast } from 'sonner';
 
 export default function CartModal() {
   const { isOpen, closeCart } = useCartUiStore();
-  const { data: cart, isLoading } = useCartSummary.get();
+  const { data: cart, isLoading } = useCartSummary.useGet();
 
-  const updateItemMut = useCartSummary.updateItem();
-  const removeItemMut = useCartSummary.removeItem();
-  const applyPromoMut = useCartSummary.applyPromo();
-  const removePromoMut = useCartSummary.removePromo();
+  const updateItemMut = useCartSummary.useUpdateItem();
+  const removeItemMut = useCartSummary.useRemoveItem();
+  const applyPromoMut = useCartSummary.useApplyPromo();
+  const removePromoMut = useCartSummary.useRemovePromo();
 
   const [promoInput, setPromoInput] = useState('');
 
@@ -123,6 +123,7 @@ export default function CartModal() {
                 {/* Image */}
                 <div className="w-16 h-16 shrink-0 bg-obsidian-800 rounded-sm overflow-hidden">
                   {item.productImageUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img
                       src={item.productImageUrl}
                       alt={item.productName}

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import { Heart } from "lucide-react"
 import { toast } from "sonner"
 import { Skeleton } from "@/components/ui/skeleton"
-import { AuthGuard, SectionHeader } from "@/components/shared"
+import { AuthGuard } from "@/components/shared"
 import { WishlistList } from "@/features/wishlist/components/wishlist-list"
 import { useWishlist } from "@/features/wishlist/hooks/use-wishlist"
 import useAuthStore from "@/lib/stores/auth-store"
@@ -12,8 +12,8 @@ import useAuthStore from "@/lib/stores/auth-store"
 export default function WishlistPage() {
   const router = useRouter()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const { data: items = [], isLoading } = useWishlist.index()
-  const deleteMutation = useWishlist.remove()
+  const { data: items = [], isLoading } = useWishlist.useIndex()
+  const deleteMutation = useWishlist.useRemove()
 
   const handleRemove = (produkItemId: number) => {
     deleteMutation.mutate(produkItemId, {

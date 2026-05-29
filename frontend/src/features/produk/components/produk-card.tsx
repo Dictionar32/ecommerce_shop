@@ -7,20 +7,20 @@ import { useWishlist } from "@/features/wishlist/hooks/use-wishlist";
 import { useCartSummary } from "@/features/cart/hooks/use-cart-summary";
 import { useCartUiStore } from "@/lib/stores/cart-ui-store";
 import useAuthStore from "@/lib/stores/auth-store";
-import type { ProdukRead } from "@/features/produk/types/produk-read";
+import { ProdukIndex } from "@/features/produk/types/produk-read";
 import { formatPrice } from "@/lib/utils-frontend";
 
 interface ProdukCardProps {
-  item: ProdukRead.Index;
+  item: ProdukIndex;
   isInWishlist?: boolean;
 }
 
 export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const addToCart = useCartSummary.addItem();
+  const addToCart = useCartSummary.useAddItem();
   const { openCart } = useCartUiStore();
-  const addToWishlist = useWishlist.create();
-  const removeFromWishlist = useWishlist.remove();
+  const addToWishlist = useWishlist.useCreate();
+  const removeFromWishlist = useWishlist.useRemove();
 
   const isOutOfStock = item.stok === 0;
 
@@ -85,6 +85,7 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
         {/* Image */}
         <div className="relative aspect-square bg-obsidian-800 overflow-hidden">
           {item.gambarUrl ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img
               src={item.gambarUrl}
               alt={item.nama}

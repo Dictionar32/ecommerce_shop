@@ -25,7 +25,7 @@ function ForgotPasswordContent() {
 
   const forgotMutation = useForgotPassword()
 
-  const form = useForm<AuthFormValues.ForgotPassword>({
+  const form = useForm<AuthFormValues['ForgotPassword']>({
     resolver: zodResolver(AuthApiSchema.ForgotPassword),
     defaultValues: {
       ...AuthDefaultValues.forgotPassword,
@@ -33,14 +33,15 @@ function ForgotPasswordContent() {
     },
   })
 
-  const onSubmit = async (values: AuthFormValues.ForgotPassword) => {
+  const onSubmit = async (values: AuthFormValues['ForgotPassword']) => {
     try {
       await forgotMutation.mutateAsync(values)
       setSentEmail(values.email)
       setSent(true)
       toast.success("Email reset password telah dikirim")
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message ?? "Gagal mengirim email")
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err?.response?.data?.message ?? "Gagal mengirim email")
     }
   }
 

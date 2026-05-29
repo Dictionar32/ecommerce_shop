@@ -1,10 +1,10 @@
-export namespace CartForm {
-  export type Create = {
+export type CartForm = {
+  Create: {
     produkItemId: number
     qty: number
   }
 
-  export type Update = {
+  Update: {
     qty: number
   }
 }

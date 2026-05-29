@@ -20,17 +20,18 @@ import { AuthService } from "@/features/auth/services/auth-service"
 export default function RegisterPage() {
   const registerMutation = useRegister()
 
-  const form = useForm<AuthFormValues.Register>({
+  const form = useForm<AuthFormValues['Register']>({
     resolver: zodResolver(AuthApiSchema.Register),
     defaultValues: AuthDefaultValues.register,
   })
 
-  const onSubmit = async (values: AuthFormValues.Register) => {
+  const onSubmit = async (values: AuthFormValues['Register']) => {
     try {
       await registerMutation.mutateAsync(values)
       toast.success("Akun dibuat! Selamat datang.")
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message ?? "Gagal mendaftar")
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err?.response?.data?.message ?? "Gagal mendaftar")
     }
   }
 
@@ -54,7 +55,7 @@ export default function RegisterPage() {
           </Link>
           <div className="h-px w-24 bg-gold-500/40 my-6" />
           <p className="text-obsidian-300 text-lg font-heading italic">
-            "Bergabunglah dengan<br />komunitas premium kami."
+            &ldquo;Bergabunglah dengan<br />komunitas premium kami.&rdquo;
           </p>
           <div className="mt-8 grid grid-cols-3 gap-4 text-center">
             {[["10K+", "Produk"], ["50K+", "Member"], ["4.9", "Rating"]].map(([num, label]) => (

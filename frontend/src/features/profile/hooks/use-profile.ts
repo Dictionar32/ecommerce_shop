@@ -5,7 +5,8 @@ import { ProfileService } from "../services/profile-service";
 export const useProfile = createCrudHooks({
     queryKey: {
         list: () => [QueryKey.auth.all],
-        detail: (id: number) => [QueryKey.auth.me],
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        detail: (_id: number) => [QueryKey.auth.me],
     },
     service: {
         index: ProfileService.index,

@@ -1,14 +1,14 @@
 import { createCrudHooks } from "@/lib/generic/generic-hooks";
 import { QueryKey } from "@/lib/core/query-key";
 import { ProdukService } from '../services/produk-service';
-import type { ProdukRead } from "../types/produk-read";
+import { ProdukIndex, ProdukShow } from "../types/produk-read";
 import { ProdukFormValues } from "../contracts/api-schema";
 
 export const useProduk = createCrudHooks<
-  ProdukRead.Index,
-  ProdukRead.Show,
-  ProdukFormValues.Create,
-  ProdukFormValues.Update
+  ProdukIndex,
+  ProdukShow,
+  ProdukFormValues['Create'],
+  ProdukFormValues['Update']
 >({
     queryKey: {
         list: () => [QueryKey.produk.list],

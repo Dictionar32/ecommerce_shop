@@ -1,8 +1,5 @@
-export namespace OrderForm {
-  /**
-   * Checkout / update shipping
-   */
-  export interface Create {
+export type OrderForm = {
+  Create: {
     shippingNama: string
     shippingTelepon: string
     shippingAlamat: string
@@ -10,10 +7,13 @@ export namespace OrderForm {
     shippingKodePos: string
   }
 
-  /**
-   * Buy Now
-   */
-  export interface BuyNow extends Partial<Create> {
+  BuyNow: Partial<{
+    shippingNama: string
+    shippingTelepon: string
+    shippingAlamat: string
+    shippingKota: string
+    shippingKodePos: string
+  }> & {
     produkItemId: number
     qty: number
   }

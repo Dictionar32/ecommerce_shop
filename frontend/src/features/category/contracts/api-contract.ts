@@ -1,7 +1,5 @@
 import { z } from 'zod'
 
-export namespace CategoryApiContract {
-
 export const CategorySchema = z.object({
   id: z.number().int().positive(),
   nama: z.string().min(1, 'Nama kategori is required'),
@@ -23,16 +21,14 @@ export const CategoryListSchema = z.object({
   search: z.string().optional(),
 })
 
-export type Response = z.infer<typeof CategorySchema>
-export type Index = z.infer<typeof IndexSchema>
-export type Create = z.infer<typeof CreateSchema>
-export type Update = z.infer<typeof UpdateSchema>
-export type ListSchema = z.infer<typeof CategoryListSchema>
+export type CategoryApiResponse = z.infer<typeof CategorySchema>
+export type CategoryApiIndex = z.infer<typeof IndexSchema>
+export type CategoryApiCreate = z.infer<typeof CreateSchema>
+export type CategoryApiUpdate = z.infer<typeof UpdateSchema>
+export type CategoryApiListSchema = z.infer<typeof CategoryListSchema>
 
-export const validateSchema = (payload: unknown):Response =>CategorySchema.parse(payload)
-export const validateIndex = (payload: unknown):Index =>IndexSchema.parse(payload)
-export const validateCreate = (payload: unknown):Create =>CreateSchema.parse(payload)
-export const validateUpdate = (payload: unknown):Update =>UpdateSchema.parse(payload)
-export const validateList = (payload: unknown):ListSchema =>CategoryListSchema.parse(payload)
-
-}
+export const validateSchema = (payload: unknown): CategoryApiResponse => CategorySchema.parse(payload)
+export const validateIndex = (payload: unknown): CategoryApiIndex => IndexSchema.parse(payload)
+export const validateCreate = (payload: unknown): CategoryApiCreate => CreateSchema.parse(payload)
+export const validateUpdate = (payload: unknown): CategoryApiUpdate => UpdateSchema.parse(payload)
+export const validateList = (payload: unknown): CategoryApiListSchema => CategoryListSchema.parse(payload)

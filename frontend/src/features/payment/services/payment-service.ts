@@ -1,13 +1,11 @@
 import { Http } from "@/lib/core/api-client"
 import { PaymentFormValues } from "../contracts/api-schema"
-import type { PaymentRead } from "../types/payment-read"
-import { PaymentMapper } from "../mappers/payment-mapper"
-
-interface PaymentResponse { data: unknown }
+import type { PaymentShow } from "../types/payment-read"
+import { toApiRead } from "../mappers/payment-mapper"
 
 export const PaymentService = {
   /** POST /payment/{orderId} */
-  async create(orderId: number, form: PaymentFormValues.Create): Promise<PaymentRead.Show> {
+  async create(orderId: number, form: PaymentFormValues['Create']): Promise<PaymentShow> {
     const payload: Record<string, unknown> = {
       metode: form.metode,
       provider: form.provider ?? "mock",
@@ -17,9 +15,9 @@ export const PaymentService = {
     if (form.gatewayCode)    payload.gateway_code    = form.gatewayCode
     if (form.gatewayMessage) payload.gateway_message = form.gatewayMessage
 
-    const res = await Http.post<PaymentResponse>(`/payment/${orderId}`, payload)
+    const res = await Http.post<Record<string, unknown>>(`/payment/${orderId}`, payload)
     // PaymentResource returns { id, order_id, ... } – not wrapped in .data
-    const raw = (res as any).data ?? res
-    return PaymentMapper.toApiRead(raw as any)
+    const raw = (res.data ?? res) as Parameters<typeof toApiRead>[0]
+    return toApiRead(raw)
   },
 }

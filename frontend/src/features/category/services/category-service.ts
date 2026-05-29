@@ -1,27 +1,27 @@
 import { createBaseCrudService } from "@/lib/generic/generic-services";
-import { CategoryApiContract } from "../contracts/api-contract";
-import type { CategoryRead } from "../types/category-read";
+import { CategoryApiResponse, CategoryApiCreate, CategoryApiUpdate, validateIndex, validateSchema, validateCreate, validateUpdate } from "../contracts/api-contract";
+import { CategoryIndex, CategoryShow } from "../types/category-read";
 import { CategoryFormValues } from "../contracts/api-schema";
-import { CategoryMapper } from "../mappers/category-mapper";
+import { toApiReadList, toApiRead, toApiCreate, toApiUpdate } from "../mappers/category-mapper";
 
 export const CategoryService = createBaseCrudService<
-  CategoryApiContract.Response,
-  CategoryRead.Index,
-  CategoryRead.Show,
-  CategoryFormValues.Create,
-  CategoryFormValues.Update,
-  CategoryApiContract.Create,
-  CategoryApiContract.Update
+  CategoryApiResponse,
+  CategoryIndex,
+  CategoryShow,
+  CategoryFormValues['Create'],
+  CategoryFormValues['Update'],
+  CategoryApiCreate,
+  CategoryApiUpdate
 >({
   basePath: "/categories",
 
-  validateIndex: CategoryApiContract.validateIndex,
-  validateShow: CategoryApiContract.validateSchema,
-  validateCreate: CategoryApiContract.validateCreate,
-  validateUpdate: CategoryApiContract.validateUpdate,
+  validateIndex: validateIndex,
+  validateShow: validateSchema,
+  validateCreate: validateCreate,
+  validateUpdate: validateUpdate,
 
-  mapIndex: CategoryMapper.toApiReadList,
-  mapShow: CategoryMapper.toApiRead,
-  mapCreate: CategoryMapper.toApiCreate,
-  mapUpdate: CategoryMapper.toApiUpdate,
+  mapIndex: toApiReadList,
+  mapShow: toApiRead,
+  mapCreate: toApiCreate,
+  mapUpdate: toApiUpdate,
 });

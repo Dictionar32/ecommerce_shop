@@ -1,31 +1,39 @@
 import { Http } from "@/lib/core/api-client"
 import { API_ENDPOINTS } from "@/lib/core/constants"
 import useAuthStore from "@/lib/stores/auth-store"
-import { AuthMapper } from "../mappers/auth-mapper"
-import { AuthApiContract } from "../contracts/api-contract"
-import type { AuthRead } from "../types/auth-read"
+import {
+  toApiLogin,
+  toSessionRead,
+  toApiRegister,
+  toUserRead,
+  toApiForgotPassword,
+  toApiResetPassword,
+  toApiSocialLogin
+} from "../mappers/auth-mapper"
+import { validateSession, validateUser } from "../contracts/api-contract"
+import { AuthUser, AuthSession } from "../types/auth-read"
 import { AuthFormValues } from "../contracts/api-schema"
 
 interface ApiWrapper<T> { success: boolean; message: string; data: T }
 
 export const AuthService = {
 
-  async login(form: AuthFormValues.Login): Promise<AuthRead.Session> {
+  async login(form: AuthFormValues['Login']): Promise<AuthSession> {
     const res = await Http.post<ApiWrapper<unknown>>(
       API_ENDPOINTS.LOGIN,
-      AuthMapper.toApiLogin(form)
+      toApiLogin(form)
     )
-    const session = AuthMapper.toSessionRead(AuthApiContract.validateSession(res))
+    const session = toSessionRead(validateSession(res))
     useAuthStore.getState().setAuth(session.user, session.token)
     return session
   },
 
-  async register(form: AuthFormValues.Register): Promise<AuthRead.Session> {
+  async register(form: AuthFormValues['Register']): Promise<AuthSession> {
     const res = await Http.post<ApiWrapper<unknown>>(
       API_ENDPOINTS.REGISTER,
-      AuthMapper.toApiRegister(form)
+      toApiRegister(form)
     )
-    const session = AuthMapper.toSessionRead(AuthApiContract.validateSession(res))
+    const session = toSessionRead(validateSession(res))
     useAuthStore.getState().setAuth(session.user, session.token)
     return session
   },
@@ -38,35 +46,35 @@ export const AuthService = {
     }
   },
 
-  async me(): Promise<AuthRead.User> {
+  async me(): Promise<AuthUser> {
     const res = await Http.get<ApiWrapper<unknown>>(API_ENDPOINTS.ME)
-    const user = AuthMapper.toUserRead(AuthApiContract.validateUser(res.data))
+    const user = toUserRead(validateUser(res.data))
     useAuthStore.getState().updateUser(user)
     return user
   },
 
-  async forgotPassword(form: AuthFormValues.ForgotPassword): Promise<string> {
+  async forgotPassword(form: AuthFormValues['ForgotPassword']): Promise<string> {
     const res = await Http.post<ApiWrapper<unknown>>(
       API_ENDPOINTS.FORGOT_PASSWORD,
-      AuthMapper.toApiForgotPassword(form)
+      toApiForgotPassword(form)
     )
     return res.message ?? "Email reset password telah dikirim"
   },
 
-  async resetPassword(form: AuthFormValues.ResetPassword): Promise<string> {
+  async resetPassword(form: AuthFormValues['ResetPassword']): Promise<string> {
     const res = await Http.post<ApiWrapper<unknown>>(
       API_ENDPOINTS.RESET_PASSWORD,
-      AuthMapper.toApiResetPassword(form)
+      toApiResetPassword(form)
     )
     return res.message ?? "Password berhasil direset"
   },
 
-  async socialLogin(form: AuthFormValues.SocialLogin): Promise<AuthRead.Session> {
+  async socialLogin(form: AuthFormValues['SocialLogin']): Promise<AuthSession> {
     const res = await Http.post<ApiWrapper<unknown>>(
       API_ENDPOINTS.SOCIAL_LOGIN,
-      AuthMapper.toApiSocialLogin(form)
+      toApiSocialLogin(form)
     )
-    const session = AuthMapper.toSessionRead(AuthApiContract.validateSession(res))
+    const session = toSessionRead(validateSession(res))
     useAuthStore.getState().setAuth(session.user, session.token)
     return session
   },

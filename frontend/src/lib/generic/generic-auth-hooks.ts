@@ -28,9 +28,9 @@ export const createAuthHooks = <
       return useMutation({
         mutationFn: service.login,
 
-        onSuccess: (session: { user: User; access_token: string; }) => {
+        onSuccess: (session: LoginResponse) => {
           // ✅ sync zustand (source of truth)
-          setAuth(session.user, session.access_token);
+          setAuth(<User><unknown>session.user, session.token);
 
           // ✅ instant cache sync (no refetch)
           qc.setQueryData(QueryKey.auth.me(), session.user);
@@ -47,8 +47,8 @@ export const createAuthHooks = <
       return useMutation({
         mutationFn: service.register,
 
-        onSuccess: (session: { user: User; access_token: string; }) => {
-          setAuth(session.user, session.access_token);
+        onSuccess: (session: RegisterResponse) => {
+          setAuth(<User><unknown>session.user, session.token);
 
           qc.setQueryData(QueryKey.auth.me(), session.user);
           qc.setQueryData(QueryKey.auth.profile(), session.user);
@@ -86,7 +86,7 @@ export const createAuthHooks = <
         queryKey: QueryKey.auth.profile(),
         queryFn: service.profile,
         enabled: isAuthenticated,
-        placeholderData: storedUser ?? undefined,
+        placeholderData: <undefined><unknown>(() => storedUser ?? undefined),
         staleTime: 5 * 60 * 1000,
         gcTime: 30 * 60 * 1000,
         retry: false,

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Validation } from "@/lib/core/validation";
+import { requireValidId } from "@/lib/core/validation";
 
 export const createCrudHooks = <
   ReadIndex,
@@ -21,17 +21,17 @@ export const createCrudHooks = <
 }) => {
   const { service, queryKey } = config;
 
-  // Enterprise pattern: index() - no params needed
-  const index = () => {
+  // Enterprise pattern: useIndex() - no params needed
+  const useIndex = () => {
     return useQuery({
       queryKey: queryKey.list(),
       queryFn: service.index,
     });
   };
 
-  // Enterprise pattern: show(id)
-  const show = (id: number) => {
-    const validId = Validation.requireValidId(id);
+  // Enterprise pattern: useShow(id)
+  const useShow = (id: number) => {
+    const validId = requireValidId(id);
     return useQuery({
       queryKey: queryKey.detail(validId),
       enabled: Number.isFinite(id),
@@ -39,8 +39,8 @@ export const createCrudHooks = <
     });
   };
 
-  // Enterprise pattern: create()
-  const create = () => {
+  // Enterprise pattern: useCreate()
+  const useCreate = () => {
     const createService = service.create;
     if (!createService) {
       throw new Error("Create is not supported for this resource");
@@ -56,8 +56,8 @@ export const createCrudHooks = <
     });
   };
 
-  // Enterprise pattern: update()
-  const update = () => {
+  // Enterprise pattern: useUpdate()
+  const useUpdate = () => {
     const updateService = service.update;
     if (!updateService) {
       throw new Error("Update is not supported for this resource");
@@ -67,18 +67,18 @@ export const createCrudHooks = <
 
     return useMutation({
       mutationFn: ({ id, data }: { id: number; data: UpdateForm }) => {
-        const validId = Validation.requireValidId(id);
+        const validId = requireValidId(id);
         return updateService(validId, data);
       },
-      onSuccess: (_data: unknown, vars: { id: number }) => {
+      onSuccess: (_data: unknown, vars) => {
         qc.invalidateQueries({ queryKey: queryKey.list() });
         qc.invalidateQueries({ queryKey: queryKey.detail(vars.id) });
       },
     });
   };
 
-  // Enterprise pattern: remove() (alias for delete)
-  const remove = () => {
+  // Enterprise pattern: useRemove() (alias for delete)
+  const useRemove = () => {
     const deleteService = service.delete;
     if (!deleteService) {
       throw new Error("Delete is not supported for this resource");
@@ -88,7 +88,7 @@ export const createCrudHooks = <
 
     return useMutation({
       mutationFn: (id: number) => {
-        const validId = Validation.requireValidId(id);
+        const validId = requireValidId(id);
         return deleteService(validId);
       },
       onSuccess: (_data: unknown, id: number) => {
@@ -101,19 +101,19 @@ export const createCrudHooks = <
   // Return hooks object directly - supports useProduk.index()
   // Also add legacy properties for backward compatibility: useProduk.useIndex()
   return {
-    index,
-    show,
-    create,
-    update,
-    remove,
-    delete: remove, // alias for remove
+    index: useIndex,
+    show: useShow,
+    create: useCreate,
+    update: useUpdate,
+    remove: useRemove,
+    delete: useRemove, // alias for remove
     
     // Legacy patterns
-    useIndex: index,
-    useShow: show,
-    useCreate: create,
-    useUpdate: update,
-    useDelete: remove,
-    useRemove: remove,
+    useIndex,
+    useShow,
+    useCreate,
+    useUpdate,
+    useDelete: useRemove,
+    useRemove,
   };
 };

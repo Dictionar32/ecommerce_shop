@@ -1,27 +1,27 @@
-export namespace AuthForm {
-  export type Login = {
+export type AuthForm = {
+  Login: {
     email: string
     password: string
   }
 
-  export type Register = {
+  Register: {
     name: string
     email: string
     password: string
     passwordConfirmation: string
   }
 
-  export type ForgotPassword = {
+  ForgotPassword: {
     email: string
   }
 
-  export type ResetPassword = {
+  ResetPassword: {
     email: string
     password: string
     passwordConfirmation: string
   }
 
-  export type SocialLogin = {
+  SocialLogin: {
     provider: string
     accessToken: string
   }

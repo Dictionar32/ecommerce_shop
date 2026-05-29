@@ -10,9 +10,9 @@ import { useWishlist } from "@/features/wishlist/hooks/use-wishlist";
 
 export default function ProdukPage() {
   // Fetch all data at page level (Blueprint: Page composes data)
-  const { data: produk, isLoading: produkLoading, isError: produkError } = useProduk.index();
-  const { data: categories, isLoading: categoryLoading } = useCategory.index();
-  const { data: wishlistData } = useWishlist.index();
+  const { data: produk, isLoading: produkLoading, isError: produkError } = useProduk.useIndex();
+  const { data: categories, isLoading: categoryLoading } = useCategory.useIndex();
+  const { data: wishlistData } = useWishlist.useIndex();
 
   // Show loading for initial data fetch
   if (produkLoading || categoryLoading) {

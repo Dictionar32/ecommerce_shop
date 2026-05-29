@@ -1,27 +1,27 @@
 import { createBaseCrudService } from "@/lib/generic/generic-services";
-import type { ProdukRead } from "../types/produk-read";
+import { ProdukIndex, ProdukShow } from "../types/produk-read";
 import { ProdukFormValues } from "../contracts/api-schema";
-import { ProdukApiContract } from "../contracts/api-contract";
-import { ProdukMapper } from "../mappers/produk-mapper";
+import { ProdukApiResponse, ProdukApiCreate, ProdukApiUpdate, ValidateIndex, ValidateSchema, ValidateCreate, ValidateUpdate } from "../contracts/api-contract";
+import { toApiReadList, toApiRead, toApiCreate, toApiUpdate } from "../mappers/produk-mapper";
 
 export const ProdukService = createBaseCrudService<
-  ProdukApiContract.Response,
-  ProdukRead.Index,
-  ProdukRead.Show,
-  ProdukFormValues.Create,
-  ProdukFormValues.Update,
-  ProdukApiContract.Create,
-  ProdukApiContract.Update
+  ProdukApiResponse,
+  ProdukIndex,
+  ProdukShow,
+  ProdukFormValues['Create'],
+  ProdukFormValues['Update'],
+  ProdukApiCreate,
+  ProdukApiUpdate
 >({
   basePath: "/produk",
 
-  validateIndex: ProdukApiContract.ValidateIndex,
-  validateShow: ProdukApiContract.ValidateSchema,
-  validateCreate: ProdukApiContract.ValidateCreate,
-  validateUpdate: ProdukApiContract.ValidateUpdate,
+  validateIndex: ValidateIndex,
+  validateShow: ValidateSchema,
+  validateCreate: ValidateCreate,
+  validateUpdate: ValidateUpdate,
 
-  mapIndex: ProdukMapper.toApiReadList,
-  mapShow: ProdukMapper.toApiRead,
-  mapCreate: ProdukMapper.toApiCreate,
-  mapUpdate: ProdukMapper.toApiUpdate,
+  mapIndex: toApiReadList,
+  mapShow: toApiRead,
+  mapCreate: toApiCreate,
+  mapUpdate: toApiUpdate,
 });

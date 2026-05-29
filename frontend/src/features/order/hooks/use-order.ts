@@ -4,14 +4,14 @@ import { QueryKey } from "@/lib/core/query-key";
 import { OrderFormValues } from "../contracts/api-schema";
 
 export const useOrder = {
-  index() {
+  useIndex() {
     return useQuery({
       queryKey: QueryKey.order.lists(),
       queryFn: () => OrderService.index(),
     });
   },
 
-  show(id: number) {
+  useShow(id: number) {
     return useQuery({
       queryKey: QueryKey.order.detail(id),   // include id agar cache per-order
       queryFn: () => OrderService.show(id),
@@ -19,10 +19,10 @@ export const useOrder = {
     });
   },
 
-  create() {
+  useCreate() {
     const qc = useQueryClient();
     return useMutation({
-      mutationFn: (data: OrderFormValues.Create) => OrderService.create(data),
+      mutationFn: (data: OrderFormValues['Create']) => OrderService.create(data),
       onSuccess: () => {
         qc.invalidateQueries({ queryKey: QueryKey.order.lists() });
         qc.invalidateQueries({ queryKey: QueryKey.cart.summary() });

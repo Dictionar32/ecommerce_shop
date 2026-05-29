@@ -24,7 +24,7 @@ export function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   const { openCart } = useCartUiStore()
-  const { data: cart } = useCartSummary.get()
+  const { data: cart } = useCartSummary.useGet()
   const { user, isAuthenticated, logout } = useAuthStore()
   const qc = useQueryClient()
   const router = useRouter()

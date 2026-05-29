@@ -1,5 +1,5 @@
-export namespace WishlistForm {
-  export interface Create {
+export type WishlistForm = {
+  Create: {
     produkItemId: number
   }
 }

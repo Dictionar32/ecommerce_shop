@@ -1,36 +1,35 @@
 import { z } from "zod"
-import { Validation } from "@/lib/core/validation"
+import { commonSchemas } from "@/lib/core/validation"
 
 // ================================
 // SCHEMAS
 // ================================
-export namespace AuthApiSchema {
+export const AuthApiSchema = {
+  Login: z.object({
+    email: commonSchemas.email,
+    password: commonSchemas.password,
+  }),
 
-  export const Login = z.object({
-    email: Validation.commonSchemas.email,
-    password: Validation.commonSchemas.password,
-  })
-
-  export const Register = z
+  Register: z
     .object({
       name: z.string().min(2, "Nama minimal 2 karakter"),
-      email: Validation.commonSchemas.email,
-      password: Validation.commonSchemas.password,
+      email: commonSchemas.email,
+      password: commonSchemas.password,
       passwordConfirmation: z.string().min(1, "Konfirmasi password wajib diisi"),
     })
     .refine((d) => d.password === d.passwordConfirmation, {
       message: "Password tidak cocok",
       path: ["passwordConfirmation"],
-    })
+    }),
 
-  export const ForgotPassword = z.object({
-    email: Validation.commonSchemas.email,
-  })
+  ForgotPassword: z.object({
+    email: commonSchemas.email,
+  }),
 
-  export const ResetPassword = z
+  ResetPassword: z
     .object({
-      email: Validation.commonSchemas.email,
-      password: Validation.commonSchemas.password,
+      email: commonSchemas.email,
+      password: commonSchemas.password,
       passwordConfirmation: z.string().min(1, "Konfirmasi password wajib diisi"),
     })
     .refine((d) => d.password === d.passwordConfirmation, {
@@ -42,36 +41,37 @@ export namespace AuthApiSchema {
 // ================================
 // TYPES
 // ================================
-export namespace AuthFormValues {
-  export type Login          = z.infer<typeof AuthApiSchema.Login>
-  export type Register       = z.infer<typeof AuthApiSchema.Register>
-  export type ForgotPassword = z.infer<typeof AuthApiSchema.ForgotPassword>
-  export type ResetPassword  = z.infer<typeof AuthApiSchema.ResetPassword>
+export type AuthFormValues = {
+  Login: z.infer<typeof AuthApiSchema.Login>
+  Register: z.infer<typeof AuthApiSchema.Register>
+  ForgotPassword: z.infer<typeof AuthApiSchema.ForgotPassword>
+  ResetPassword: z.infer<typeof AuthApiSchema.ResetPassword>
+  SocialLogin: { provider: string; access_token: string }
 }
 
 // ================================
 // DEFAULT VALUES
 // ================================
-export namespace AuthDefaultValues {
-  export const login: AuthFormValues.Login = {
+export const AuthDefaultValues = {
+  login: {
     email: "",
     password: "",
-  }
+  } as AuthFormValues['Login'],
 
-  export const register: AuthFormValues.Register = {
+  register: {
     name: "",
     email: "",
     password: "",
     passwordConfirmation: "",
-  }
+  } as AuthFormValues['Register'],
 
-  export const forgotPassword: AuthFormValues.ForgotPassword = {
+  forgotPassword: {
     email: "",
-  }
+  } as AuthFormValues['ForgotPassword'],
 
-  export const resetPassword: AuthFormValues.ResetPassword = {
+  resetPassword: {
     email: "",
     password: "",
     passwordConfirmation: "",
-  }
+  } as AuthFormValues['ResetPassword']
 }

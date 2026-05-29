@@ -21,11 +21,11 @@ export default function KeranjangPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const [promoInput, setPromoInput] = useState("")
 
-  const { data: cart, isLoading } = useCartSummary.get()
-  const updateItemMut = useCartSummary.updateItem()
-  const removeItemMut = useCartSummary.removeItem()
-  const applyPromoMut = useCartSummary.applyPromo()
-  const removePromoMut = useCartSummary.removePromo()
+  const { data: cart, isLoading } = useCartSummary.useGet()
+  const updateItemMut = useCartSummary.useUpdateItem()
+  const removeItemMut = useCartSummary.useRemoveItem()
+  const applyPromoMut = useCartSummary.useApplyPromo()
+  const removePromoMut = useCartSummary.useRemovePromo()
 
   const handleQtyChange = (produkItemId: number, currentQty: number, delta: number) => {
     const newQty = currentQty + delta
@@ -95,7 +95,10 @@ export default function KeranjangPage() {
                 <div key={item.produkItemId} className="card-dark flex gap-4 p-4 hover:border-obsidian-700 transition-colors">
                   <div className="w-20 h-20 shrink-0 bg-obsidian-800 rounded-sm overflow-hidden border border-obsidian-700/40">
                     {item.productImageUrl
-                      ? <img src={item.productImageUrl} alt={item.productName} className="w-full h-full object-cover" />
+                      ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={item.productImageUrl} alt={item.productName} className="w-full h-full object-cover" />
+                      )
                       : <div className="w-full h-full flex items-center justify-center"><Package size={24} className="text-obsidian-600" /></div>
                     }
                   </div>

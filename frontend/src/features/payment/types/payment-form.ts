@@ -1,8 +1,8 @@
-export namespace PaymentForm {
+export type PaymentForm = {
   /**
    * Input untuk membuat payment baru
    */
-  export type Create = {
+  Create: {
     /** Metode pembayaran yang dipilih, wajib */
     metode: string;
 
@@ -13,7 +13,7 @@ export namespace PaymentForm {
     idempotencyKey?: string;
 
     /** Data tambahan payment, default { source: 'mock' } */
-    detail?: Record<string, any>;
+    detail?: Record<string, unknown>;
 
     /** Kode gateway opsional, misal untuk mock atau override */
     gatewayCode?: string;
@@ -25,7 +25,7 @@ export namespace PaymentForm {
   /**
    * Input untuk update payment (misal update transaction_id)
    */
-  export type Update = {
+  Update: {
     transactionId: string;
   };
 }

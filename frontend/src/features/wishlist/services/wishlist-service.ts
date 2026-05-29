@@ -1,7 +1,7 @@
 import { Http } from "@/lib/core/api-client";
-import { WishlistApiContract } from "../contracts/api-contract";
-import { WishlistMapper } from "../mappers/wishlist-mapper";
-import type { WishlistRead } from "../types/wishlist-read";
+import { validateIndex } from "../contracts/api-contract";
+import { toApiReadList, toApiCreate } from "../mappers/wishlist-mapper";
+import type { WishlistIndex } from "../types/wishlist-read";
 import { WishlistFormValues } from "../contracts/api-schema";
 
 interface ApiWrapper<T> {
@@ -10,15 +10,15 @@ interface ApiWrapper<T> {
 
 export const WishlistService = {
   /** GET /wishlist */
-  async index(): Promise<WishlistRead.Index[]> {
+  async index(): Promise<WishlistIndex[]> {
     const res = await Http.get<ApiWrapper<unknown>>("/wishlist");
-    const validated = WishlistApiContract.validateIndex(res.data);
-    return WishlistMapper.toApiReadList(validated);
+    const validated = validateIndex(res.data);
+    return toApiReadList(validated);
   },
 
   /** POST /wishlist — payload: { produk_item_id } via mapper */
-  async create(form: WishlistFormValues.Create): Promise<void> {
-    const payload = WishlistMapper.toApiCreate(form);
+  async create(form: WishlistFormValues['Create']): Promise<void> {
+    const payload = toApiCreate(form);
     await Http.post("/wishlist", payload);
   },
 
