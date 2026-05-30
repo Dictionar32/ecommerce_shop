@@ -45,21 +45,33 @@ export const useAuthStore = create<AuthStore>()(
       // ======================
       // SET FULL AUTH
       // ======================
-      setAuth: (user, token) =>
+      setAuth: (user, token) => {
+        if (typeof document !== 'undefined') {
+          document.cookie = `token=${token}; path=/; max-age=86400; SameSite=Lax`;
+        }
         set({
           user,
           accessToken: token,
           isAuthenticated: !!token,
-        }),
+        });
+      },
 
       // ======================
       // TOKEN ONLY
       // ======================
-      setAccessToken: (token) =>
+      setAccessToken: (token) => {
+        if (typeof document !== 'undefined') {
+          if (token) {
+            document.cookie = `token=${token}; path=/; max-age=86400; SameSite=Lax`;
+          } else {
+            document.cookie = `token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+          }
+        }
         set({
           accessToken: token,
           isAuthenticated: !!token,
-        }),
+        });
+      },
 
       // ======================
       // UPDATE USER PARTIAL
@@ -84,6 +96,7 @@ export const useAuthStore = create<AuthStore>()(
         // 🔥 multi-tab sync trigger
         if (typeof window !== "undefined") {
           localStorage.setItem("auth_logout", Date.now().toString())
+          document.cookie = `token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
         }
 
         set({

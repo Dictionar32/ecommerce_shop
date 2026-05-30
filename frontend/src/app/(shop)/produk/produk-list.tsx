@@ -1,30 +1,22 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, SlidersHorizontal, X, Gem } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { ProdukCard } from "./produk-card";
+
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { ProdukCard } from "@/features/produk/components/produk-card";
-import { ProdukIndex } from "@/features/produk/types/produk-read";
-import { CategoryIndex } from "@/features/category/types/category-read";
+  PageContainer, HeaderArea, IconGem, ContentContainer, ToolbarCard, ToolbarRow, SearchWrapper, SearchInput, SearchClearBtn, IconSearch, IconX,
+  SortDesktopWrapper, StyledSelectTrigger, StyledSelectContent, CatDesktopContainer, CatMobileContainer, CatPillBtn,
+  ActiveFiltersContainer, ActiveFilterChipBtn, ActiveFiltersResetBtn, ResultsCountInfo, EmptySearchContainer, EmptySearchResetBtn, IconSearchLarge, GridContainer, GridItemWrapper,
+  MobileFilterBtn, IconSliders, StyledSheetContent, StyledSheetTitle, SheetBody, SheetCatBtn, SheetSelectTrigger, SheetSelectContent
+} from "./produk.styles"
 
 type SortOption = "default" | "harga_asc" | "harga_desc" | "rating" | "nama_asc" | "nama_desc";
 
 interface ProdukListProps {
-  produk: ProdukIndex[];
-  categories?: CategoryIndex[];
+  initialData: any[];
+  categories: any[];
   wishlistData?: { id: number }[];
 }
 
@@ -35,110 +27,103 @@ function FilterSheet({
   sortBy,
   onSortChange,
 }: {
-  categories: CategoryIndex[];
-  selectedCategory: string;
-  onCategoryChange: (value: string) => void;
+  categories: any[];
+  selectedCategory: any;
+  onCategoryChange: (value: any) => void;
   sortBy: SortOption;
   onSortChange: (value: SortOption) => void;
 }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <button className="lg:hidden flex items-center gap-2 border border-obsidian-700 hover:border-gold-600 text-obsidian-300 hover:text-gold-400 px-3 py-2 rounded-sm text-sm transition-colors">
-          <SlidersHorizontal size={14} />
+        <MobileFilterBtn>
+          <IconSliders size={14} />
           Filter
-        </button>
+        </MobileFilterBtn>
       </SheetTrigger>
-      <SheetContent className="bg-obsidian-950 border-l border-obsidian-800">
+      <StyledSheetContent>
         <SheetHeader>
-          <SheetTitle className="text-obsidian-100 font-heading">Filter & Urutkan</SheetTitle>
+          <StyledSheetTitle>Filter & Urutkan</StyledSheetTitle>
         </SheetHeader>
-        <div className="space-y-6 mt-6">
-          <div className="space-y-3">
-            <h3 className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest">Kategori</h3>
-            <div className="space-y-1">
-              <button
-                className={`w-full text-left px-3 py-2 rounded-sm text-sm transition-colors ${
-                  selectedCategory === "all"
-                    ? "bg-gold-500/15 text-gold-400 border border-gold-800/50"
-                    : "text-obsidian-400 hover:text-obsidian-200 hover:bg-obsidian-900"
-                }`}
+        <SheetBody>
+          <SheetBody.section>
+            <SheetBody.label>Kategori</SheetBody.label>
+            <SheetBody.list>
+              <SheetCatBtn
+                active={selectedCategory === "all" ? "true" : "false"}
                 onClick={() => onCategoryChange("all")}
               >
                 Semua Kategori
-              </button>
+              </SheetCatBtn>
               {categories.map((cat) => (
-                <button
+                <SheetCatBtn
                   key={cat.id}
-                  className={`w-full text-left px-3 py-2 rounded-sm text-sm transition-colors ${
-                    selectedCategory === String(cat.id)
-                      ? "bg-gold-500/15 text-gold-400 border border-gold-800/50"
-                      : "text-obsidian-400 hover:text-obsidian-200 hover:bg-obsidian-900"
-                  }`}
+                  active={selectedCategory === String(cat.id) ? "true" : "false"}
                   onClick={() => onCategoryChange(String(cat.id))}
                 >
                   {cat.nama}
-                </button>
+                </SheetCatBtn>
               ))}
-            </div>
-          </div>
-          <div className="space-y-3">
-            <h3 className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest">Urutkan</h3>
-            <Select value={sortBy} onValueChange={(v) => onSortChange(v as SortOption)}>
-              <SelectTrigger className="bg-obsidian-900 border-obsidian-700 text-obsidian-200">
+            </SheetBody.list>
+          </SheetBody.section>
+          <SheetBody.section>
+            <SheetBody.label>Urutkan</SheetBody.label>
+            <Select value={sortBy} onValueChange={(v: any) => onSortChange(v as SortOption)}>
+              <SheetSelectTrigger>
                 <SelectValue placeholder="Pilih urutan" />
-              </SelectTrigger>
-              <SelectContent className="bg-obsidian-900 border-obsidian-700">
+              </SheetSelectTrigger>
+              <SheetSelectContent>
                 <SelectItem value="default">Terpopuler</SelectItem>
                 <SelectItem value="rating">Rating Tertinggi</SelectItem>
                 <SelectItem value="harga_asc">Harga: Rendah ke Tinggi</SelectItem>
                 <SelectItem value="harga_desc">Harga: Tinggi ke Rendah</SelectItem>
                 <SelectItem value="nama_asc">Nama: A–Z</SelectItem>
                 <SelectItem value="nama_desc">Nama: Z–A</SelectItem>
-              </SelectContent>
+              </SheetSelectContent>
             </Select>
-          </div>
-        </div>
-      </SheetContent>
+          </SheetBody.section>
+        </SheetBody>
+      </StyledSheetContent>
     </Sheet>
   );
 }
 
-export function ProdukList({ produk, categories = [], wishlistData = [] }: ProdukListProps) {
+export function ProdukList({ initialData, categories = [], wishlistData = [] }: ProdukListProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<any>("all");
   const [sortBy, setSortBy] = useState<SortOption>("default");
+  const [products] = useState<any[]>(initialData);
 
   const wishlistProductIds = useMemo(() => {
     if (!wishlistData) return new Set<number>();
     return new Set(wishlistData.map((item) => item.id));
   }, [wishlistData]);
 
-  const filteredProducts = useMemo((): ProdukIndex[] => {
-    let result = [...produk];
+  const filteredProducts = useMemo((): any[] => {
+    let result = [...(products || [])];
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
       result = result.filter(
         (p) =>
-          p.nama.toLowerCase().includes(query) ||
-          p.description.toLowerCase().includes(query) ||
-          p.categoryNama.toLowerCase().includes(query)
+          p.name?.toLowerCase().includes(query) ||
+          p.description?.toLowerCase().includes(query) ||
+          p.category_name?.toLowerCase().includes(query)
       );
     }
     if (selectedCategory !== "all") {
       const catId = Number(selectedCategory);
-      result = result.filter((p) => p.categoryId === catId);
+      result = result.filter((p) => p.category_id === catId);
     }
     switch (sortBy) {
-      case "harga_asc":  result.sort((a, b) => a.harga - b.harga); break;
-      case "harga_desc": result.sort((a, b) => b.harga - a.harga); break;
+      case "harga_asc":  result.sort((a, b) => a.price - b.price); break;
+      case "harga_desc": result.sort((a, b) => b.price - a.price); break;
       case "rating":     result.sort((a, b) => b.rating - a.rating); break;
-      case "nama_asc":   result.sort((a, b) => a.nama.localeCompare(b.nama)); break;
-      case "nama_desc":  result.sort((a, b) => b.nama.localeCompare(a.nama)); break;
-      default:           result.sort((a, b) => b.reviewCount - a.reviewCount);
+      case "nama_asc":   result.sort((a, b) => (a.name || '').localeCompare(b.name || '')); break;
+      case "nama_desc":  result.sort((a, b) => (b.name || '').localeCompare(a.name || '')); break;
+      default:           result.sort((a, b) => (b.review_count ?? 0) - (a.review_count ?? 0));
     }
     return result;
-  }, [produk, searchQuery, selectedCategory, sortBy]);
+  }, [products, searchQuery, selectedCategory, sortBy]);
 
   const clearFilters = () => {
     setSearchQuery("");
@@ -149,59 +134,55 @@ export function ProdukList({ produk, categories = [], wishlistData = [] }: Produ
   const hasActiveFilters = !!searchQuery.trim() || selectedCategory !== "all" || sortBy !== "default";
 
   return (
-    <div className="min-h-screen animate-[fadeIn_0.4s_ease]">
+    <PageContainer>
       {/* Page Header */}
-      <div className="border-b border-obsidian-800/60 bg-obsidian-950/80">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 py-10">
-          <div className="flex items-center gap-2 mb-2">
-            <Gem size={12} className="text-gold-500" />
-            <span className="text-xs font-semibold text-gold-500 tracking-widest uppercase">Koleksi Premium</span>
-          </div>
-          <h1 className="font-heading text-4xl text-obsidian-50">Semua Produk</h1>
-          <p className="text-obsidian-500 text-sm mt-1">{produk.length} produk pilihan tersedia</p>
-        </div>
-      </div>
+      <HeaderArea>
+        <HeaderArea.container>
+          <HeaderArea.badgeRow>
+            <IconGem size={12} />
+            <HeaderArea.badgeText>Koleksi Premium</HeaderArea.badgeText>
+          </HeaderArea.badgeRow>
+          <HeaderArea.title>Semua Produk</HeaderArea.title>
+          <HeaderArea.subtitle>{products.length} produk pilihan tersedia</HeaderArea.subtitle>
+        </HeaderArea.container>
+      </HeaderArea>
 
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-8">
+      <ContentContainer>
         {/* Toolbar */}
-        <div className="card-dark p-4 mb-6">
-          <div className="flex flex-col md:flex-row gap-3">
+        <ToolbarCard>
+          <ToolbarRow>
             {/* Search */}
-            <div className="relative flex-1">
-              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-obsidian-500 pointer-events-none" />
-              <input
+            <SearchWrapper>
+              <IconSearch size={14} />
+              <SearchInput
                 type="search"
                 placeholder="Cari produk..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="input-dark pl-9 pr-9 py-2.5"
+                onChange={(e: any) => setSearchQuery(e.target.value)}
               />
               {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-obsidian-500 hover:text-obsidian-300 transition-colors"
-                >
-                  <X size={13} />
-                </button>
+                <SearchClearBtn onClick={() => setSearchQuery("")}>
+                  <IconX size={13} />
+                </SearchClearBtn>
               )}
-            </div>
+            </SearchWrapper>
 
             {/* Sort — desktop */}
-            <div className="hidden md:flex items-center gap-3">
-              <Select value={sortBy} onValueChange={(val) => setSortBy(val as SortOption)}>
-                <SelectTrigger className="w-52 bg-obsidian-900 border-obsidian-700 text-obsidian-200">
+            <SortDesktopWrapper>
+              <Select value={sortBy} onValueChange={(val: any) => setSortBy(val as SortOption)}>
+                <StyledSelectTrigger>
                   <SelectValue placeholder="Urutkan" />
-                </SelectTrigger>
-                <SelectContent className="bg-obsidian-900 border-obsidian-700">
+                </StyledSelectTrigger>
+                <StyledSelectContent>
                   <SelectItem value="default">Terpopuler</SelectItem>
                   <SelectItem value="rating">Rating Tertinggi</SelectItem>
                   <SelectItem value="harga_asc">Harga: Rendah ke Tinggi</SelectItem>
                   <SelectItem value="harga_desc">Harga: Tinggi ke Rendah</SelectItem>
                   <SelectItem value="nama_asc">Nama: A–Z</SelectItem>
                   <SelectItem value="nama_desc">Nama: Z–A</SelectItem>
-                </SelectContent>
+                </StyledSelectContent>
               </Select>
-            </div>
+            </SortDesktopWrapper>
 
             {/* Mobile filter sheet */}
             <FilterSheet
@@ -211,95 +192,86 @@ export function ProdukList({ produk, categories = [], wishlistData = [] }: Produ
               sortBy={sortBy}
               onSortChange={setSortBy}
             />
-          </div>
+          </ToolbarRow>
 
           {/* Category pills */}
           {categories.length > 0 && (
             <>
               {/* Desktop */}
-              <div className="hidden md:flex flex-wrap gap-2 mt-4 pt-4 border-t border-obsidian-800">
+              <CatDesktopContainer>
                 {[{ id: "all", nama: "Semua" }, ...categories.map(c => ({ id: String(c.id), nama: c.nama }))].map((cat) => (
-                  <button
+                  <CatPillBtn
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-3.5 py-1.5 text-xs rounded-sm border transition-all duration-150 ${
-                      selectedCategory === cat.id
-                        ? "bg-gold-500/15 border-gold-700/60 text-gold-400 font-medium"
-                        : "border-obsidian-700 text-obsidian-400 hover:border-obsidian-600 hover:text-obsidian-200"
-                    }`}
+                    active={selectedCategory === cat.id ? "true" : "false"}
                   >
                     {cat.nama}
-                  </button>
+                  </CatPillBtn>
                 ))}
-              </div>
+              </CatDesktopContainer>
               {/* Mobile horizontal scroll */}
-              <div className="md:hidden flex gap-2 mt-4 pt-4 border-t border-obsidian-800 overflow-x-auto pb-1 -mx-4 px-4">
+              <CatMobileContainer>
                 {[{ id: "all", nama: "Semua" }, ...categories.map(c => ({ id: String(c.id), nama: c.nama }))].map((cat) => (
-                  <button
+                  <CatPillBtn
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`shrink-0 px-3.5 py-1.5 text-xs rounded-sm border transition-all duration-150 ${
-                      selectedCategory === cat.id
-                        ? "bg-gold-500/15 border-gold-700/60 text-gold-400 font-medium"
-                        : "border-obsidian-700 text-obsidian-400 hover:text-obsidian-200"
-                    }`}
+                    active={selectedCategory === cat.id ? "true" : "false"}
                   >
                     {cat.nama}
-                  </button>
+                  </CatPillBtn>
                 ))}
-              </div>
+              </CatMobileContainer>
             </>
           )}
 
           {/* Active filter chips */}
           {hasActiveFilters && (
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-obsidian-800 flex-wrap">
-              <span className="text-xs text-obsidian-500">Filter aktif:</span>
+            <ActiveFiltersContainer>
+              <ActiveFiltersContainer.label>Filter aktif:</ActiveFiltersContainer.label>
               {searchQuery && (
-                <span className="inline-flex items-center gap-1 bg-gold-500/10 border border-gold-800/50 text-gold-400 text-xs px-2 py-0.5 rounded-sm">
+                <ActiveFiltersContainer.chip>
                   &ldquo;{searchQuery}&rdquo;
-                  <button onClick={() => setSearchQuery("")} className="hover:text-gold-300"><X size={10} /></button>
-                </span>
+                  <ActiveFilterChipBtn onClick={() => setSearchQuery("")}><IconX size={10} /></ActiveFilterChipBtn>
+                </ActiveFiltersContainer.chip>
               )}
               {selectedCategory !== "all" && (
-                <span className="inline-flex items-center gap-1 bg-gold-500/10 border border-gold-800/50 text-gold-400 text-xs px-2 py-0.5 rounded-sm">
-                  {categories.find((c) => c.id === Number(selectedCategory))?.nama}
-                  <button onClick={() => setSelectedCategory("all")} className="hover:text-gold-300"><X size={10} /></button>
-                </span>
+                <ActiveFiltersContainer.chip>
+                  {categories.find((c: any) => c.id === Number(selectedCategory))?.nama}
+                  <ActiveFilterChipBtn onClick={() => setSelectedCategory("all")}><IconX size={10} /></ActiveFilterChipBtn>
+                </ActiveFiltersContainer.chip>
               )}
-              <button onClick={clearFilters} className="text-xs text-obsidian-500 hover:text-gold-400 underline ml-auto transition-colors">
+              <ActiveFiltersResetBtn onClick={clearFilters}>
                 Reset semua
-              </button>
-            </div>
+              </ActiveFiltersResetBtn>
+            </ActiveFiltersContainer>
           )}
-        </div>
+        </ToolbarCard>
 
         {/* Results count */}
-        <p className="text-sm text-obsidian-500 mb-5">
-          Menampilkan <span className="text-obsidian-200 font-medium">{filteredProducts.length}</span> produk
-        </p>
+        <ResultsCountInfo>
+          Menampilkan <ResultsCountInfo.count>{filteredProducts.length}</ResultsCountInfo.count> produk
+        </ResultsCountInfo>
 
         {filteredProducts.length === 0 ? (
-          <div className="card-dark text-center py-24">
-            <Search size={40} className="text-obsidian-700 mx-auto mb-4" />
-            <h3 className="font-heading text-xl text-obsidian-300 mb-2">Produk Tidak Ditemukan</h3>
-            <p className="text-obsidian-500 text-sm mb-6">Coba kata kunci lain atau ubah filter</p>
-            <button onClick={clearFilters} className="btn-gold">Lihat Semua Produk</button>
-          </div>
+          <EmptySearchContainer>
+            <IconSearchLarge size={40} />
+            <EmptySearchContainer.title>Produk Tidak Ditemukan</EmptySearchContainer.title>
+            <EmptySearchContainer.desc>Coba kata kunci lain atau ubah filter</EmptySearchContainer.desc>
+            <EmptySearchResetBtn onClick={clearFilters}>Lihat Semua Produk</EmptySearchResetBtn>
+          </EmptySearchContainer>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
+          <GridContainer>
             {filteredProducts.map((item, i) => (
-              <div
+              <GridItemWrapper
                 key={item.id}
-                className="animate-[slideUp_0.4s_ease_both]"
                 style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}
               >
                 <ProdukCard item={item} isInWishlist={wishlistProductIds.has(item.id)} />
-              </div>
+              </GridItemWrapper>
             ))}
-          </div>
+          </GridContainer>
         )}
-      </div>
-    </div>
+      </ContentContainer>
+    </PageContainer>
   );
 }

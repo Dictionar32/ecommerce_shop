@@ -5,7 +5,9 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import {
+  ErrorContainer, ErrorContent, ErrorTitle, ErrorMessage, ErrorDigest, TryAgainBtn
+} from './error.styles'
 
 export default function Error({
   error,
@@ -20,21 +22,21 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="flex min-h-100 flex-col items-center justify-center gap-4 p-8 text-center">
-      <div className="space-y-2">
-        <h2 className="text-2xl font-semibold">Something went wrong!</h2>
-        <p className="text-muted-foreground">
+    <ErrorContainer>
+      <ErrorContent>
+        <ErrorTitle>Something went wrong!</ErrorTitle>
+        <ErrorMessage>
           {error.message || 'An unexpected error occurred'}
-        </p>
+        </ErrorMessage>
         {error.digest && (
-          <p className="text-sm text-muted-foreground">
+          <ErrorDigest>
             Error ID: {error.digest}
-          </p>
+          </ErrorDigest>
         )}
-      </div>
-      <Button onClick={() => reset()}>
+      </ErrorContent>
+      <TryAgainBtn onClick={() => reset()}>
         Try again
-      </Button>
-    </div>
+      </TryAgainBtn>
+    </ErrorContainer>
   )
 }

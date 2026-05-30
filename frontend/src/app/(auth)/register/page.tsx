@@ -5,30 +5,62 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { UserPlus } from "lucide-react"
+import { z } from "zod"
 
 import {
   Form, FormField, FormItem,
-  FormLabel, FormControl, FormMessage,
+  FormControl, FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { commonSchemas } from "@/lib/core/validation"
+import {
+  AuthSplitContainer, AuthLeftPanel, AuthLeftBg1, AuthLeftBg2, AuthLeftBg3, AuthLeftContent,
+  AuthLogo, AuthLogoHighlight, AuthDivider, AuthQuote, AuthQuoteSubtitle,
+  StatsGrid, StatNum, StatLabel,
+  AuthRightPanel, AuthRightInner, AuthMobileLogo, AuthHeader, AuthTitle, AuthSubtitle,
+  OAuthBtn, OrDividerBox, OrDividerLine, OrDividerText,
+  FormLabelText, SubmitBtn, SubmitSpinner, TermsText, TermsHighlight, BottomText, BottomLink
+} from "../auth.styles"
 
-import { AuthApiSchema, AuthDefaultValues, type AuthFormValues } from "@/features/auth/contracts/api-schema"
-import { useRegister } from "@/features/auth/hooks/use-auth"
-import { AuthService } from "@/features/auth/services/auth-service"
+const RegisterSchema = z.object({
+  name: z.string().min(2, "Nama minimal 2 karakter"),
+  email: commonSchemas.email,
+  password: commonSchemas.password,
+  passwordConfirmation: z.string().min(1, "Konfirmasi password wajib diisi"),
+}).refine((d) => d.password === d.passwordConfirmation, {
+  message: "Password tidak cocok",
+  path: ["passwordConfirmation"],
+})
+
+type RegisterFormValues = z.infer<typeof RegisterSchema>
+
+const DefaultValues: RegisterFormValues = {
+  name: "",
+  email: "",
+  password: "",
+  passwordConfirmation: "",
+}
+
+import { useRegisterPost } from "@/api/hooks"
 
 export default function RegisterPage() {
-  const registerMutation = useRegister()
+  const registerMutation = useRegisterPost()
 
-  const form = useForm<AuthFormValues['Register']>({
-    resolver: zodResolver(AuthApiSchema.Register),
-    defaultValues: AuthDefaultValues.register,
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(RegisterSchema),
+    defaultValues: DefaultValues,
   })
 
-  const onSubmit = async (values: AuthFormValues['Register']) => {
+  const onSubmit = async (values: RegisterFormValues) => {
     try {
-      await registerMutation.mutateAsync(values)
+      await registerMutation.mutateAsync({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        password_confirmation: values.passwordConfirmation
+      } as any)
       toast.success("Akun dibuat! Selamat datang.")
+      window.location.href = "/"
     } catch (error) {
       const err = error as { response?: { data?: { message?: string } } };
       toast.error(err?.response?.data?.message ?? "Gagal mendaftar")
@@ -36,57 +68,51 @@ export default function RegisterPage() {
   }
 
   const handleOAuth = (provider: string) => {
-    window.location.href = AuthService.getOAuthRedirectUrl(provider)
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/oauth/${provider}/redirect`
   }
 
   return (
-    <div className="min-h-screen flex">
+    <AuthSplitContainer>
 
       {/* Left Panel */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-br from-obsidian-900 via-obsidian-950 to-black" />
-        <div className="absolute inset-0 opacity-10"
-          style={{ backgroundImage: "linear-gradient(#d4a843 1px, transparent 1px), linear-gradient(90deg, #d4a843 1px, transparent 1px)", backgroundSize: "60px 60px" }}
-        />
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gold-500/10 rounded-full blur-3xl" />
-        <div className="relative flex flex-col items-center justify-center w-full px-16 text-center">
-          <Link href="/" className="font-heading text-4xl font-bold mb-2">
-            KUN<span className="text-gold-500">PULAN</span>
-          </Link>
-          <div className="h-px w-24 bg-gold-500/40 my-6" />
-          <p className="text-obsidian-300 text-lg font-heading italic">
+      <AuthLeftPanel>
+        <AuthLeftBg1 />
+        <AuthLeftBg2 />
+        <AuthLeftBg3 />
+        <AuthLeftContent>
+          <AuthLogo href="/">
+            KUN<AuthLogoHighlight>PULAN</AuthLogoHighlight>
+          </AuthLogo>
+          <AuthDivider />
+          <AuthQuote>
             &ldquo;Bergabunglah dengan<br />komunitas premium kami.&rdquo;
-          </p>
-          <div className="mt-8 grid grid-cols-3 gap-4 text-center">
+          </AuthQuote>
+          <StatsGrid>
             {[["10K+", "Produk"], ["50K+", "Member"], ["4.9", "Rating"]].map(([num, label]) => (
               <div key={label}>
-                <p className="font-heading text-2xl text-gold-400">{num}</p>
-                <p className="text-obsidian-600 text-xs uppercase tracking-widest mt-0.5">{label}</p>
+                <StatNum>{num}</StatNum>
+                <StatLabel>{label}</StatLabel>
               </div>
             ))}
-          </div>
-        </div>
-      </div>
+          </StatsGrid>
+        </AuthLeftContent>
+      </AuthLeftPanel>
 
       {/* Right Panel */}
-      <div className="flex-1 flex items-center justify-center px-6 bg-obsidian-950">
-        <div className="w-full max-w-md animate-fade-in">
+      <AuthRightPanel>
+        <AuthRightInner>
 
-          <Link href="/" className="lg:hidden block font-heading text-3xl font-bold text-center mb-8">
-            KUN<span className="text-gold-500">PULAN</span>
-          </Link>
+          <AuthMobileLogo href="/">
+            KUN<AuthLogoHighlight>PULAN</AuthLogoHighlight>
+          </AuthMobileLogo>
 
-          <div className="mb-8">
-            <h1 className="font-heading text-3xl text-obsidian-50">Buat Akun</h1>
-            <p className="text-obsidian-500 text-sm mt-1">Mulai belanja premium hari ini</p>
-          </div>
+          <AuthHeader>
+            <AuthTitle>Buat Akun</AuthTitle>
+            <AuthSubtitle>Mulai belanja premium hari ini</AuthSubtitle>
+          </AuthHeader>
 
           {/* OAuth */}
-          <button
-            type="button"
-            onClick={() => handleOAuth("google")}
-            className="w-full flex items-center justify-center gap-3 bg-obsidian-900 hover:bg-obsidian-800 border border-obsidian-700 text-obsidian-200 py-3 rounded-sm transition-colors text-sm mb-6"
-          >
+          <OAuthBtn type="button" onClick={() => handleOAuth("google")}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -94,21 +120,21 @@ export default function RegisterPage() {
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
             </svg>
             Daftar dengan Google
-          </button>
+          </OAuthBtn>
 
-          <div className="flex items-center gap-4 mb-6">
-            <div className="flex-1 h-px bg-obsidian-800" />
-            <span className="text-obsidian-600 text-xs tracking-widest uppercase">atau</span>
-            <div className="flex-1 h-px bg-obsidian-800" />
-          </div>
+          <OrDividerBox>
+            <OrDividerLine />
+            <OrDividerText>atau</OrDividerText>
+            <OrDividerLine />
+          </OrDividerBox>
 
-          {/* Form — boilerplate tetap sama */}
+          {/* Form */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
               <FormField name="name" control={form.control} render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-obsidian-400 text-xs tracking-widest uppercase">Nama Lengkap</FormLabel>
+                  <FormLabelText as="div">Nama Lengkap</FormLabelText>
                   <FormControl>
                     <Input placeholder="Nama kamu" className="input-dark" {...field} />
                   </FormControl>
@@ -118,7 +144,7 @@ export default function RegisterPage() {
 
               <FormField name="email" control={form.control} render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-obsidian-400 text-xs tracking-widest uppercase">Email</FormLabel>
+                  <FormLabelText as="div">Email</FormLabelText>
                   <FormControl>
                     <Input type="email" placeholder="nama@email.com" className="input-dark" {...field} />
                   </FormControl>
@@ -128,7 +154,7 @@ export default function RegisterPage() {
 
               <FormField name="password" control={form.control} render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-obsidian-400 text-xs tracking-widest uppercase">Password</FormLabel>
+                  <FormLabelText as="div">Password</FormLabelText>
                   <FormControl>
                     <Input type="password" placeholder="Min. 6 karakter" className="input-dark" {...field} />
                   </FormControl>
@@ -138,7 +164,7 @@ export default function RegisterPage() {
 
               <FormField name="passwordConfirmation" control={form.control} render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-obsidian-400 text-xs tracking-widest uppercase">Konfirmasi Password</FormLabel>
+                  <FormLabelText as="div">Konfirmasi Password</FormLabelText>
                   <FormControl>
                     <Input type="password" placeholder="Ulangi password" className="input-dark" {...field} />
                   </FormControl>
@@ -146,38 +172,34 @@ export default function RegisterPage() {
                 </FormItem>
               )} />
 
-              <p className="text-obsidian-600 text-xs">
+              <TermsText>
                 Dengan mendaftar, Anda menyetujui{" "}
-                <span className="text-gold-600">Syarat & Ketentuan</span> kami.
-              </p>
+                <TermsHighlight>Syarat & Ketentuan</TermsHighlight> kami.
+              </TermsText>
 
-              <Button
-                type="submit"
-                disabled={registerMutation.isPending}
-                className="btn-gold w-full flex items-center justify-center gap-2"
-              >
+              <SubmitBtn type="submit" disabled={registerMutation.isPending}>
                 {registerMutation.isPending ? (
-                  <div className="w-4 h-4 border-2 border-obsidian-900/30 border-t-obsidian-900 rounded-full animate-spin" />
+                  <SubmitSpinner />
                 ) : (
                   <>
                     <UserPlus size={16} />
                     Buat Akun
                   </>
                 )}
-              </Button>
+              </SubmitBtn>
 
             </form>
           </Form>
 
-          <p className="text-center text-obsidian-500 text-sm mt-6">
+          <BottomText>
             Sudah punya akun?{" "}
-            <Link href="/login" className="text-gold-400 hover:text-gold-300 transition-colors">
+            <BottomLink href="/login">
               Masuk
-            </Link>
-          </p>
+            </BottomLink>
+          </BottomText>
 
-        </div>
-      </div>
-    </div>
+        </AuthRightInner>
+      </AuthRightPanel>
+    </AuthSplitContainer>
   )
 }

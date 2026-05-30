@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { AlertCircle, RefreshCw } from "lucide-react";
+import { ErrorStateContainer, ErrorStateIconBox, ErrorStateTitle, ErrorStateDesc, ErrorStateActionBtn } from "./shared.styles";
 
 interface ErrorStateProps {
   title?: string;
@@ -17,24 +17,21 @@ export function ErrorState({
   onAction,
 }: ErrorStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      <div className="text-red-500 mb-4">
-        <AlertCircle className="w-16 h-16 mx-auto" />
-      </div>
-      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+    <ErrorStateContainer>
+      <ErrorStateIconBox>
+        <AlertCircle size={64} />
+      </ErrorStateIconBox>
+      <ErrorStateTitle>
         {title}
-      </h3>
-      <p className="text-gray-500 mb-6 max-w-sm">{description}</p>
+      </ErrorStateTitle>
+      <ErrorStateDesc>{description}</ErrorStateDesc>
       {onAction && (
-        <Button
-          onClick={onAction}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
+        <ErrorStateActionBtn onClick={onAction}>
           <RefreshCw className="w-4 h-4 mr-2" />
           {actionLabel}
-        </Button>
+        </ErrorStateActionBtn>
       )}
-    </div>
+    </ErrorStateContainer>
   );
 }
 

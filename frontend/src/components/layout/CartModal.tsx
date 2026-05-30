@@ -3,29 +3,52 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { X, Minus, Plus, Trash2, Tag, ShoppingBag, ArrowRight } from 'lucide-react';
-import { useCartSummary } from '@/features/cart/hooks/use-cart-summary';
 import { useCartUiStore } from '@/lib/stores/cart-ui-store';
 import { formatPrice } from '@/lib/utils-frontend';
 import { toast } from 'sonner';
+import {
+  useKeranjangGet,
+  useCartPatchItemsProdukItemId,
+  useCartDeleteItemsProdukItemId,
+  useCartPostPromo,
+  useCartDeletePromo
+} from '@/api/hooks';
+import {
+  Overlay, Backdrop, Drawer, Header, HeaderTitleArea, Title, CartCountBadge, CloseButton, ContentArea, SkeletonRow, SkeletonImage, SkeletonInfo,
+  SkeletonText, SkeletonTextShort, EmptyState, EmptyStateIcon, EmptyStateTitle, EmptyStateSub,
+  StartShoppingBtn, CartItemRow, CartItemImageContainer, CartItemImagePlaceholder,
+  CartItemInfo, CartItemName, CartItemPrice, CartItemActions, QtyControls,
+  QtyBtn, QtyDisplay, SubtotalArea, SubtotalText, RemoveBtn, Footer,
+  AppliedPromoContainer, AppliedPromoInfo, StyledTagIcon, AppliedPromoCode, AppliedPromoDiscount,
+  RemovePromoBtn, PromoInputContainer, PromoInput, PromoApplyBtn, TotalsContainer,
+  TotalRow, DiscountRow, Divider, GrandTotalRow, GrandTotalValue, CheckoutLink,
+  StyledShoppingBag
+} from './cart-modal.styles';
 
 export default function CartModal() {
   const { isOpen, closeCart } = useCartUiStore();
-  const { data: cart, isLoading } = useCartSummary.useGet();
-
-  const updateItemMut = useCartSummary.useUpdateItem();
-  const removeItemMut = useCartSummary.useRemoveItem();
-  const applyPromoMut = useCartSummary.useApplyPromo();
-  const removePromoMut = useCartSummary.useRemovePromo();
+  
+  // Use generated hooks directly
+  const { data: res, isLoading } = useKeranjangGet();
+  const cart: any = res?.data;
+  
+  const updateItemMut = useCartPatchItemsProdukItemId();
+  const removeItemMut = useCartDeleteItemsProdukItemId();
+  const applyPromoMut = useCartPostPromo();
+  const removePromoMut = useCartDeletePromo();
 
   const [promoInput, setPromoInput] = useState('');
 
   if (!isOpen) return null;
 
-  const cartCount = cart?.items?.reduce((s, i) => s + i.qty, 0) ?? 0;
+  // Unwrap items manually if it's paginated or a resource collection
+  const rawItems = cart?.items;
+  const items: any[] = Array.isArray(rawItems) ? rawItems : (rawItems?.data ?? []);
+  const cartCount = items.reduce((s: number, i: any) => s + i.qty, 0);
 
   const handleUpdateQty = async (produkItemId: number, newQty: number) => {
     if (newQty < 1) {
-      removeItemMut.mutate(produkItemId, {
+      removeItemMut.mutate({ produkItemId }, {
         onError: () => toast.error('Gagal hapus item'),
       });
       return;
@@ -37,7 +60,7 @@ export default function CartModal() {
   };
 
   const handleRemove = (produkItemId: number) => {
-    removeItemMut.mutate(produkItemId, {
+    removeItemMut.mutate({ produkItemId }, {
       onSuccess: () => toast.success('Item dihapus'),
       onError: () => toast.error('Gagal hapus'),
     });
@@ -45,210 +68,185 @@ export default function CartModal() {
 
   const handleApplyPromo = () => {
     if (!promoInput.trim()) return;
-    applyPromoMut.mutate(promoInput.trim(), {
+    applyPromoMut.mutate({ code: promoInput.trim() }, {
       onSuccess: () => {
         toast.success('Kode promo diterapkan!');
         setPromoInput('');
       },
-      onError: (e: unknown) => {
-        const msg = (e as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      onError: (e: any) => {
+        const msg = e?.response?.data?.message || e?.message;
         toast.error(msg || 'Kode promo tidak valid');
       },
     });
   };
 
   const handleRemovePromo = () => {
-    removePromoMut.mutate(undefined, {
+    removePromoMut.mutate({}, {
       onSuccess: () => toast.success('Promo dihapus'),
       onError: () => toast.error('Gagal hapus promo'),
     });
   };
 
   return (
-    <div className="fixed inset-0 z-[100]">
+    <Overlay>
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 modal-backdrop" onClick={closeCart} />
+      <Backdrop onClick={closeCart} />
 
       {/* Drawer */}
-      <div
-        className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-obsidian-950 border-l border-obsidian-800 flex flex-col shadow-2xl"
-        style={{ animation: 'slideInRight 0.3s ease forwards' }}
-      >
+      <Drawer style={{ animation: 'slideInRight 0.3s ease forwards' }}>
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-obsidian-800">
-          <div className="flex items-center gap-3">
-            <ShoppingBag size={20} className="text-gold-500" />
-            <h2 className="font-heading text-xl text-obsidian-50">Keranjang</h2>
+        <Header>
+          <HeaderTitleArea>
+            <StyledShoppingBag>
+              <ShoppingBag size={20} />
+            </StyledShoppingBag>
+            <Title>Keranjang</Title>
             {cartCount > 0 && (
-              <span className="text-xs px-2 py-0.5 rounded-sm bg-gold-500/20 text-gold-400 border border-gold-800/50">
+              <CartCountBadge>
                 {cartCount} item
-              </span>
+              </CartCountBadge>
             )}
-          </div>
-          <button
-            onClick={closeCart}
-            className="p-1.5 text-obsidian-400 hover:text-obsidian-200 transition-colors"
-          >
+          </HeaderTitleArea>
+          <CloseButton onClick={closeCart}>
             <X size={20} />
-          </button>
-        </div>
+          </CloseButton>
+        </Header>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+        <ContentArea>
           {isLoading ? (
             Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="flex gap-3 animate-pulse">
-                <div className="w-16 h-16 shrink-0 bg-obsidian-800 rounded-sm" />
-                <div className="flex-1 space-y-2 pt-1">
-                  <div className="h-3 bg-obsidian-800 rounded w-3/4" />
-                  <div className="h-3 bg-obsidian-800 rounded w-1/2" />
-                </div>
-              </div>
+              <SkeletonRow key={i}>
+                <SkeletonImage />
+                <SkeletonInfo>
+                  <SkeletonText />
+                  <SkeletonTextShort />
+                </SkeletonInfo>
+              </SkeletonRow>
             ))
-          ) : !cart || !cart.items?.length ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <ShoppingBag size={48} className="text-obsidian-700 mb-4" />
-              <p className="text-obsidian-400 font-heading text-lg">Keranjang Kosong</p>
-              <p className="text-obsidian-600 text-sm mt-1">Tambahkan produk untuk memulai belanja</p>
-              <button onClick={closeCart} className="mt-6 px-5 py-2.5 text-xs bg-gold-500 text-obsidian-950 font-semibold hover:bg-gold-400 transition-colors rounded-sm">
+          ) : !cart || items.length === 0 ? (
+            <EmptyState>
+              <EmptyStateIcon>
+                <ShoppingBag size={48} />
+              </EmptyStateIcon>
+              <EmptyStateTitle>Keranjang Kosong</EmptyStateTitle>
+              <EmptyStateSub>Tambahkan produk untuk memulai belanja</EmptyStateSub>
+              <StartShoppingBtn onClick={closeCart}>
                 Mulai Belanja
-              </button>
-            </div>
+              </StartShoppingBtn>
+            </EmptyState>
           ) : (
-            cart.items.map((item) => (
-              <div
-                key={item.produkItemId}
-                className="flex gap-4 py-3 border-b border-obsidian-800/60 last:border-0"
-              >
+            items.map((item: any) => (
+              <CartItemRow key={item.produk_item_id}>
                 {/* Image */}
-                <div className="w-16 h-16 shrink-0 bg-obsidian-800 rounded-sm overflow-hidden">
-                  {item.productImageUrl ? (
+                <CartItemImageContainer>
+                  {item.produk?.image_url ? (
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img
-                      src={item.productImageUrl}
-                      alt={item.productName}
-                      className="w-full h-full object-cover"
+                      src={item.produk.image_url}
+                      alt={item.produk?.nama}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <ShoppingBag size={20} className="text-obsidian-600" />
-                    </div>
+                    <CartItemImagePlaceholder>
+                      <ShoppingBag size={20} />
+                    </CartItemImagePlaceholder>
                   )}
-                </div>
+                </CartItemImageContainer>
 
                 {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <p className="text-obsidian-100 text-sm font-medium truncate">{item.productName}</p>
-                  <p className="text-gold-500 text-sm mt-0.5">{formatPrice(item.price)}</p>
+                <CartItemInfo>
+                  <CartItemName>{item.produk?.nama}</CartItemName>
+                  <CartItemPrice>{formatPrice(item.harga)}</CartItemPrice>
 
-                  <div className="flex items-center justify-between mt-2">
-                    {/* Qty controls */}
-                    <div className="flex items-center border border-obsidian-700 rounded-sm">
-                      <button
-                        onClick={() => handleUpdateQty(item.produkItemId, item.qty - 1)}
-                        className="px-2 py-1 text-obsidian-400 hover:text-gold-400 transition-colors"
-                      >
+                  <CartItemActions>
+                    <QtyControls>
+                      <QtyBtn onClick={() => handleUpdateQty(item.produk_item_id, item.qty - 1)}>
                         <Minus size={12} />
-                      </button>
-                      <span className="px-3 text-sm text-obsidian-100 min-w-8 text-center">{item.qty}</span>
-                      <button
-                        onClick={() => handleUpdateQty(item.produkItemId, item.qty + 1)}
-                        className="px-2 py-1 text-obsidian-400 hover:text-gold-400 transition-colors"
-                      >
+                      </QtyBtn>
+                      <QtyDisplay>{item.qty}</QtyDisplay>
+                      <QtyBtn onClick={() => handleUpdateQty(item.produk_item_id, item.qty + 1)}>
                         <Plus size={12} />
-                      </button>
-                    </div>
+                      </QtyBtn>
+                    </QtyControls>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-obsidian-200 text-sm font-medium">{formatPrice(item.price * item.qty)}</span>
-                      <button
-                        onClick={() => handleRemove(item.produkItemId)}
-                        className="text-obsidian-600 hover:text-red-400 transition-colors p-1"
-                      >
+                    <SubtotalArea>
+                      <SubtotalText>{formatPrice(item.subtotal)}</SubtotalText>
+                      <RemoveBtn onClick={() => handleRemove(item.produk_item_id)}>
                         <Trash2 size={13} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                      </RemoveBtn>
+                    </SubtotalArea>
+                  </CartItemActions>
+                </CartItemInfo>
+              </CartItemRow>
             ))
           )}
-        </div>
+        </ContentArea>
 
         {/* Footer */}
-        {cart && cart.items?.length > 0 && (
-          <div className="border-t border-obsidian-800 px-6 py-5 space-y-4">
+        {cart && items.length > 0 && (
+          <Footer>
             {/* Promo code */}
-            {cart.promotionCode ? (
-              <div className="flex items-center justify-between bg-gold-500/10 border border-gold-800/50 rounded-sm px-3 py-2">
-                <div className="flex items-center gap-2">
-                  <Tag size={14} className="text-gold-500" />
-                  <span className="text-gold-400 text-sm font-medium">{cart.promotionCode}</span>
-                  {cart.promotionDiscount && (
-                    <span className="text-gold-600 text-xs">-{formatPrice(cart.promotionDiscount)}</span>
+            {cart.promotion?.code ? (
+              <AppliedPromoContainer>
+                <AppliedPromoInfo>
+                  <StyledTagIcon>
+                    <Tag size={14} />
+                  </StyledTagIcon>
+                  <AppliedPromoCode>{cart.promotion.code}</AppliedPromoCode>
+                  {cart.promotion.discount_minor && (
+                    <AppliedPromoDiscount>-{formatPrice(cart.promotion.discount_minor)}</AppliedPromoDiscount>
                   )}
-                </div>
-                <button
-                  onClick={handleRemovePromo}
-                  className="text-obsidian-500 hover:text-red-400 transition-colors"
-                >
+                </AppliedPromoInfo>
+                <RemovePromoBtn onClick={handleRemovePromo}>
                   <X size={14} />
-                </button>
-              </div>
+                </RemovePromoBtn>
+              </AppliedPromoContainer>
             ) : (
-              <div className="flex gap-2">
-                <input
+              <PromoInputContainer>
+                <PromoInput
                   value={promoInput}
-                  onChange={(e) => setPromoInput(e.target.value)}
+                  onChange={(e: any) => setPromoInput(e.target.value)}
                   placeholder="Kode promo..."
-                  onKeyDown={(e) => e.key === 'Enter' && handleApplyPromo()}
-                  className="flex-1 bg-obsidian-900 border border-obsidian-700 text-obsidian-100 placeholder-obsidian-600 text-xs py-2 px-3 rounded-sm focus:outline-none focus:border-gold-600"
+                  onKeyDown={(e: any) => e.key === 'Enter' && handleApplyPromo()}
                 />
-                <button
-                  onClick={handleApplyPromo}
-                  disabled={applyPromoMut.isPending}
-                  className="border border-obsidian-600 text-obsidian-300 hover:border-gold-600 hover:text-gold-400 transition-colors text-xs py-2 px-4 whitespace-nowrap rounded-sm disabled:opacity-50"
-                >
+                <PromoApplyBtn onClick={handleApplyPromo} disabled={applyPromoMut.isPending}>
                   Pakai
-                </button>
-              </div>
+                </PromoApplyBtn>
+              </PromoInputContainer>
             )}
 
             {/* Totals */}
-            <div className="space-y-1.5 text-sm">
-              <div className="flex justify-between text-obsidian-400">
+            <TotalsContainer>
+              <TotalRow>
                 <span>Subtotal</span>
-                <span>{formatPrice(cart.subtotalMinor)}</span>
-              </div>
-              {cart.discountMinor > 0 && (
-                <div className="flex justify-between text-gold-500">
+                <span>{formatPrice(cart.subtotal_minor)}</span>
+              </TotalRow>
+              {cart.discount_minor > 0 && (
+                <DiscountRow>
                   <span>Diskon</span>
-                  <span>-{formatPrice(cart.discountMinor)}</span>
-                </div>
+                  <span>-{formatPrice(cart.discount_minor)}</span>
+                </DiscountRow>
               )}
-              {cart.shippingMinor > 0 && (
-                <div className="flex justify-between text-obsidian-400">
+              {cart.shipping_minor > 0 && (
+                <TotalRow>
                   <span>Pengiriman</span>
-                  <span>{formatPrice(cart.shippingMinor)}</span>
-                </div>
+                  <span>{formatPrice(cart.shipping_minor)}</span>
+                </TotalRow>
               )}
-              <div className="border-t border-obsidian-800 my-2" />
-              <div className="flex justify-between font-semibold text-obsidian-50 text-base">
+              <Divider />
+              <GrandTotalRow>
                 <span>Total</span>
-                <span className="text-gold-400">{formatPrice(cart.totalHargaMinor)}</span>
-              </div>
-            </div>
+                <GrandTotalValue>{formatPrice(cart.total_harga_minor)}</GrandTotalValue>
+              </GrandTotalRow>
+            </TotalsContainer>
 
-            <Link
-              href="/checkout"
-              onClick={closeCart}
-              className="w-full flex items-center justify-center gap-2 text-center bg-gold-500 text-obsidian-950 font-semibold py-3 hover:bg-gold-400 transition-colors rounded-sm"
-            >
+            <CheckoutLink href="/checkout" onClick={closeCart}>
               Checkout <ArrowRight size={16} />
-            </Link>
-          </div>
+            </CheckoutLink>
+          </Footer>
         )}
-      </div>
+      </Drawer>
 
       <style>{`
         @keyframes slideInRight {
@@ -256,6 +254,6 @@ export default function CartModal() {
           to { transform: translateX(0); opacity: 1; }
         }
       `}</style>
-    </div>
+    </Overlay>
   );
 }

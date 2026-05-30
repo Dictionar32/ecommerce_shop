@@ -19,13 +19,40 @@ import { Separator } from "@/components/ui/separator"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { AuthGuard, SectionHeader } from "@/components/shared"
 
-import { useCartSummary } from "@/features/cart/hooks/use-cart-summary"
-import { useOrder } from "@/features/order/hooks/use-order"
-import { usePayment } from "@/features/payment/hooks/use-payment"
+import {
+  PageContainer, ContentWrapper, BackLink, GridContainer,
+  Step1Card, FormGrid,
+  Step2Wrapper, SummaryAddressCard,
+  PaymentCard, PaymentMethodBtn, PaymentMethodIconBox, PaymentMethodTitle, PaymentMethodDesc, PaymentRadioCircle, PaymentRadioDot,
+  OrderSummaryCard, TotalsList, GrandTotalWrapper, InvoiceWrapper,
+  StepIndicatorContainer, StepItemWrapper, StepInnerWrapper, StepLine, StepCircle, StepLabel,
+  IconArrowLeft, IconChevronRight, IconMapPin, IconCreditCard, IconLock, IconLockSubmit, IconPackage, IconLoader,
+  StyledInput, StyledTextarea, SkelOrder, StyledSeparator, SubmitBtn, PaymentBtn, SummaryAddressChangeBtn, OrderItemImg
+} from "./checkout.styles"
+
+import { useKeranjangGet, useCheckoutPost, usePaymentPostOrderId } from "@/api/hooks"
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice } from "@/lib/utils-frontend"
-import { OrderApiSchema, OrderDefaultValues } from "@/features/order/contracts/api-schema"
-import type { OrderFormValues } from "@/features/order/contracts/api-schema"
+import { z } from "zod"
+
+const CheckoutSchema = z.object({
+  shippingNama:    z.string().min(1, "Nama penerima wajib diisi"),
+  shippingTelepon: z.string().optional(),
+  shippingAlamat:  z.string().min(5, "Alamat lengkap wajib diisi"),
+  shippingKota:    z.string().optional(),
+  shippingKodePos: z.string().optional(),
+})
+
+type OrderFormValues = {
+  Create: z.infer<typeof CheckoutSchema>
+}
+
+const OrderDefaultValues = {
+  create: {
+    shippingNama: "", shippingTelepon: "",
+    shippingAlamat: "", shippingKota: "", shippingKodePos: "",
+  } as OrderFormValues['Create']
+}
 
 // ── Metode pembayaran ──────────────────────────────────────
 const PAYMENT_METHODS = [
@@ -36,34 +63,24 @@ const PAYMENT_METHODS = [
 
 type PaymentMethodId = typeof PAYMENT_METHODS[number]["id"]
 
-// ── Combined form schema ───────────────────────────────────
-const CheckoutSchema = OrderApiSchema.Create
 
 // ── Step indicator ─────────────────────────────────────────
 function StepIndicator({ step }: { step: 1 | 2 }) {
   return (
-    <div className="flex items-center gap-3 mb-8">
+    <StepIndicatorContainer>
       {[
         { n: 1, label: "Alamat" },
         { n: 2, label: "Pembayaran" },
       ].map(({ n, label }, i) => (
-        <div key={n} className="flex items-center gap-3">
-          {i > 0 && <div className={`h-px w-8 ${step > 1 ? "bg-gold-500" : "bg-obsidian-700"}`} />}
-          <div className="flex items-center gap-2">
-            <div className={`w-7 h-7 rounded-sm flex items-center justify-center text-xs font-bold transition-colors ${
-              step === n
-                ? "bg-gold-500 text-obsidian-950"
-                : step > n
-                  ? "bg-gold-500/20 border border-gold-700/40 text-gold-400"
-                  : "bg-obsidian-800 border border-obsidian-700 text-obsidian-500"
-            }`}>{n}</div>
-            <span className={`text-xs font-semibold uppercase tracking-wide ${
-              step === n ? "text-gold-400" : step > n ? "text-obsidian-400" : "text-obsidian-600"
-            }`}>{label}</span>
-          </div>
-        </div>
+        <StepItemWrapper key={n}>
+          {i > 0 && <StepLine passed={step > 1 ? "true" : "false"} />}
+          <StepInnerWrapper>
+            <StepCircle status={step === n ? "current" : step > n ? "passed" : "upcoming"}>{n}</StepCircle>
+            <StepLabel status={step === n ? "current" : step > n ? "passed" : "upcoming"}>{label}</StepLabel>
+          </StepInnerWrapper>
+        </StepItemWrapper>
       ))}
-    </div>
+    </StepIndicatorContainer>
   )
 }
 
@@ -71,12 +88,14 @@ export default function CheckoutPage() {
   const router = useRouter()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
 
-  const { data: cart, isLoading: cartLoading } = useCartSummary.useGet()
-  const createOrder = useOrder.useCreate()
+  const { data: resCart, isLoading: cartLoading } = useKeranjangGet()
+  const cart: any = resCart?.data
+
+  const createOrder = useCheckoutPost()
 
   // orderId diisi setelah step 1 selesai — dipakai untuk usePayment
   const [orderId, setOrderId] = useState<number>(0)
-  const createPayment = usePayment.useCreate(orderId)
+  const createPayment = usePaymentPostOrderId()
 
   const [step, setStep] = useState<1 | 2>(1)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>("transfer_bank")
@@ -90,9 +109,15 @@ export default function CheckoutPage() {
   // ── Step 1: buat order ──────────────────────────────────
   const onShippingSubmit = async (values: OrderFormValues['Create']) => {
     try {
-      const order = await createOrder.mutateAsync(values)
+      const { data: order } = await createOrder.mutateAsync({
+        shipping_nama: values.shippingNama,
+        shipping_telepon: values.shippingTelepon,
+        shipping_alamat: values.shippingAlamat,
+        shipping_kota: values.shippingKota,
+        shipping_kode_pos: values.shippingKodePos
+      } as any) as { data: any }
       setOrderId(order.id)
-      setSavedOrder({ id: order.id, invoice: order.invoiceNumber ?? `#${order.id}` })
+      setSavedOrder({ id: order.id, invoice: order.invoice_number ?? `#${order.id}` })
       setStep(2)
       window.scrollTo({ top: 0, behavior: "smooth" })
     } catch {
@@ -104,10 +129,11 @@ export default function CheckoutPage() {
   const onPaymentSubmit = async () => {
     if (!savedOrder) return
     try {
-      const payment = await createPayment.mutateAsync({
+      const { data: payment } = await createPayment.mutateAsync({
+        orderId: savedOrder.id.toString(),
         metode: paymentMethod,
         provider: "mock",
-      })
+      } as any) as { data: any }
       toast.success("Pembayaran berhasil!")
       router.push(
         `/payment/success?orderId=${savedOrder.id}&invoice=${savedOrder.invoice}&status=${payment.status ?? "paid"}`
@@ -119,43 +145,43 @@ export default function CheckoutPage() {
 
   if (!isAuthenticated) return <AuthGuard icon={Lock} title="Masuk untuk checkout" />
 
-  const items = cart?.items ?? []
+  const rawItems = cart?.items;
+  const items: any[] = Array.isArray(rawItems) ? rawItems : (rawItems?.data ?? []);
 
   return (
-    <div className="min-h-screen py-10 px-4 animate-[fadeIn_0.4s_ease]">
-      <div className="max-w-5xl mx-auto">
+    <PageContainer>
+      <ContentWrapper>
 
-        <Link href="/keranjang"
-          className="inline-flex items-center gap-2 text-xs text-obsidian-500 hover:text-obsidian-300 transition-colors mb-6">
-          <ArrowLeft size={13} /> Kembali ke Keranjang
-        </Link>
+        <BackLink href="/keranjang">
+          <IconArrowLeft size={13} /> Kembali ke Keranjang
+        </BackLink>
 
         <SectionHeader label="Checkout" title="Selesaikan Pesanan" />
         <StepIndicator step={step} />
 
-        <div className="grid lg:grid-cols-[1fr_360px] gap-8">
+        <GridContainer>
 
           {/* ── Left: form ── */}
           <div>
 
             {/* STEP 1 — Alamat */}
             {step === 1 && (
-              <div className="card-dark p-6 animate-[fadeIn_0.3s_ease]">
-                <div className="flex items-center gap-2 mb-6 pb-4 border-b border-obsidian-800">
-                  <MapPin size={16} className="text-gold-500" />
-                  <h2 className="font-heading text-lg text-obsidian-100">Alamat Pengiriman</h2>
-                </div>
+              <Step1Card>
+                <Step1Card.header>
+                  <IconMapPin size={16} />
+                  <Step1Card.title>Alamat Pengiriman</Step1Card.title>
+                </Step1Card.header>
 
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onShippingSubmit)} className="space-y-5">
+                  <form onSubmit={form.handleSubmit(onShippingSubmit)}>
 
                     <FormField name="shippingNama" control={form.control} render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest">
+                        <Step1Card.label>
                           Nama Penerima *
-                        </FormLabel>
+                        </Step1Card.label>
                         <FormControl>
-                          <Input placeholder="Nama lengkap penerima" className="input-dark" {...field} />
+                          <StyledInput placeholder="Nama lengkap penerima" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -163,11 +189,11 @@ export default function CheckoutPage() {
 
                     <FormField name="shippingTelepon" control={form.control} render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest">
+                        <Step1Card.label>
                           Nomor Telepon
-                        </FormLabel>
+                        </Step1Card.label>
                         <FormControl>
-                          <Input type="tel" placeholder="08xx-xxxx-xxxx" className="input-dark" {...field} />
+                          <StyledInput type="tel" placeholder="08xx-xxxx-xxxx" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -175,192 +201,174 @@ export default function CheckoutPage() {
 
                     <FormField name="shippingAlamat" control={form.control} render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest">
+                        <Step1Card.label>
                           Alamat Lengkap *
-                        </FormLabel>
+                        </Step1Card.label>
                         <FormControl>
-                          <Textarea
+                          <StyledTextarea
                             placeholder="Jalan, nomor, RT/RW, kelurahan, kecamatan..."
-                            rows={3} className="input-dark resize-none" {...field} />
+                            rows={3} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <FormGrid>
                       <FormField name="shippingKota" control={form.control} render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest">Kota</FormLabel>
-                          <FormControl><Input placeholder="Jakarta" className="input-dark" {...field} /></FormControl>
+                          <Step1Card.label>Kota</Step1Card.label>
+                          <FormControl><StyledInput placeholder="Jakarta" {...field} /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )} />
                       <FormField name="shippingKodePos" control={form.control} render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest">Kode Pos</FormLabel>
-                          <FormControl><Input placeholder="12345" maxLength={10} className="input-dark" {...field} /></FormControl>
+                          <Step1Card.label>Kode Pos</Step1Card.label>
+                          <FormControl><StyledInput placeholder="12345" maxLength={10} {...field} /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )} />
-                    </div>
+                    </FormGrid>
 
-                    <Button type="submit"
-                      disabled={createOrder.isPending || items.length === 0}
-                      className="btn-gold w-full flex items-center justify-center gap-2 mt-2">
+                    <SubmitBtn type="submit"
+                      disabled={createOrder.isPending || items.length === 0}>
                       {createOrder.isPending
-                        ? <><Loader2 size={14} className="animate-spin" /> Menyimpan...</>
-                        : <>Lanjut ke Pembayaran <ChevronRight size={14} /></>
+                        ? <><IconLoader size={14} /> Menyimpan...</>
+                        : <>Lanjut ke Pembayaran <IconChevronRight size={14} /></>
                       }
-                    </Button>
+                    </SubmitBtn>
                   </form>
                 </Form>
-              </div>
+              </Step1Card>
             )}
 
             {/* STEP 2 — Pembayaran */}
             {step === 2 && savedOrder && (
-              <div className="space-y-4 animate-[fadeIn_0.3s_ease]">
+              <Step2Wrapper>
 
                 {/* Alamat ringkas */}
-                <div className="card-dark p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <MapPin size={14} className="text-gold-500" />
-                      <p className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest">Alamat Pengiriman</p>
-                    </div>
-                    <button onClick={() => setStep(1)}
-                      className="text-xs text-obsidian-500 hover:text-gold-400 transition-colors underline underline-offset-2">
-                      Ubah
-                    </button>
-                  </div>
-                  <p className="text-sm font-semibold text-obsidian-200">{form.getValues("shippingNama")}</p>
-                  <p className="text-sm text-obsidian-400 mt-0.5">{form.getValues("shippingAlamat")}</p>
-                  <p className="text-sm text-obsidian-400">
+                <SummaryAddressCard>
+                  <SummaryAddressCard.header>
+                    <SummaryAddressCard.headerLeft>
+                      <IconMapPin size={14} />
+                      <SummaryAddressCard.label>Alamat Pengiriman</SummaryAddressCard.label>
+                    </SummaryAddressCard.headerLeft>
+                    <SummaryAddressChangeBtn onClick={() => setStep(1)}>Ubah</SummaryAddressChangeBtn>
+                  </SummaryAddressCard.header>
+                  <SummaryAddressCard.name>{form.getValues("shippingNama")}</SummaryAddressCard.name>
+                  <SummaryAddressCard.address>{form.getValues("shippingAlamat")}</SummaryAddressCard.address>
+                  <SummaryAddressCard.city>
                     {form.getValues("shippingKota")}
                     {form.getValues("shippingKodePos") ? `, ${form.getValues("shippingKodePos")}` : ""}
-                  </p>
+                  </SummaryAddressCard.city>
                   {form.getValues("shippingTelepon") && (
-                    <p className="text-xs text-obsidian-500 mt-1">{form.getValues("shippingTelepon")}</p>
+                    <SummaryAddressCard.phone>{form.getValues("shippingTelepon")}</SummaryAddressCard.phone>
                   )}
-                </div>
+                </SummaryAddressCard>
 
                 {/* Pilih metode */}
-                <div className="card-dark p-5">
-                  <div className="flex items-center gap-2 mb-4 pb-3 border-b border-obsidian-800">
-                    <CreditCard size={14} className="text-gold-500" />
-                    <p className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest">Metode Pembayaran</p>
-                  </div>
-                  <div className="space-y-2.5">
+                <PaymentCard>
+                  <PaymentCard.header>
+                    <IconCreditCard size={14} />
+                    <PaymentCard.label>Metode Pembayaran</PaymentCard.label>
+                  </PaymentCard.header>
+                  <PaymentCard.list>
                     {PAYMENT_METHODS.map(({ id, label, icon: Icon, desc }) => (
-                      <button key={id} type="button" onClick={() => setPaymentMethod(id)}
-                        className={`w-full flex items-center gap-4 p-4 rounded-sm border text-left transition-all duration-150 ${
-                          paymentMethod === id
-                            ? "border-gold-700/70 bg-gold-500/5"
-                            : "border-obsidian-800/60 hover:border-obsidian-700 hover:bg-obsidian-800/20"
-                        }`}>
-                        <div className={`w-10 h-10 rounded-sm flex items-center justify-center shrink-0 transition-colors ${
-                          paymentMethod === id
-                            ? "bg-gold-500/20 border border-gold-700/40"
-                            : "bg-obsidian-800 border border-obsidian-700/40"
-                        }`}>
+                      <PaymentMethodBtn as="button" key={id} type="button" onClick={() => setPaymentMethod(id)} selected={paymentMethod === id ? "true" : "false"}>
+                        <PaymentMethodIconBox selected={paymentMethod === id ? "true" : "false"}>
                           <Icon size={18} className={paymentMethod === id ? "text-gold-400" : "text-obsidian-500"} />
-                        </div>
-                        <div className="flex-1">
-                          <p className={`text-sm font-semibold ${paymentMethod === id ? "text-obsidian-100" : "text-obsidian-300"}`}>
-                            {label}
-                          </p>
-                          <p className="text-xs text-obsidian-500 mt-0.5">{desc}</p>
-                        </div>
-                        <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center ${
-                          paymentMethod === id ? "border-gold-500" : "border-obsidian-600"
-                        }`}>
-                          {paymentMethod === id && <div className="w-2 h-2 rounded-full bg-gold-500" />}
-                        </div>
-                      </button>
+                        </PaymentMethodIconBox>
+                        <PaymentMethodBtn.content>
+                          <PaymentMethodTitle selected={paymentMethod === id ? "true" : "false"}>{label}</PaymentMethodTitle>
+                          <PaymentMethodDesc>{desc}</PaymentMethodDesc>
+                        </PaymentMethodBtn.content>
+                        <PaymentRadioCircle selected={paymentMethod === id ? "true" : "false"}>
+                          {paymentMethod === id && <PaymentRadioDot />}
+                        </PaymentRadioCircle>
+                      </PaymentMethodBtn>
                     ))}
-                  </div>
+                  </PaymentCard.list>
 
-                  <div className="mt-5 pt-4 border-t border-obsidian-800 flex items-center gap-2">
-                    <Lock size={12} className="text-obsidian-600" />
-                    <p className="text-xs text-obsidian-600">Transaksi aman & terenkripsi SSL</p>
-                  </div>
-                </div>
+                  <PaymentCard.securityInfo>
+                    <IconLock size={12} />
+                    <PaymentCard.securityText>Transaksi aman & terenkripsi SSL</PaymentCard.securityText>
+                  </PaymentCard.securityInfo>
+                </PaymentCard>
 
-                <Button onClick={onPaymentSubmit}
-                  disabled={createPayment.isPending}
-                  className="btn-gold w-full flex items-center justify-center gap-2 h-12 text-base">
+                <PaymentBtn onClick={onPaymentSubmit}
+                  disabled={createPayment.isPending}>
                   {createPayment.isPending
-                    ? <><Loader2 size={16} className="animate-spin" /> Memproses Pembayaran...</>
-                    : <><Lock size={15} /> Bayar Sekarang</>
+                    ? <><IconLoader size={16} /> Memproses Pembayaran...</>
+                    : <><IconLockSubmit size={15} /> Bayar Sekarang</>
                   }
-                </Button>
-              </div>
+                </PaymentBtn>
+              </Step2Wrapper>
             )}
           </div>
 
           {/* ── Right: order summary ── */}
-          <div className="card-dark p-5 h-fit">
-            <div className="flex items-center gap-2 mb-4 pb-3 border-b border-obsidian-800">
-              <Package size={14} className="text-gold-500" />
-              <p className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest">Ringkasan Pesanan</p>
-            </div>
+          <OrderSummaryCard>
+            <OrderSummaryCard.header>
+              <IconPackage size={14} />
+              <OrderSummaryCard.label>Ringkasan Pesanan</OrderSummaryCard.label>
+            </OrderSummaryCard.header>
 
             {cartLoading ? (
-              <div className="space-y-2.5">
-                <Skeleton className="h-14 bg-obsidian-800" />
-                <Skeleton className="h-14 bg-obsidian-800" />
-              </div>
+              <OrderSummaryCard.skelWrapper>
+                <SkelOrder />
+                <SkelOrder />
+              </OrderSummaryCard.skelWrapper>
             ) : (
-              <div className="space-y-3 max-h-72 overflow-y-auto mb-4">
+              <OrderSummaryCard.list>
                 {items.map((item) => (
-                  <div key={item.produkItemId} className="flex items-center gap-3">
-                    <div className="w-12 h-12 shrink-0 bg-obsidian-800 rounded-sm overflow-hidden border border-obsidian-700/40">
-                      {item.productImageUrl && (
+                  <OrderSummaryCard.itemRow key={item.produk_item_id}>
+                    <OrderSummaryCard.imgWrapper>
+                      {item.product_image_url && (
                         /* eslint-disable-next-line @next/next/no-img-element */
-                        <img src={item.productImageUrl} alt={item.productName} className="w-full h-full object-cover" />
+                        <OrderItemImg src={item.product_image_url} alt={item.product_name} />
                       )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-obsidian-300 truncate">{item.productName}</p>
-                      <p className="text-xs text-obsidian-500">×{item.qty} · {formatPrice(item.price)}</p>
-                    </div>
-                    <p className="text-xs font-semibold text-obsidian-200 shrink-0">{formatPrice(item.subtotal)}</p>
-                  </div>
+                    </OrderSummaryCard.imgWrapper>
+                    <OrderSummaryCard.itemInfo>
+                      <OrderSummaryCard.name>{item.product_name}</OrderSummaryCard.name>
+                      <OrderSummaryCard.desc>×{item.qty} · {formatPrice(item.price)}</OrderSummaryCard.desc>
+                    </OrderSummaryCard.itemInfo>
+                    <OrderSummaryCard.subtotal>{formatPrice(item.subtotal)}</OrderSummaryCard.subtotal>
+                  </OrderSummaryCard.itemRow>
                 ))}
-              </div>
+              </OrderSummaryCard.list>
             )}
 
-            <Separator className="bg-obsidian-800 mb-4" />
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-obsidian-400">
-                <span>Subtotal</span><span>{formatPrice(cart?.subtotalMinor ?? 0)}</span>
-              </div>
-              {(cart?.discountMinor ?? 0) > 0 && (
-                <div className="flex justify-between text-gold-500">
-                  <span>Diskon</span><span>-{formatPrice(cart?.discountMinor ?? 0)}</span>
-                </div>
+            <StyledSeparator />
+            <TotalsList>
+              <TotalsList.row>
+                <TotalsList.label>Subtotal</TotalsList.label><TotalsList.value>{formatPrice(cart?.subtotal_minor ?? 0)}</TotalsList.value>
+              </TotalsList.row>
+              {(cart?.discount_minor ?? 0) > 0 && (
+                <TotalsList.discountRow>
+                  <TotalsList.label>Diskon</TotalsList.label><TotalsList.value>-{formatPrice(cart?.discount_minor ?? 0)}</TotalsList.value>
+                </TotalsList.discountRow>
               )}
-              {(cart?.shippingMinor ?? 0) > 0 && (
-                <div className="flex justify-between text-obsidian-400">
-                  <span>Ongkir</span><span>{formatPrice(cart?.shippingMinor ?? 0)}</span>
-                </div>
+              {(cart?.shipping_minor ?? 0) > 0 && (
+                <TotalsList.row>
+                  <TotalsList.label>Ongkir</TotalsList.label><TotalsList.value>{formatPrice(cart?.shipping_minor ?? 0)}</TotalsList.value>
+                </TotalsList.row>
               )}
-            </div>
-            <Separator className="bg-obsidian-800 my-4" />
-            <div className="flex justify-between font-bold text-base">
-              <span className="text-obsidian-100 font-heading">Total</span>
-              <span className="text-gold-400 font-heading">{formatPrice(cart?.totalHargaMinor ?? 0)}</span>
-            </div>
+            </TotalsList>
+            <StyledSeparator />
+            <GrandTotalWrapper>
+              <GrandTotalWrapper.label>Total</GrandTotalWrapper.label>
+              <GrandTotalWrapper.value>{formatPrice(cart?.total_harga_minor ?? 0)}</GrandTotalWrapper.value>
+            </GrandTotalWrapper>
 
             {savedOrder && (
-              <div className="mt-4 pt-4 border-t border-obsidian-800">
-                <p className="text-xs text-obsidian-500 mb-1">Nomor Pesanan</p>
-                <p className="font-heading text-gold-400 font-semibold">{savedOrder.invoice}</p>
-              </div>
+              <InvoiceWrapper>
+                <InvoiceWrapper.label>Nomor Pesanan</InvoiceWrapper.label>
+                <InvoiceWrapper.value>{savedOrder.invoice}</InvoiceWrapper.value>
+              </InvoiceWrapper>
             )}
-          </div>
-        </div>
-      </div>
-    </div>
+          </OrderSummaryCard>
+        </GridContainer>
+      </ContentWrapper>
+    </PageContainer>
   )
 }

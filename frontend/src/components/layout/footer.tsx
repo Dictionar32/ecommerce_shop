@@ -1,26 +1,31 @@
-import Link from 'next/link'
+import {
+  FooterContainer, GoldAccentLine, FooterContent, FooterGrid,
+  BrandSection, BrandTitle, BrandDivider, BrandDesc,
+  NavSection, NavTitle, NavList, NavItemLink,
+  BottomBar, CopyrightText, TechText
+} from './footer.styles'
 
 export function Footer() {
   return (
-    <footer className="border-t border-obsidian-800/80 bg-obsidian-950">
+    <FooterContainer>
       {/* Gold accent line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-gold-600/30 to-transparent" />
+      <GoldAccentLine />
 
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+      <FooterContent>
+        <FooterGrid>
           {/* Brand */}
-          <div className="md:col-span-2">
-            <h3 className="font-heading text-gold-400 tracking-widest uppercase text-xl mb-1">KUNPULAN</h3>
-            <div className="h-px w-12 bg-gold-600/40 mb-4" />
-            <p className="text-sm text-obsidian-500 leading-relaxed max-w-xs">
+          <BrandSection>
+            <BrandTitle>KUNPULAN</BrandTitle>
+            <BrandDivider />
+            <BrandDesc>
               Destinasi belanja online terpercaya Anda untuk produk berkualitas tinggi dengan pengalaman berbelanja yang elegan.
-            </p>
-          </div>
+            </BrandDesc>
+          </BrandSection>
 
           {/* Navigation */}
-          <div>
-            <h4 className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest mb-5">Navigasi</h4>
-            <ul className="space-y-3">
+          <NavSection>
+            <NavTitle>Navigasi</NavTitle>
+            <NavList>
               {[
                 { href: '/produk', label: 'Produk' },
                 { href: '/wishlist', label: 'Wishlist' },
@@ -28,43 +33,43 @@ export function Footer() {
                 { href: '/profile', label: 'Profil' },
               ].map(({ href, label }) => (
                 <li key={href}>
-                  <Link href={href} className="link-gold text-sm">
+                  <NavItemLink href={href}>
                     {label}
-                  </Link>
+                  </NavItemLink>
                 </li>
               ))}
-            </ul>
-          </div>
+            </NavList>
+          </NavSection>
 
           {/* Auth */}
-          <div>
-            <h4 className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest mb-5">Akun</h4>
-            <ul className="space-y-3">
+          <NavSection>
+            <NavTitle>Akun</NavTitle>
+            <NavList>
               {[
                 { href: '/login', label: 'Masuk' },
                 { href: '/register', label: 'Daftar' },
                 { href: '/forgot-password', label: 'Lupa Password' },
               ].map(({ href, label }) => (
                 <li key={href}>
-                  <Link href={href} className="link-gold text-sm">
+                  <NavItemLink href={href}>
                     {label}
-                  </Link>
+                  </NavItemLink>
                 </li>
               ))}
-            </ul>
-          </div>
-        </div>
+            </NavList>
+          </NavSection>
+        </FooterGrid>
 
-        <div className="mt-12 pt-6 border-t border-obsidian-900 flex flex-col md:flex-row items-center justify-between gap-2">
-          <p className="text-xs text-obsidian-600">
+        <BottomBar>
+          <CopyrightText>
             © {new Date().getFullYear()} KUNPULAN. Hak cipta dilindungi.
-          </p>
-          <p className="text-xs text-obsidian-700">
+          </CopyrightText>
+          <TechText>
             Dibangun dengan Next.js & Laravel
-          </p>
-        </div>
-      </div>
-    </footer>
+          </TechText>
+        </BottomBar>
+      </FooterContent>
+    </FooterContainer>
   )
 }
 

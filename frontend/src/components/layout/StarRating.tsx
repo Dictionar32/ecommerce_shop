@@ -8,19 +8,28 @@ interface StarRatingProps {
   onRate?: (rating: number) => void;
 }
 
+import { StarContainer, StarFilled, StarEmpty } from './StarRating.styles';
+
 export default function StarRating({ rating, size = 14, interactive, onRate }: StarRatingProps) {
   return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Star
-          key={star}
-          size={size}
-          fill={star <= Math.round(rating) ? '#d4a843' : 'none'}
-          className={star <= Math.round(rating) ? 'star-filled' : 'star-empty'}
-          style={{ cursor: interactive ? 'pointer' : 'default' }}
-          onClick={() => interactive && onRate?.(star)}
-        />
-      ))}
-    </div>
+    <StarContainer>
+      {[1, 2, 3, 4, 5].map((star) => {
+        const isFilled = star <= Math.round(rating);
+        const IconWrapper = isFilled ? StarFilled : StarEmpty;
+        
+        return (
+          <IconWrapper
+            key={star}
+            style={{ cursor: interactive ? 'pointer' : 'default', display: 'flex' }}
+            onClick={() => interactive && onRate?.(star)}
+          >
+            <Star
+              size={size}
+              fill={isFilled ? '#d4a843' : 'none'}
+            />
+          </IconWrapper>
+        );
+      })}
+    </StarContainer>
   );
 }

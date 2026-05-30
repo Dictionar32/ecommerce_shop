@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner"
 import Navbar from "@/components/layout/navbar"
 import Footer from "@/components/layout/footer"
 import CartModal from "@/components/layout/CartModal"
+import { StyledBody, AppContainer, MainContent } from "./layout.styles"
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -32,19 +33,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${playfair.variable} ${dmSans.variable}`}>
-      <body className="antialiased">
+      <StyledBody>
         <QueryProvider>
-          <div className="flex flex-col min-h-screen">
+          <AppContainer>
             <Navbar />
-            <main className="grow">
+            <MainContent>
               {children}
-            </main>
+            </MainContent>
             <Footer />
-          </div>
+          </AppContainer>
           <CartModal />
           <Toaster />
         </QueryProvider>
-      </body>
+      </StyledBody>
     </html>
   )
 }

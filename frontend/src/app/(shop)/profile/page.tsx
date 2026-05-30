@@ -15,9 +15,12 @@ import { AuthGuard } from "@/components/shared/auth-guard"
 import { SectionHeader } from "@/components/shared/section-header"
 
 import useAuthStore from "@/lib/stores/auth-store"
-import { useLogout } from "@/features/auth/hooks/use-auth"
-import { useProfile } from "@/features/profile/hooks/use-profile"
-import { ProfileFormValues } from "@/features/profile/contracts/api-schema"
+import { useLogoutPost, useProfilePatch } from "@/api/hooks"
+import {
+  PageContainer, ContentWrapper, AvatarCard, AvatarHeaderRow, AvatarBox, AvatarInfoBox, UserName, UserEmail, MemberBadge,
+  FormWrapper, LabelStyle, ActionBtnGroup, InfoListWrapper, InfoItemBox, InfoIconBox, InfoLabelText, InfoValueText,
+  NavCard, NavLinkItem, NavIconBox, NavContentBox, NavTitle, NavDesc
+} from "./profile.styles"
 
 const UpdateSchema = z.object({
   name: z.string().min(2, "Nama minimal 2 karakter"),
@@ -26,19 +29,20 @@ const UpdateSchema = z.object({
 
 export default function ProfilePage() {
   const user = useAuthStore((s) => s.user)
+  const logoutLocal = useAuthStore((s) => s.logout)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const logoutMutation = useLogout()
-  const updateProfile = useProfile.useUpdate()
+  const logoutMutation = useLogoutPost()
+  const updateProfile = useProfilePatch()
   const [isEditing, setIsEditing] = useState(false)
 
-  const form = useForm<ProfileFormValues['Update']>({
+  const form = useForm<any>({
     resolver: zodResolver(UpdateSchema),
     values: { name: user?.name ?? "", email: user?.email ?? "" },
   })
 
-  const onSubmit = async (values: ProfileFormValues['Update']) => {
+  const onSubmit = async (values: any) => {
     try {
-      await updateProfile.mutateAsync({ id: 0, data: values })
+      await updateProfile.mutateAsync(values)
       toast.success("Profil berhasil diperbarui")
       setIsEditing(false)
     } catch {
@@ -47,9 +51,15 @@ export default function ProfilePage() {
   }
 
   const handleLogout = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => { toast.success("Berhasil keluar") },
-      onError: () => { toast.error("Gagal keluar") },
+    logoutMutation.mutate(undefined as any, {
+      onSuccess: () => { 
+        logoutLocal()
+        toast.success("Berhasil keluar") 
+      },
+      onError: () => { 
+        logoutLocal()
+        toast.error("Gagal keluar") 
+      },
     })
   }
 
@@ -58,34 +68,34 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen py-10 px-4 animate-[fadeIn_0.4s_ease]">
-      <div className="max-w-2xl mx-auto">
+    <PageContainer>
+      <ContentWrapper>
         <SectionHeader label="Akun Saya" title="Profil" />
 
         {/* Avatar card */}
-        <div className="card-dark p-8 mb-5">
-          <div className="flex items-center gap-5 mb-6 pb-6 border-b border-obsidian-800">
-            <div className="w-16 h-16 rounded-sm bg-gradient-to-br from-gold-600/30 to-gold-400/10 border border-gold-700/40 flex items-center justify-center text-gold-400 font-heading font-bold text-2xl shrink-0">
+        <AvatarCard>
+          <AvatarHeaderRow>
+            <AvatarBox>
               {user?.name?.charAt(0).toUpperCase()}
-            </div>
-            <div className="flex-1">
-              <h2 className="font-heading text-xl text-obsidian-50">{user?.name}</h2>
-              <p className="text-obsidian-500 text-sm">{user?.email}</p>
-              <span className="badge border-gold-800/50 bg-gold-500/10 text-gold-400 mt-2">Member</span>
-            </div>
+            </AvatarBox>
+            <AvatarInfoBox>
+              <UserName>{user?.name}</UserName>
+              <UserEmail>{user?.email}</UserEmail>
+              <MemberBadge>Member</MemberBadge>
+            </AvatarInfoBox>
             <Button variant="ghost" size="icon"
               className="text-obsidian-500 hover:text-gold-400 transition-colors"
               onClick={() => setIsEditing(!isEditing)}>
               {isEditing ? <X size={16} /> : <Edit2 size={16} />}
             </Button>
-          </div>
+          </AvatarHeaderRow>
 
           {isEditing ? (
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormWrapper onSubmit={form.handleSubmit(onSubmit)}>
                 <FormField name="name" control={form.control} render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest">Nama</FormLabel>
+                    <FormLabel><LabelStyle>Nama</LabelStyle></FormLabel>
                     <FormControl>
                       <Input placeholder="Nama lengkap" className="input-dark" {...field} />
                     </FormControl>
@@ -94,14 +104,14 @@ export default function ProfilePage() {
                 )} />
                 <FormField name="email" control={form.control} render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs font-semibold text-obsidian-400 uppercase tracking-widest">Email</FormLabel>
+                    <FormLabel><LabelStyle>Email</LabelStyle></FormLabel>
                     <FormControl>
                       <Input type="email" placeholder="nama@email.com" className="input-dark" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )} />
-                <div className="flex gap-3 pt-2">
+                <ActionBtnGroup>
                   <Button type="submit" disabled={updateProfile.isPending} className="btn-gold flex-1">
                     {updateProfile.isPending ? <Loader2 size={14} className="animate-spin" /> : "Simpan Perubahan"}
                   </Button>
@@ -109,44 +119,43 @@ export default function ProfilePage() {
                     className="btn-outline flex-1">
                     Batal
                   </Button>
-                </div>
-              </form>
+                </ActionBtnGroup>
+              </FormWrapper>
             </Form>
           ) : (
-            <div className="space-y-3">
+            <InfoListWrapper>
               {[
-                { icon: User,   label: "Nama",   value: user?.name },
-                { icon: Mail,   label: "Email",  value: user?.email },
-                { icon: Shield, label: "Status", value: "Terverifikasi", valueClass: "text-emerald-400" },
-              ].map(({ icon: Icon, label, value, valueClass }) => (
-                <div key={label} className="flex items-center gap-4 p-4 bg-obsidian-900/50 border border-obsidian-800/50 rounded-sm">
-                  <div className="w-8 h-8 rounded-sm bg-obsidian-800 flex items-center justify-center shrink-0">
+                { icon: User,   label: "Nama",   value: user?.name, valueColor: "default" as const },
+                { icon: Mail,   label: "Email",  value: user?.email, valueColor: "default" as const },
+                { icon: Shield, label: "Status", value: "Terverifikasi", valueColor: "emerald" as const },
+              ].map(({ icon: Icon, label, value, valueColor }) => (
+                <InfoItemBox key={label}>
+                  <InfoIconBox>
                     <Icon size={14} className="text-obsidian-400" />
-                  </div>
+                  </InfoIconBox>
                   <div>
-                    <p className="text-xs text-obsidian-500 uppercase tracking-wider">{label}</p>
-                    <p className={`text-sm font-medium mt-0.5 ${valueClass ?? "text-obsidian-200"}`}>{value}</p>
+                    <InfoLabelText>{label}</InfoLabelText>
+                    <InfoValueText color={valueColor}>{value}</InfoValueText>
                   </div>
-                </div>
+                </InfoItemBox>
               ))}
-            </div>
+            </InfoListWrapper>
           )}
-        </div>
+        </AvatarCard>
 
         {/* Nav */}
-        <div className="card-dark divide-y divide-obsidian-800 mb-5">
-          <Link href="/orders"
-            className="flex items-center gap-4 p-5 hover:bg-obsidian-800/20 transition-colors group">
-            <div className="w-9 h-9 rounded-sm bg-obsidian-800 border border-obsidian-700/60 flex items-center justify-center shrink-0 group-hover:border-gold-700/50 transition-colors">
+        <NavCard>
+          <NavLinkItem href="/orders">
+            <NavIconBox>
               <ShoppingBag size={15} className="text-obsidian-400 group-hover:text-gold-400 transition-colors" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-obsidian-200">Pesanan Saya</p>
-              <p className="text-xs text-obsidian-500">Lihat riwayat dan status pesanan</p>
-            </div>
+            </NavIconBox>
+            <NavContentBox>
+              <NavTitle>Pesanan Saya</NavTitle>
+              <NavDesc>Lihat riwayat dan status pesanan</NavDesc>
+            </NavContentBox>
             <ChevronRight size={15} className="text-obsidian-600 group-hover:text-gold-500 transition-colors" />
-          </Link>
-        </div>
+          </NavLinkItem>
+        </NavCard>
 
         {/* Logout */}
         <Button
@@ -157,7 +166,7 @@ export default function ProfilePage() {
           {logoutMutation.isPending ? <Loader2 size={15} className="animate-spin" /> : <LogOut size={15} />}
           {logoutMutation.isPending ? "Keluar..." : "Keluar dari Akun"}
         </Button>
-      </div>
-    </div>
+      </ContentWrapper>
+    </PageContainer>
   )
 }
