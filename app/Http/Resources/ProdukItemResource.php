@@ -5,6 +5,9 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @mixin \App\Models\ProdukItem
+ */
 class ProdukItemResource extends JsonResource
 {
     public function toArray(Request $request): array
@@ -16,14 +19,14 @@ class ProdukItemResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'name' => $this->nama,
-            'description' => $this->deskripsi,
+            'nama' => $this->nama,
+            'deskripsi' => $this->deskripsi,
             'image' => $path,
             'image_url' => $imageUrl,
             'category_id' => $this->category_id,
             'category_name' => $this->category?->nama,
-            'price' => $this->harga,
-            'stock' => $this->stok,
+            'harga' => $this->harga,
+            'stok' => $this->stok,
             'rating' => $rating,
             'review_count' => $jumlahReview,
         ];

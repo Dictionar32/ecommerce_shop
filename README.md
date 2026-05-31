@@ -1,13 +1,32 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Toko Online API & Frontend Sync Documentation
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Men-generate Tipe Data dari Backend ke Frontend (Next.js)
 
+Proyek ini menggunakan library `routesync` untuk otomatis membuat fungsi (hooks) dan tipe data (SDK) TypeScript di aplikasi Next.js berdasarkan endpoint yang ada di Laravel.
+
+### ⚠️ Kelemahan `routesync` & Solusinya
+
+Secara *default*, `routesync` tidak mengambil field atau properti respons (seperti `nama`, `harga`, dsb), dan hanya menulis `// TODO: Add ... fields` di file `types.ts`. Akibatnya, build Next.js gagal karena menganggap objek tersebut kosong.
+
+**Solusi: Gunakan Flag `--models`**
+Agar `routesync` mengekstrak struktur kolom database menggunakan *Eloquent Models* Laravel, selalu gunakan perintah berikut di dalam folder `frontend`:
+
+```bash
+cd frontend
+npx routesync sync --models
+```
+
+### 🐞 Info Update Library `routesync`
+
+Catatan penting terkait versi terbaru `routesync`:
+1. **Duplicate Schema Resolved:** Sebelumnya `routesync` bisa memproduksi variabel duplikat jika ada 2 nama route kembar. Pada versi terbaru (patch dari kami), `routesync` otomatis akan memberikan nomor seri (`cartPost1Schema`) jika ada nama kembar.
+2. **Safe Keys Resolved:** `routesync` sebelumnya rawan menghasilkan sintaks error jika *payload key* mengandung karakter titik/bintang (`items.*.id`). Pada versi ini, key spesial tersebut otomatis diapit kutip ganda secara aman oleh library.
+
+*(Perbaikan di atas sudah dipush langsung ke source code library, sehingga Anda tidak perlu lagi mengubah rute di Laravel atau khawatir soal crash!)*
+
+---
 ## About Laravel
+
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 

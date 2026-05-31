@@ -54,11 +54,13 @@ export default function RegisterPage() {
   const onSubmit = async (values: RegisterFormValues) => {
     try {
       await registerMutation.mutateAsync({
-        name: values.name,
-        email: values.email,
-        password: values.password,
-        password_confirmation: values.passwordConfirmation
-      } as any)
+        body: {
+          name: values.name,
+          email: values.email,
+          password: values.password,
+          password_confirmation: values.passwordConfirmation
+        }
+      })
       toast.success("Akun dibuat! Selamat datang.")
       window.location.href = "/"
     } catch (error) {

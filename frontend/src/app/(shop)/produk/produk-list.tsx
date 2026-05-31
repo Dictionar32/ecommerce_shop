@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ProdukCard } from "./produk-card";
+import { Category } from "@/api/types-local";
 
 import {
   PageContainer, HeaderArea, IconGem, ContentContainer, ToolbarCard, ToolbarRow, SearchWrapper, SearchInput, SearchClearBtn, IconSearch, IconX,
@@ -16,7 +17,7 @@ type SortOption = "default" | "harga_asc" | "harga_desc" | "rating" | "nama_asc"
 
 interface ProdukListProps {
   initialData: any[];
-  categories: any[];
+  categories: Category[];
   wishlistData?: { id: number }[];
 }
 
@@ -27,7 +28,7 @@ function FilterSheet({
   sortBy,
   onSortChange,
 }: {
-  categories: any[];
+  categories: Category[];
   selectedCategory: any;
   onCategoryChange: (value: any) => void;
   sortBy: SortOption;

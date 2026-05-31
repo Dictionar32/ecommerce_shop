@@ -6,6 +6,7 @@ import { X, Minus, Plus, Trash2, Tag, ShoppingBag, ArrowRight } from 'lucide-rea
 import { useCartUiStore } from '@/lib/stores/cart-ui-store';
 import { formatPrice } from '@/lib/utils-frontend';
 import { toast } from 'sonner';
+import { CartResponse } from '@/api/types-local';
 import {
   useKeranjangGet,
   useCartPatchItemsProdukItemId,
@@ -29,8 +30,8 @@ export default function CartModal() {
   const { isOpen, closeCart } = useCartUiStore();
   
   // Use generated hooks directly
-  const { data: res, isLoading } = useKeranjangGet();
-  const cart: any = res?.data;
+  const { data: res, isLoading } = useKeranjangGet({});
+  const cart = (res as { data?: CartResponse })?.data;
   
   const updateItemMut = useCartPatchItemsProdukItemId();
   const removeItemMut = useCartDeleteItemsProdukItemId();
@@ -41,26 +42,24 @@ export default function CartModal() {
 
   if (!isOpen) return null;
 
-  // Unwrap items manually if it's paginated or a resource collection
-  const rawItems = cart?.items;
-  const items: any[] = Array.isArray(rawItems) ? rawItems : (rawItems?.data ?? []);
+  const items = cart?.items ?? [];
   const cartCount = items.reduce((s: number, i: any) => s + i.qty, 0);
 
   const handleUpdateQty = async (produkItemId: number, newQty: number) => {
     if (newQty < 1) {
-      removeItemMut.mutate({ produkItemId }, {
+      removeItemMut.mutate({ params: { produkItemId: String(produkItemId) } }, {
         onError: () => toast.error('Gagal hapus item'),
       });
       return;
     }
     updateItemMut.mutate(
-      { produkItemId, qty: newQty },
+      { params: { produkItemId: String(produkItemId) }, body: { qty: newQty } },
       { onError: () => toast.error('Gagal update jumlah') }
     );
   };
 
   const handleRemove = (produkItemId: number) => {
-    removeItemMut.mutate({ produkItemId }, {
+    removeItemMut.mutate({ params: { produkItemId: String(produkItemId) } }, {
       onSuccess: () => toast.success('Item dihapus'),
       onError: () => toast.error('Gagal hapus'),
     });
@@ -68,14 +67,13 @@ export default function CartModal() {
 
   const handleApplyPromo = () => {
     if (!promoInput.trim()) return;
-    applyPromoMut.mutate({ code: promoInput.trim() }, {
+    applyPromoMut.mutate({ body: { code: promoInput.trim() } }, {
       onSuccess: () => {
         toast.success('Kode promo diterapkan!');
         setPromoInput('');
       },
-      onError: (e: any) => {
-        const msg = e?.response?.data?.message || e?.message;
-        toast.error(msg || 'Kode promo tidak valid');
+      onError: () => {
+        toast.error('Kode promo tidak valid');
       },
     });
   };
@@ -237,7 +235,7 @@ export default function CartModal() {
               <Divider />
               <GrandTotalRow>
                 <span>Total</span>
-                <GrandTotalValue>{formatPrice(cart.total_harga_minor)}</GrandTotalValue>
+                <GrandTotalValue>{formatPrice(cart.total_harga_minor ?? cart.total_minor ?? 0)}</GrandTotalValue>
               </GrandTotalRow>
             </TotalsContainer>
 

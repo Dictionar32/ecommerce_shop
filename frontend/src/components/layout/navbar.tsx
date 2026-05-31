@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation'
 import { ShoppingCart, Heart, User, Menu, X, LogOut, Package } from 'lucide-react'
 import { useState } from 'react'
 import { useCartUiStore } from '@/lib/stores/cart-ui-store'
-import { useKeranjangGet } from '@/api/hooks'
+import { useKeranjangGet, useLogoutPost } from "@/api/hooks"
+import { CartResponse } from "@/api/types-local"
 import useAuthStore from '@/lib/stores/auth-store'
 import { toast } from 'sonner'
 import { useQueryClient } from '@tanstack/react-query'
@@ -31,14 +32,13 @@ export function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   const { openCart } = useCartUiStore()
-  const { data: res } = useKeranjangGet()
-  const cart: any = res?.data
+  const { data: res } = useKeranjangGet({})
+  const cart = (res as { data?: CartResponse })?.data
   const { user, isAuthenticated, logout } = useAuthStore()
   const qc = useQueryClient()
   const router = useRouter()
 
-  const rawItems = cart?.items;
-  const items: any[] = Array.isArray(rawItems) ? rawItems : (rawItems?.data ?? []);
+  const items = cart?.items ?? []
   const cartCount = items.reduce((s: number, i: any) => s + i.qty, 0);
 
   const handleLogout = () => {

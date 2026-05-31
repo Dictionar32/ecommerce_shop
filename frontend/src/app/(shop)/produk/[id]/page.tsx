@@ -21,6 +21,7 @@ import { useProdukGetId, useProdukGetIdReviews, useCartPostItems, useWishlistPos
 import { useCartUiStore } from "@/lib/stores/cart-ui-store"
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice } from "@/lib/utils-frontend"
+import { ProdukItem, Review } from "@/api/types-local"
 
 import {
   PageContainer, ContentWrapper,
@@ -76,10 +77,10 @@ export default function ProdukDetailPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const { openCart } = useCartUiStore()
 
-  const { data: resProduct, isLoading, isError } = useProdukGetId({ id })
-  const product: any = resProduct?.data
-  const { data: resReview } = useProdukGetIdReviews({ id })
-  const reviewData: any = resReview?.data
+  const { data: resProduct, isLoading, isError } = useProdukGetId({ params: { id: String(id) } })
+  const product: any = (resProduct as { data?: any })?.data
+  const { data: resReview } = useProdukGetIdReviews({ params: { id: String(id) } })
+  const reviewData: any = (resReview as { data?: any })?.data
   const addToCart    = useCartPostItems()
   const addToWishlist = useWishlistPost()
   const submitReview = useProdukPostIdReviews()
@@ -94,7 +95,7 @@ export default function ProdukDetailPage() {
   const handleAddToCart = () => {
     if (!isAuthenticated) { toast.error("Masuk untuk menambahkan ke keranjang"); return }
     if (!product?.first_item_id) { toast.error("Produk tidak tersedia"); return }
-    addToCart.mutate({ produkItemId: product.first_item_id, qty } as any, {
+    addToCart.mutate({ body: { produk_item_id: product.first_item_id, qty: qty } }, {
       onSuccess: () => { toast.success("Ditambahkan ke keranjang!"); openCart() },
       onError: () => toast.error("Gagal menambahkan ke keranjang"),
     })
@@ -103,7 +104,7 @@ export default function ProdukDetailPage() {
   const handleBuyNow = () => {
     if (!isAuthenticated) { toast.error("Masuk terlebih dahulu"); return }
     if (!product?.first_item_id) return
-    addToCart.mutate({ produkItemId: product.first_item_id, qty } as any, {
+    addToCart.mutate({ body: { produk_item_id: product.first_item_id, qty: qty } }, {
       onSuccess: () => router.push("/keranjang"),
       onError: () => toast.error("Gagal"),
     })
@@ -112,7 +113,7 @@ export default function ProdukDetailPage() {
   const handleWishlist = () => {
     if (!isAuthenticated) { toast.error("Masuk untuk menambahkan ke wishlist"); return }
     if (!product?.first_item_id) return
-    addToWishlist.mutate({ produkItemId: product.first_item_id } as any, {
+    addToWishlist.mutate({ body: { produk_item_id: product.first_item_id } }, {
       onSuccess: () => toast.success("Ditambahkan ke wishlist!"),
       onError: () => toast.error("Gagal"),
     })
@@ -121,7 +122,7 @@ export default function ProdukDetailPage() {
   const onReviewSubmit = async (values: z.infer<typeof ReviewSchema>) => {
     if (!isAuthenticated) { toast.error("Masuk untuk menulis ulasan"); return }
     try {
-      await submitReview.mutateAsync({ id, ...values } as any)
+      await submitReview.mutateAsync({ params: { id: String(id) }, body: { rating: values.rating, title: values.title ?? undefined, comment: values.comment ?? undefined } })
       toast.success("Ulasan berhasil dikirim!")
       form.reset()
     } catch {

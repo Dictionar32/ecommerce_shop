@@ -16,6 +16,7 @@
     },
     "dependencies": {
         "@hookform/resolvers": "^5.2.2",
+        "@routesync/cli": "file:../Documents/demoPackageNpm/generic service_hooks/routesync/routesync/packages/cli",
         "@tanstack/react-query": "^5.90.21",
         "@types/node": "^25.2.3",
         "@types/react": "^19.2.14",
@@ -26,6 +27,7 @@
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
         "react-hook-form": "^7.71.1",
+        "routesync": "^1.0.25",
         "typescript": "^5.9.3",
         "zod": "^4.3.6",
         "zustand": "^5.0.11"

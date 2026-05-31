@@ -5,16 +5,17 @@ import { PageLoader } from "@/components/shared/page-loader";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { useProdukGet, useCategoriesGet, useWishlistGet } from "@/api/hooks";
+import { ProdukItem, Category } from "@/api/types-local";
 
 export default function ProdukPage() {
   // Fetch all data at page level (Blueprint: Page composes data)
-  const { data: resProduk, isLoading: produkLoading, isError: produkError } = useProdukGet();
-  const { data: resCat, isLoading: categoryLoading } = useCategoriesGet();
-  const { data: resWishlist } = useWishlistGet();
+  const { data: resProduk, isLoading: produkLoading, isError: produkError } = useProdukGet({});
+  const { data: resCat, isLoading: categoryLoading } = useCategoriesGet({});
+  const { data: resWishlist } = useWishlistGet({});
 
-  const produk = resProduk?.data as any;
-  const categories = resCat?.data as any;
-  const wishlistData = resWishlist?.data as any;
+  const produk = (resProduk as { data?: ProdukItem[] })?.data;
+  const categories = (resCat as { data?: Category[] })?.data;
+  const wishlistData = (resWishlist as { data?: ProdukItem[] })?.data;
 
   // Show loading for initial data fetch
   if (produkLoading || categoryLoading) {
@@ -40,7 +41,7 @@ export default function ProdukPage() {
   return (
     <ProdukList 
       initialData={produk} 
-      categories={categories}
+      categories={categories ?? []}
       wishlistData={wishlistData}
     />
   );

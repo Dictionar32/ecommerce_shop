@@ -6,12 +6,14 @@ use App\Http\Resources\ProdukItemResource;
 use App\Models\ProdukItemFrontend;
 use App\Models\ProdukItem;
 use Illuminate\Http\Request;
+use App\Attributes\Response;
 
 class ProdukController extends Controller
 {
     /**
      * List produk (guest boleh)
      */
+
     public function index(Request $request)
     {
         $query = ProdukItem::query()
@@ -56,12 +58,14 @@ class ProdukController extends Controller
     /**
      * Detail produk (guest boleh)
      */
+
     public function show($id)
     {
         $produk = ProdukItem::with(['category', 'frontend'])->findOrFail($id);
 
         return new ProdukItemResource($produk);
     }
+
 
     public function store(Request $request)
     {

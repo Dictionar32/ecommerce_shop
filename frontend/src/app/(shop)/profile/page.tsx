@@ -51,7 +51,7 @@ export default function ProfilePage() {
   }
 
   const handleLogout = () => {
-    logoutMutation.mutate(undefined as any, {
+    logoutMutation.mutate({}, {
       onSuccess: () => { 
         logoutLocal()
         toast.success("Berhasil keluar") 

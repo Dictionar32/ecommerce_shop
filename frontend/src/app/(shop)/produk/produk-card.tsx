@@ -9,9 +9,10 @@ import {
   CardLink, CardContainer, CardImageArea, CardImage, IconCartLarge, WishlistBtn, IconHeart,
   CardContentArea, IconStar, CardAddToCartBtn, IconCartSmall
 } from "./produk.styles"
+import { ProdukItem } from "@/api/types-local";
 
 interface ProdukCardProps {
-  item: any;
+  item: ProdukItem;
   isInWishlist?: boolean;
 }
 
@@ -22,7 +23,7 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
   const addToWishlist = useWishlistPost();
   const removeFromWishlist = useWishlistDeleteProdukItemId();
 
-  const isOutOfStock = item.stock === 0;
+  const isOutOfStock = (item.stok ?? 0) === 0;
 
   const firstItemId = item.first_item_id ?? item.id;
 
@@ -42,7 +43,7 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
     }
 
     addToCart.mutate(
-      { produk_item_id: firstItemId, qty: 1 },
+      { body: { produk_item_id: firstItemId, qty: 1 } },
       {
         onSuccess: () => {
           toast.success("Ditambahkan ke keranjang!");
@@ -67,12 +68,12 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
     }
 
     if (isInWishlist) {
-      removeFromWishlist.mutate({ produkItemId: firstItemId }, {
+      removeFromWishlist.mutate({ params: { produkItemId: String(firstItemId) } }, {
         onSuccess: () => toast.success("Dihapus dari wishlist"),
         onError: () => toast.error("Gagal menghapus dari wishlist"),
       });
     } else {
-      addToWishlist.mutate({ produk_item_id: firstItemId }, {
+      addToWishlist.mutate({ body: { produk_item_id: firstItemId } }, {
         onSuccess: () => toast.success("Ditambahkan ke wishlist!"),
         onError: () => toast.error("Gagal menambahkan ke wishlist"),
       });
@@ -140,9 +141,7 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
           )}
 
           {/* Price */}
-          <CardContentArea.price>
-            {formatPrice(item.price)}
-          </CardContentArea.price>
+          <CardContentArea.Price>{formatPrice(item.price ?? item.harga)}</CardContentArea.Price>
 
           {/* Add to Cart */}
           <CardAddToCartBtn

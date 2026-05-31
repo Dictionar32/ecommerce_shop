@@ -33,6 +33,7 @@ import {
 import { useKeranjangGet, useCheckoutPost, usePaymentPostOrderId } from "@/api/hooks"
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice } from "@/lib/utils-frontend"
+import { CartResponse, OrderResponse } from "@/api/types-local"
 import { z } from "zod"
 
 const CheckoutSchema = z.object({
@@ -88,8 +89,8 @@ export default function CheckoutPage() {
   const router = useRouter()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
 
-  const { data: resCart, isLoading: cartLoading } = useKeranjangGet()
-  const cart: any = resCart?.data
+  const { data: resCart, isLoading: cartLoading } = useKeranjangGet({})
+  const cart = (resCart as { data?: CartResponse })?.data
 
   const createOrder = useCheckoutPost()
 
@@ -110,12 +111,14 @@ export default function CheckoutPage() {
   const onShippingSubmit = async (values: OrderFormValues['Create']) => {
     try {
       const { data: order } = await createOrder.mutateAsync({
-        shipping_nama: values.shippingNama,
-        shipping_telepon: values.shippingTelepon,
-        shipping_alamat: values.shippingAlamat,
-        shipping_kota: values.shippingKota,
-        shipping_kode_pos: values.shippingKodePos
-      } as any) as { data: any }
+        body: {
+          shipping_nama: values.shippingNama,
+          shipping_telepon: values.shippingTelepon,
+          shipping_alamat: values.shippingAlamat,
+          shipping_kota: values.shippingKota,
+          shipping_kode_pos: values.shippingKodePos
+        }
+      }) as { data: OrderResponse }
       setOrderId(order.id)
       setSavedOrder({ id: order.id, invoice: order.invoice_number ?? `#${order.id}` })
       setStep(2)
@@ -130,10 +133,12 @@ export default function CheckoutPage() {
     if (!savedOrder) return
     try {
       const { data: payment } = await createPayment.mutateAsync({
-        orderId: savedOrder.id.toString(),
-        metode: paymentMethod,
-        provider: "mock",
-      } as any) as { data: any }
+        params: { orderId: savedOrder.id.toString() },
+        body: {
+          metode: paymentMethod,
+          provider: "mock",
+        }
+      }) as { data: { status: string } }
       toast.success("Pembayaran berhasil!")
       router.push(
         `/payment/success?orderId=${savedOrder.id}&invoice=${savedOrder.invoice}&status=${payment.status ?? "paid"}`
@@ -145,8 +150,7 @@ export default function CheckoutPage() {
 
   if (!isAuthenticated) return <AuthGuard icon={Lock} title="Masuk untuk checkout" />
 
-  const rawItems = cart?.items;
-  const items: any[] = Array.isArray(rawItems) ? rawItems : (rawItems?.data ?? []);
+  const items = cart?.items ?? [];
 
   return (
     <PageContainer>

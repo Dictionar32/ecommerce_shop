@@ -27,6 +27,8 @@ class ProdukItem extends Model
         'stok' => 'integer',
     ];
 
+    protected $appends = ['image', 'image_url', 'category_name', 'rating', 'review_count'];
+
     public function orderDetails():HasMany{
         return $this->hasMany(OrderDetail::class);
     }

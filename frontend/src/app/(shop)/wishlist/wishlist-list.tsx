@@ -3,12 +3,13 @@
 import Link from "next/link"
 import { Trash2, ShoppingCart } from "lucide-react"
 import { formatPrice } from "@/lib/utils-frontend"
+import { WishlistItem } from "@/api/types-local"
 import {
   GridContainer, CardContainer, CardImageArea, CardImage, RemoveBtn,
   CardContentArea, CatText, ProductName, RatingWrapper, StarsBox, StarIcon, RatingCount, PriceText, ProductLinkBtn
 } from "./wishlist.styles"
 interface WishlistListProps {
-  items: any[]
+  items: WishlistItem[]
   onRemove: (produkItemId: number) => void
   isRemoving: boolean
 }

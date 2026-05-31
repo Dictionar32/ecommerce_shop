@@ -13,18 +13,14 @@ use Illuminate\Support\Str;
 use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Facades\Socialite;
 use Throwable;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\LoginRequest;
 
 class AuthController extends Controller
 {
     // REGISTER
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
 {
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:6',
-    ]);
-
     User::create([
         'name' => $request->name,
         'email' => $request->email,
@@ -40,12 +36,7 @@ class AuthController extends Controller
 }
 
     // LOGIN
-    public function login(Request $request){
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
+    public function login(LoginRequest $request){
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {

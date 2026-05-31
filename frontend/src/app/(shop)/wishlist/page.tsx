@@ -16,13 +16,12 @@ import {
 export default function WishlistPage() {
   const router = useRouter()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const { data: resWishlist, isLoading } = useWishlistGet()
-  const rawItems = resWishlist?.data
-  const items: any[] = Array.isArray(rawItems) ? rawItems : []
+  const { data: resWishlist, isLoading } = useWishlistGet({})
+  const items = (resWishlist as { data?: import("@/api/types-local").WishlistItem[] })?.data ?? []
   const deleteMutation = useWishlistDeleteProdukItemId()
 
   const handleRemove = (produkItemId: number) => {
-    deleteMutation.mutate({ produkItemId }, {
+    deleteMutation.mutate({ params: { produkItemId: String(produkItemId) } }, {
       onSuccess: () => toast.success("Dihapus dari wishlist"),
       onError: () => toast.error("Gagal menghapus"),
     })

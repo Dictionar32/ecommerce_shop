@@ -14,6 +14,7 @@ import { PageLoader, ErrorState, AuthGuard, SectionHeader, StatusBadge } from "@
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice, formatDate } from "@/lib/utils-frontend"
 import { useOrdersGet, useOrdersGetId } from "@/api/hooks"
+import { OrderResponse } from "@/api/types-local"
 import apiClient from "@/lib/core/api-client"
 import {
   PageContainer, ContentWrapper, GridContainer, SidebarWrapper, SidebarCard, SidebarCardSm,
@@ -34,10 +35,10 @@ export default function OrdersPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [downloadingId, setDownloadingId] = useState<number | null>(null)
 
-  const { data: resOrders, isLoading, isError } = useOrdersGet()
-  const orders: any[] = resOrders?.data ?? []
-  const { data: resDetail, isLoading: detailLoading } = useOrdersGetId({ id: selectedId ?? 0 })
-  const detail: any = resDetail?.data
+  const { data: resOrders, isLoading, isError } = useOrdersGet({})
+  const orders = ((resOrders as { data?: OrderResponse[] })?.data) ?? []
+  const { data: resDetail, isLoading: detailLoading } = useOrdersGetId({ params: { id: String(selectedId ?? 0) } })
+  const detail = (resDetail as { data?: OrderResponse })?.data
 
   const handleDownloadInvoice = async (orderId: number) => {
     setDownloadingId(orderId)
@@ -146,9 +147,9 @@ export default function OrdersPage() {
                 <DetailHeaderRow>
                   <div>
                     <DetailInvoiceTitle>{detail.invoice_number || `Order #${detail.id}`}</DetailInvoiceTitle>
-                    <DetailDate>{formatDate(detail.created_at)}</DetailDate>
+                    <DetailDate>{formatDate(detail.created_at ?? "")}</DetailDate>
                     <DetailStatusWrapper>
-                      <StatusBadge status={detail.payment_status} />
+                      <StatusBadge status={detail.payment_status ?? detail.status ?? ""} />
                       {detail.fulfillment_status && detail.fulfillment_status !== detail.payment_status && (
                         <StatusBadge status={detail.fulfillment_status} />
                       )}
@@ -206,13 +207,13 @@ export default function OrdersPage() {
                   ].filter(r => r.show).map(row => (
                     <TotalRowBox key={row.label} color={row.cls ?? "default"}>
                       <span>{row.label}</span>
-                      <span>{row.val < 0 ? `-${formatPrice(-row.val)}` : formatPrice(row.val)}</span>
+                      <span>{(row.val ?? 0) < 0 ? `-${formatPrice(-(row.val ?? 0))}` : formatPrice(row.val ?? 0)}</span>
                     </TotalRowBox>
                   ))}
                   <DetailSeparatorSm />
                   <GrandTotalRowBox>
                     <GrandTotalLabel>Total</GrandTotalLabel>
-                    <GrandTotalValue>{formatPrice(detail.total_harga_minor)}</GrandTotalValue>
+                    <GrandTotalValue>{formatPrice(detail.total_harga_minor ?? detail.total_harga ?? 0)}</GrandTotalValue>
                   </GrandTotalRowBox>
                 </TotalsWrapper>
               </DetailContentWrapper>

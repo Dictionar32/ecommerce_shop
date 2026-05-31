@@ -22,6 +22,7 @@ import {
 } from "./keranjang.styles"
 
 import { useKeranjangGet, useCartPatchItemsProdukItemId, useCartDeleteItemsProdukItemId, useCartPostPromo, useCartDeletePromo } from "@/api/hooks"
+import { CartResponse } from "@/api/types-local"
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice } from "@/lib/utils-frontend"
 
@@ -30,8 +31,8 @@ export default function KeranjangPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const [promoInput, setPromoInput] = useState("")
 
-  const { data: resCart, isLoading } = useKeranjangGet()
-  const cart: any = resCart?.data
+  const { data: resCart, isLoading } = useKeranjangGet({})
+  const cart = (resCart as { data?: CartResponse })?.data
   const updateItemMut = useCartPatchItemsProdukItemId()
   const removeItemMut = useCartDeleteItemsProdukItemId()
   const applyPromoMut = useCartPostPromo()
@@ -40,14 +41,14 @@ export default function KeranjangPage() {
   const handleQtyChange = (produkItemId: number, currentQty: number, delta: number) => {
     const newQty = currentQty + delta
     if (newQty < 1) {
-      removeItemMut.mutate({ produkItemId }, { onError: () => toast.error("Gagal menghapus item") })
+      removeItemMut.mutate({ params: { produkItemId: String(produkItemId) } }, { onError: () => toast.error("Gagal menghapus item") })
     } else {
-      updateItemMut.mutate({ produkItemId, qty: newQty }, { onError: () => toast.error("Gagal mengubah jumlah") })
+      updateItemMut.mutate({ params: { produkItemId: String(produkItemId) }, body: { qty: newQty } }, { onError: () => toast.error("Gagal mengubah jumlah") })
     }
   }
 
   const handleRemove = (produkItemId: number) => {
-    removeItemMut.mutate({ produkItemId }, {
+    removeItemMut.mutate({ params: { produkItemId: String(produkItemId) } }, {
       onSuccess: () => toast.success("Item dihapus"),
       onError: () => toast.error("Gagal menghapus item"),
     })
@@ -55,7 +56,7 @@ export default function KeranjangPage() {
 
   const handleApplyPromo = () => {
     if (!promoInput.trim()) return
-    applyPromoMut.mutate({ code: promoInput.trim() }, {
+    applyPromoMut.mutate({ body: { code: promoInput.trim() } }, {
       onSuccess: () => { toast.success("Kode promo diterapkan!"); setPromoInput("") },
       onError: () => toast.error("Kode promo tidak valid"),
     })
@@ -78,8 +79,7 @@ export default function KeranjangPage() {
     )
   }
 
-  const rawItems = cart?.items;
-  const items: any[] = Array.isArray(rawItems) ? rawItems : (rawItems?.data ?? []);
+  const items = cart?.items ?? [];
 
   return (
     <PageContainer>
@@ -155,7 +155,7 @@ export default function KeranjangPage() {
                     <PromoCard.code>{cart.promotion_code}</PromoCard.code>
                     <RemovePromoBtn variant="ghost" size="icon"
                       disabled={removePromoMut.isPending}
-                      onClick={() => removePromoMut.mutate({} as any, { onSuccess: () => toast.success("Promo dihapus") })}>
+                      onClick={() => removePromoMut.mutate({}, { onSuccess: () => toast.success("Promo dihapus") })}>
                       {removePromoMut.isPending ? <IconLoader size={12} /> : <IconX size={12} />}
                     </RemovePromoBtn>
                   </PromoCard.appliedWrapper>
