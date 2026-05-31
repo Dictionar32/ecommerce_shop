@@ -24,7 +24,8 @@ export function useLoginPost() {
  * Prefer `useApiQuery(api.oauth.getProviderRedirect, ...args)` for future compatibility.
  */
 export function useOauthGetProviderRedirect(...args: [options: import('./api').OauthGetProviderRedirectContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').OauthGetProviderRedirectContract['response'], import('./types').ApiError>]) {
-  return useApiQuery<import('./api').OauthGetProviderRedirectContract['response'], import('./api').OauthGetProviderRedirectContract['request']['params'], import('./api').OauthGetProviderRedirectContract['request']['body'], import('./types').ApiError>(api.oauth.getProviderRedirect, ...args)
+  const [options, queryOptions] = args
+  return useApiQuery<import('./api').OauthGetProviderRedirectContract['response'], import('./api').OauthGetProviderRedirectContract['request']['params'], import('./api').OauthGetProviderRedirectContract['request']['body'], import('./types').ApiError>(api.oauth.getProviderRedirect, options, queryOptions)
 }
 
 /**
@@ -32,7 +33,8 @@ export function useOauthGetProviderRedirect(...args: [options: import('./api').O
  * Prefer `useApiQuery(api.oauth.getProviderCallback, ...args)` for future compatibility.
  */
 export function useOauthGetProviderCallback(...args: [options: import('./api').OauthGetProviderCallbackContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').OauthGetProviderCallbackContract['response'], import('./types').ApiError>]) {
-  return useApiQuery<import('./api').OauthGetProviderCallbackContract['response'], import('./api').OauthGetProviderCallbackContract['request']['params'], import('./api').OauthGetProviderCallbackContract['request']['body'], import('./types').ApiError>(api.oauth.getProviderCallback, ...args)
+  const [options, queryOptions] = args
+  return useApiQuery<import('./api').OauthGetProviderCallbackContract['response'], import('./api').OauthGetProviderCallbackContract['request']['params'], import('./api').OauthGetProviderCallbackContract['request']['body'], import('./types').ApiError>(api.oauth.getProviderCallback, options, queryOptions)
 }
 
 /**
@@ -72,7 +74,8 @@ export function useResetPasswordPost() {
  * Prefer `useApiQuery(api.categories.get, ...args)` for future compatibility.
  */
 export function useCategoriesGet(...args: [options?: import('./api').CategoriesGetContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').CategoriesGetContract['response'], import('./types').ApiError>]) {
-  return useApiQuery<import('./api').CategoriesGetContract['response'], import('./api').CategoriesGetContract['request']['params'], import('./api').CategoriesGetContract['request']['body'], import('./types').ApiError>(api.categories.get, ...args)
+  const [options, queryOptions] = args
+  return useApiQuery<import('./api').CategoriesGetContract['response'], import('./api').CategoriesGetContract['request']['params'], import('./api').CategoriesGetContract['request']['body'], import('./types').ApiError>(api.categories.get, options, queryOptions)
 }
 
 /**
@@ -80,7 +83,8 @@ export function useCategoriesGet(...args: [options?: import('./api').CategoriesG
  * Prefer `useApiQuery(api.produk.get, ...args)` for future compatibility.
  */
 export function useProdukGet(...args: [options?: import('./api').ProdukGetContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').ProdukGetContract['response'], import('./types').ApiError>]) {
-  return useApiQuery<import('./api').ProdukGetContract['response'], import('./api').ProdukGetContract['request']['params'], import('./api').ProdukGetContract['request']['body'], import('./types').ApiError>(api.produk.get, ...args)
+  const [options, queryOptions] = args
+  return useApiQuery<import('./api').ProdukGetContract['response'], import('./api').ProdukGetContract['request']['params'], import('./api').ProdukGetContract['request']['body'], import('./types').ApiError>(api.produk.get, options, queryOptions)
 }
 
 /**
@@ -88,7 +92,8 @@ export function useProdukGet(...args: [options?: import('./api').ProdukGetContra
  * Prefer `useApiQuery(api.produk.getId, ...args)` for future compatibility.
  */
 export function useProdukGetId(...args: [options: import('./api').ProdukGetIdContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').ProdukGetIdContract['response'], import('./types').ApiError>]) {
-  return useApiQuery<import('./api').ProdukGetIdContract['response'], import('./api').ProdukGetIdContract['request']['params'], import('./api').ProdukGetIdContract['request']['body'], import('./types').ApiError>(api.produk.getId, ...args)
+  const [options, queryOptions] = args
+  return useApiQuery<import('./api').ProdukGetIdContract['response'], import('./api').ProdukGetIdContract['request']['params'], import('./api').ProdukGetIdContract['request']['body'], import('./types').ApiError>(api.produk.getId, options, queryOptions)
 }
 
 /**
@@ -96,7 +101,8 @@ export function useProdukGetId(...args: [options: import('./api').ProdukGetIdCon
  * Prefer `useApiQuery(api.produk.getIdReviews, ...args)` for future compatibility.
  */
 export function useProdukGetIdReviews(...args: [options: import('./api').ProdukGetIdReviewsContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').ProdukGetIdReviewsContract['response'], import('./types').ApiError>]) {
-  return useApiQuery<import('./api').ProdukGetIdReviewsContract['response'], import('./api').ProdukGetIdReviewsContract['request']['params'], import('./api').ProdukGetIdReviewsContract['request']['body'], import('./types').ApiError>(api.produk.getIdReviews, ...args)
+  const [options, queryOptions] = args
+  return useApiQuery<import('./api').ProdukGetIdReviewsContract['response'], import('./api').ProdukGetIdReviewsContract['request']['params'], import('./api').ProdukGetIdReviewsContract['request']['body'], import('./types').ApiError>(api.produk.getIdReviews, options, queryOptions)
 }
 
 /**
@@ -128,7 +134,8 @@ export function usePaymentPostOrderId() {
  * Prefer `useApiQuery(api.profile.get, ...args)` for future compatibility.
  */
 export function useProfileGet(...args: [options?: import('./api').ProfileGetContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').ProfileGetContract['response'], import('./types').ApiError>]) {
-  return useApiQuery<import('./api').ProfileGetContract['response'], import('./api').ProfileGetContract['request']['params'], import('./api').ProfileGetContract['request']['body'], import('./types').ApiError>(api.profile.get, ...args)
+  const [options, queryOptions] = args
+  return useApiQuery<import('./api').ProfileGetContract['response'], import('./api').ProfileGetContract['request']['params'], import('./api').ProfileGetContract['request']['body'], import('./types').ApiError>(api.profile.get, options, queryOptions)
 }
 
 /**
@@ -152,7 +159,8 @@ export function useProfilePatch() {
  * Prefer `useApiQuery(api.orders.get, ...args)` for future compatibility.
  */
 export function useOrdersGet(...args: [options?: import('./api').OrdersGetContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').OrdersGetContract['response'], import('./types').ApiError>]) {
-  return useApiQuery<import('./api').OrdersGetContract['response'], import('./api').OrdersGetContract['request']['params'], import('./api').OrdersGetContract['request']['body'], import('./types').ApiError>(api.orders.get, ...args)
+  const [options, queryOptions] = args
+  return useApiQuery<import('./api').OrdersGetContract['response'], import('./api').OrdersGetContract['request']['params'], import('./api').OrdersGetContract['request']['body'], import('./types').ApiError>(api.orders.get, options, queryOptions)
 }
 
 /**
@@ -160,7 +168,8 @@ export function useOrdersGet(...args: [options?: import('./api').OrdersGetContra
  * Prefer `useApiQuery(api.orders.getId, ...args)` for future compatibility.
  */
 export function useOrdersGetId(...args: [options: import('./api').OrdersGetIdContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').OrdersGetIdContract['response'], import('./types').ApiError>]) {
-  return useApiQuery<import('./api').OrdersGetIdContract['response'], import('./api').OrdersGetIdContract['request']['params'], import('./api').OrdersGetIdContract['request']['body'], import('./types').ApiError>(api.orders.getId, ...args)
+  const [options, queryOptions] = args
+  return useApiQuery<import('./api').OrdersGetIdContract['response'], import('./api').OrdersGetIdContract['request']['params'], import('./api').OrdersGetIdContract['request']['body'], import('./types').ApiError>(api.orders.getId, options, queryOptions)
 }
 
 /**
@@ -168,7 +177,8 @@ export function useOrdersGetId(...args: [options: import('./api').OrdersGetIdCon
  * Prefer `useApiQuery(api.orders.getIdInvoice, ...args)` for future compatibility.
  */
 export function useOrdersGetIdInvoice(...args: [options: import('./api').OrdersGetIdInvoiceContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').OrdersGetIdInvoiceContract['response'], import('./types').ApiError>]) {
-  return useApiQuery<import('./api').OrdersGetIdInvoiceContract['response'], import('./api').OrdersGetIdInvoiceContract['request']['params'], import('./api').OrdersGetIdInvoiceContract['request']['body'], import('./types').ApiError>(api.orders.getIdInvoice, ...args)
+  const [options, queryOptions] = args
+  return useApiQuery<import('./api').OrdersGetIdInvoiceContract['response'], import('./api').OrdersGetIdInvoiceContract['request']['params'], import('./api').OrdersGetIdInvoiceContract['request']['body'], import('./types').ApiError>(api.orders.getIdInvoice, options, queryOptions)
 }
 
 /**
@@ -240,7 +250,8 @@ export function useBuyNowPost() {
  * Prefer `useApiQuery(api.keranjang.get, ...args)` for future compatibility.
  */
 export function useKeranjangGet(...args: [options?: import('./api').KeranjangGetContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').KeranjangGetContract['response'], import('./types').ApiError>]) {
-  return useApiQuery<import('./api').KeranjangGetContract['response'], import('./api').KeranjangGetContract['request']['params'], import('./api').KeranjangGetContract['request']['body'], import('./types').ApiError>(api.keranjang.get, ...args)
+  const [options, queryOptions] = args
+  return useApiQuery<import('./api').KeranjangGetContract['response'], import('./api').KeranjangGetContract['request']['params'], import('./api').KeranjangGetContract['request']['body'], import('./types').ApiError>(api.keranjang.get, options, queryOptions)
 }
 
 /**
@@ -248,7 +259,8 @@ export function useKeranjangGet(...args: [options?: import('./api').KeranjangGet
  * Prefer `useApiQuery(api.wishlist.get, ...args)` for future compatibility.
  */
 export function useWishlistGet(...args: [options?: import('./api').WishlistGetContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').WishlistGetContract['response'], import('./types').ApiError>]) {
-  return useApiQuery<import('./api').WishlistGetContract['response'], import('./api').WishlistGetContract['request']['params'], import('./api').WishlistGetContract['request']['body'], import('./types').ApiError>(api.wishlist.get, ...args)
+  const [options, queryOptions] = args
+  return useApiQuery<import('./api').WishlistGetContract['response'], import('./api').WishlistGetContract['request']['params'], import('./api').WishlistGetContract['request']['body'], import('./types').ApiError>(api.wishlist.get, options, queryOptions)
 }
 
 /**

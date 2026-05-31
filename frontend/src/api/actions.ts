@@ -1,7 +1,7 @@
 // Auto-generated Next.js Server Actions. Do not edit manually.
 "use server";
 
-import { api, type RegisterPostContract, type LoginPostContract, type OauthGetProviderRedirectContract, type OauthGetProviderCallbackContract, type OauthPostProviderCallbackContract, type SocialPostLoginContract, type ForgotPasswordPostContract, type ResetPasswordPostContract, type CategoriesGetContract, type ProdukGetContract, type ProdukGetIdContract, type ProdukGetIdReviewsContract, type ProdukPostIdReviewsContract, type PaymentPostWebhookContract, type PaymentPostOrderIdContract, type ProfileGetContract, type ProfilePutContract, type ProfilePatchContract, type OrdersGetContract, type OrdersGetIdContract, type OrdersGetIdInvoiceContract, type CartPostItemsContract, type CartPatchItemsProdukItemIdContract, type CartDeleteItemsProdukItemIdContract, type CartDeleteContract, type CartPostPromoContract, type CartDeletePromoContract, type CheckoutPostContract, type BuyNowPostContract, type KeranjangGetContract, type WishlistGetContract, type WishlistPostContract, type WishlistDeleteProdukItemIdContract, type LogoutPostContract, type AdminPostProdukContract } from './api'
+import { api, type RegisterPostContract, type LoginPostContract, type OauthGetProviderRedirectContract, type OauthGetProviderCallbackContract, type OauthPostProviderCallbackContract, type SocialPostLoginContract, type ForgotPasswordPostContract, type ResetPasswordPostContract, type CategoriesGetContract, type ProdukGetContract, type ProdukGetIdContract, type ProdukGetIdReviewsContract, type ProdukPostIdReviewsContract, type PaymentPostOrderIdContract, type ProfileGetContract, type ProfilePutContract, type ProfilePatchContract, type OrdersGetContract, type OrdersGetIdContract, type OrdersGetIdInvoiceContract, type CartPostItemsContract, type CartPatchItemsProdukItemIdContract, type CartDeleteItemsProdukItemIdContract, type CartDeleteContract, type CartPostPromoContract, type CartDeletePromoContract, type CheckoutPostContract, type BuyNowPostContract, type KeranjangGetContract, type WishlistGetContract, type WishlistPostContract, type WishlistDeleteProdukItemIdContract, type AdminPostProdukContract } from './api'
 import { cookies } from 'next/headers'
 
 // Helper to auto-inject token from cookies if available
@@ -11,18 +11,18 @@ async function getAuthHeaders(): Promise<Record<string, string> | undefined> {
   return token ? { Authorization: `Bearer ${token}` } : undefined
 }
 
-export async function registerPostAction(payload?: { body?: RegisterPostContract['request']['body'] }) {
+export async function registerPostAction(payload: { body: RegisterPostContract['request']['body'] }) {
   try {
-    const data = await api.register.post({ body: payload?.body })
+    const data = await api.register.post({ body: payload.body })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
   }
 }
 
-export async function loginPostAction(payload?: { body?: LoginPostContract['request']['body'] }) {
+export async function loginPostAction(payload: { body: LoginPostContract['request']['body'] }) {
   try {
-    const data = await api.login.post({ body: payload?.body })
+    const data = await api.login.post({ body: payload.body })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
@@ -56,27 +56,27 @@ export async function oauthPostProviderCallbackAction(payload: { params: OauthPo
   }
 }
 
-export async function socialPostLoginAction(payload?: { body?: SocialPostLoginContract['request']['body'] }) {
+export async function socialPostLoginAction(payload: { body: SocialPostLoginContract['request']['body'] }) {
   try {
-    const data = await api.social.postLogin({ body: payload?.body })
+    const data = await api.social.postLogin({ body: payload.body })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
   }
 }
 
-export async function forgotPasswordPostAction(payload?: { body?: ForgotPasswordPostContract['request']['body'] }) {
+export async function forgotPasswordPostAction(payload: { body: ForgotPasswordPostContract['request']['body'] }) {
   try {
-    const data = await api.forgotPassword.post({ body: payload?.body })
+    const data = await api.forgotPassword.post({ body: payload.body })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
   }
 }
 
-export async function resetPasswordPostAction(payload?: { body?: ResetPasswordPostContract['request']['body'] }) {
+export async function resetPasswordPostAction(payload: { body: ResetPasswordPostContract['request']['body'] }) {
   try {
-    const data = await api.resetPassword.post({ body: payload?.body })
+    const data = await api.resetPassword.post({ body: payload.body })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
@@ -119,9 +119,9 @@ export async function produkGetIdReviewsAction(payload: { params: ProdukGetIdRev
   }
 }
 
-export async function produkPostIdReviewsAction(payload: { params: ProdukPostIdReviewsContract['request']['params'], body?: ProdukPostIdReviewsContract['request']['body'] }) {
+export async function produkPostIdReviewsAction(payload: { params: ProdukPostIdReviewsContract['request']['params'], body: ProdukPostIdReviewsContract['request']['body'] }) {
   try {
-    const data = await api.produk.postIdReviews({ params: payload.params, body: payload?.body, headers: await getAuthHeaders() })
+    const data = await api.produk.postIdReviews({ params: payload.params, body: payload.body, headers: await getAuthHeaders() })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
@@ -137,9 +137,9 @@ export async function paymentPostWebhookAction() {
   }
 }
 
-export async function paymentPostOrderIdAction(payload: { params: PaymentPostOrderIdContract['request']['params'], body?: PaymentPostOrderIdContract['request']['body'] }) {
+export async function paymentPostOrderIdAction(payload: { params: PaymentPostOrderIdContract['request']['params'], body: PaymentPostOrderIdContract['request']['body'] }) {
   try {
-    const data = await api.payment.postOrderId({ params: payload.params, body: payload?.body, headers: await getAuthHeaders() })
+    const data = await api.payment.postOrderId({ params: payload.params, body: payload.body, headers: await getAuthHeaders() })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
@@ -155,18 +155,18 @@ export async function profileGetAction(payload?: { query?: ProfileGetContract['r
   }
 }
 
-export async function profilePutAction(payload?: { body?: ProfilePutContract['request']['body'] }) {
+export async function profilePutAction(payload: { body: ProfilePutContract['request']['body'] }) {
   try {
-    const data = await api.profile.put({ body: payload?.body, headers: await getAuthHeaders() })
+    const data = await api.profile.put({ body: payload.body, headers: await getAuthHeaders() })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
   }
 }
 
-export async function profilePatchAction(payload?: { body?: ProfilePatchContract['request']['body'] }) {
+export async function profilePatchAction(payload: { body: ProfilePatchContract['request']['body'] }) {
   try {
-    const data = await api.profile.patch({ body: payload?.body, headers: await getAuthHeaders() })
+    const data = await api.profile.patch({ body: payload.body, headers: await getAuthHeaders() })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
@@ -200,18 +200,18 @@ export async function ordersGetIdInvoiceAction(payload: { params: OrdersGetIdInv
   }
 }
 
-export async function cartPostItemsAction(payload?: { body?: CartPostItemsContract['request']['body'] }) {
+export async function cartPostItemsAction(payload: { body: CartPostItemsContract['request']['body'] }) {
   try {
-    const data = await api.cart.postItems({ body: payload?.body, headers: await getAuthHeaders() })
+    const data = await api.cart.postItems({ body: payload.body, headers: await getAuthHeaders() })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
   }
 }
 
-export async function cartPatchItemsProdukItemIdAction(payload: { params: CartPatchItemsProdukItemIdContract['request']['params'], body?: CartPatchItemsProdukItemIdContract['request']['body'] }) {
+export async function cartPatchItemsProdukItemIdAction(payload: { params: CartPatchItemsProdukItemIdContract['request']['params'], body: CartPatchItemsProdukItemIdContract['request']['body'] }) {
   try {
-    const data = await api.cart.patchItemsProdukItemId({ params: payload.params, body: payload?.body, headers: await getAuthHeaders() })
+    const data = await api.cart.patchItemsProdukItemId({ params: payload.params, body: payload.body, headers: await getAuthHeaders() })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
@@ -236,9 +236,9 @@ export async function cartDeleteAction(payload?: { query?: CartDeleteContract['r
   }
 }
 
-export async function cartPostPromoAction(payload?: { body?: CartPostPromoContract['request']['body'] }) {
+export async function cartPostPromoAction(payload: { body: CartPostPromoContract['request']['body'] }) {
   try {
-    const data = await api.cart.postPromo({ body: payload?.body, headers: await getAuthHeaders() })
+    const data = await api.cart.postPromo({ body: payload.body, headers: await getAuthHeaders() })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
@@ -254,18 +254,18 @@ export async function cartDeletePromoAction(payload?: { query?: CartDeletePromoC
   }
 }
 
-export async function checkoutPostAction(payload?: { body?: CheckoutPostContract['request']['body'] }) {
+export async function checkoutPostAction(payload: { body: CheckoutPostContract['request']['body'] }) {
   try {
-    const data = await api.checkout.post({ body: payload?.body, headers: await getAuthHeaders() })
+    const data = await api.checkout.post({ body: payload.body, headers: await getAuthHeaders() })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
   }
 }
 
-export async function buyNowPostAction(payload?: { body?: BuyNowPostContract['request']['body'] }) {
+export async function buyNowPostAction(payload: { body: BuyNowPostContract['request']['body'] }) {
   try {
-    const data = await api.buyNow.post({ body: payload?.body, headers: await getAuthHeaders() })
+    const data = await api.buyNow.post({ body: payload.body, headers: await getAuthHeaders() })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
@@ -290,9 +290,9 @@ export async function wishlistGetAction(payload?: { query?: WishlistGetContract[
   }
 }
 
-export async function wishlistPostAction(payload?: { body?: WishlistPostContract['request']['body'] }) {
+export async function wishlistPostAction(payload: { body: WishlistPostContract['request']['body'] }) {
   try {
-    const data = await api.wishlist.post({ body: payload?.body, headers: await getAuthHeaders() })
+    const data = await api.wishlist.post({ body: payload.body, headers: await getAuthHeaders() })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }
@@ -317,9 +317,9 @@ export async function logoutPostAction() {
   }
 }
 
-export async function adminPostProdukAction(payload?: { body?: AdminPostProdukContract['request']['body'] }) {
+export async function adminPostProdukAction(payload: { body: AdminPostProdukContract['request']['body'] }) {
   try {
-    const data = await api.admin.postProduk({ body: payload?.body, headers: await getAuthHeaders() })
+    const data = await api.admin.postProduk({ body: payload.body, headers: await getAuthHeaders() })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }

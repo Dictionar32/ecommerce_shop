@@ -223,33 +223,33 @@ export const WishlistSchema = z.object({
 
 export const RegisterPostSchema = z.object({
   name: z.string(),
-  email: z.unknown(),
-  password: z.unknown(),
+  email: z.string(),
+  password: z.string(),
 })
 
 export const LoginPostSchema = z.object({
-  email: z.unknown(),
-  password: z.unknown(),
+  email: z.string(),
+  password: z.string(),
 })
 
 export const OauthGetProviderRedirectSchema = z.object({
-  redirectTo: z.unknown().optional().nullable(),
+  redirectTo: z.string().optional().nullable(),
 })
 
 export const SocialPostLoginSchema = z.object({
-  provider: z.unknown(),
+  provider: z.string(),
   providerUserId: z.string(),
-  email: z.unknown(),
+  email: z.string(),
   name: z.string().optional().nullable(),
-  avatarUrl: z.unknown().optional().nullable(),
+  avatarUrl: z.string().optional().nullable(),
 })
 
 export const ForgotPasswordPostSchema = z.object({
-  email: z.unknown(),
+  email: z.string(),
 })
 
 export const ResetPasswordPostSchema = z.object({
-  email: z.unknown(),
+  email: z.string(),
   token: z.string(),
   password: z.string(),
 })
@@ -272,16 +272,16 @@ export const PaymentPostOrderIdSchema = z.object({
 
 export const ProfilePutSchema = z.object({
   name: z.string(),
-  email: z.unknown(),
+  email: z.string(),
 })
 
 export const ProfilePatchSchema = z.object({
   name: z.string(),
-  email: z.unknown(),
+  email: z.string(),
 })
 
 export const CartPostItemsSchema = z.object({
-  produkItemId: z.unknown(),
+  produkItemId: z.string(),
   qty: z.number(),
 })
 
@@ -295,7 +295,7 @@ export const CartPostPromoSchema = z.object({
 
 export const CheckoutPostSchema = z.object({
   items: z.array(z.unknown()).optional(),
-  "items.*.produkItemId": z.unknown(),
+  "items.*.produkItemId": z.string(),
   "items.*.qty": z.number(),
   shippingNama: z.string().optional().nullable(),
   shippingTelepon: z.string().optional().nullable(),
@@ -305,7 +305,7 @@ export const CheckoutPostSchema = z.object({
 })
 
 export const BuyNowPostSchema = z.object({
-  produkItemId: z.unknown(),
+  produkItemId: z.string(),
   qty: z.number(),
   shippingNama: z.string().optional().nullable(),
   shippingTelepon: z.string().optional().nullable(),
@@ -315,14 +315,14 @@ export const BuyNowPostSchema = z.object({
 })
 
 export const WishlistPostSchema = z.object({
-  produkItemId: z.unknown(),
+  produkItemId: z.string(),
 })
 
 export const AdminPostProdukSchema = z.object({
   nama: z.string(),
   deskripsi: z.string().optional().nullable(),
   gambar: z.string().optional().nullable(),
-  categoryId: z.unknown(),
+  categoryId: z.string(),
   harga: z.number(),
   stok: z.number(),
   rating: z.number().optional().nullable(),
