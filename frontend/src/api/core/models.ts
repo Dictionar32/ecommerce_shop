@@ -3,197 +3,202 @@
 export interface Category {
   id: number
   nama: string
-  created_at: string | null
-  updated_at: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface Order {
   id: number
-  user_id: number
-  total_harga: number
+  userId: number
+  totalHarga: number
   status: 'pending' | 'paid' | 'canceled'
-  order_number: string | null
-  created_at: string | null
-  updated_at: string | null
+  orderNumber: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface OrderAmount {
   id: number
-  order_id: number
-  subtotal_minor: number
-  shipping_minor: number
-  discount_minor: number
-  tax_minor: number
-  total_minor: number
-  created_at: string | null
-  updated_at: string | null
+  orderId: number
+  subtotalMinor: number
+  shippingMinor: number
+  discountMinor: number
+  taxMinor: number
+  totalMinor: number
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface OrderDetail {
   id: number
-  order_id: number
-  produk_item_id: number
+  orderId: number
+  produkItemId: number
   qty: number
   harga: number
-  created_at: string | null
-  updated_at: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface OrderFinancial {
   id: number
-  order_id: number
-  financial_status: string
-  refunded_at: string | null
-  refund_reason: string | null
-  created_at: string | null
-  updated_at: string | null
+  orderId: number
+  financialStatus: string
+  refundedAt: string | null
+  refundReason: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface OrderFulfillment {
   id: number
-  order_id: number
-  fulfillment_status: string
-  processing_at: string | null
-  shipped_at: string | null
-  completed_at: string | null
-  canceled_at: string | null
-  cancel_reason: string | null
-  created_at: string | null
-  updated_at: string | null
+  orderId: number
+  fulfillmentStatus: string
+  processingAt: string | null
+  shippedAt: string | null
+  completedAt: string | null
+  canceledAt: string | null
+  cancelReason: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface OrderPromotion {
   id: number
-  order_id: number
-  promo_code_id: number | null
-  promo_code: string
-  discount_minor: number
+  orderId: number
+  promoCodeId: number | null
+  promoCode: string
+  discountMinor: number
   metadata: Record<string, unknown> | null
-  created_at: string | null
-  updated_at: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface OrderShipping {
   id: number
-  order_id: number
+  orderId: number
   nama: string | null
   telepon: string | null
   alamat: string | null
   kota: string | null
-  kode_pos: string | null
-  created_at: string | null
-  updated_at: string | null
+  kodePos: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface Payment {
   id: number
-  order_id: number
+  orderId: number
   metode: string | null
   status: 'pending' | 'success' | 'failed'
-  paid_at: string | null
-  created_at: string | null
-  updated_at: string | null
+  paidAt: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface PaymentAmount {
   id: number
-  payment_id: number
-  currency_code: string
-  amount_minor: number
-  fee_minor: number
-  net_amount_minor: number
-  refund_amount_minor: number
-  created_at: string | null
-  updated_at: string | null
+  paymentId: number
+  currencyCode: string
+  amountMinor: number
+  feeMinor: number
+  netAmountMinor: number
+  refundAmountMinor: number
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface PaymentDetail {
   id: number
-  payment_id: number
+  paymentId: number
   detail: Record<string, unknown> | null
-  payload_hash: string | null
-  payload_received_at: string | null
-  created_at: string | null
-  updated_at: string | null
+  payloadHash: string | null
+  payloadReceivedAt: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface PaymentGateway {
   id: number
-  payment_id: number
+  paymentId: number
   provider: string | null
-  provider_txn_id: string | null
-  idempotency_key: string | null
-  gateway_status: string | null
-  gateway_code: string | null
-  gateway_message: string | null
-  authorized_at: string | null
-  captured_at: string | null
-  failed_at: string | null
-  refunded_at: string | null
-  reconciled_at: string | null
-  reconciliation_batch_id: string | null
-  created_at: string | null
-  updated_at: string | null
+  providerTxnId: string | null
+  idempotencyKey: string | null
+  gatewayStatus: string | null
+  gatewayCode: string | null
+  gatewayMessage: string | null
+  authorizedAt: string | null
+  capturedAt: string | null
+  failedAt: string | null
+  refundedAt: string | null
+  reconciledAt: string | null
+  reconciliationBatchId: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface ProductReview {
   id: number
-  produk_item_id: number
-  user_id: number
+  produkItemId: number
+  userId: number
   rating: number
   title: string | null
   comment: string | null
-  is_verified_purchase: boolean
-  created_at: string | null
-  updated_at: string | null
+  isVerifiedPurchase: boolean
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface ProdukItem {
   id: number
   nama: string
   deskripsi: string | null
-  category_id: number | null
+  categoryId: number | null
   harga: number
   stok: number
-  created_at: string | null
-  updated_at: string | null
+  createdAt: string | null
+  updatedAt: string | null
+  image: unknown // appended attribute
+  imageUrl: unknown // appended attribute
+  categoryName: unknown // appended attribute
+  rating: unknown // appended attribute
+  reviewCount: unknown // appended attribute
 }
 
 export interface ProdukItemFrontend {
   id: number
-  produk_item_id: number
+  produkItemId: number
   gambar: string | null
   rating: number
-  jumlah_review: number
-  created_at: string | null
-  updated_at: string | null
+  jumlahReview: number
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface PromoCode {
   id: number
   code: string
-  discount_type: string
-  discount_value: number
-  max_discount_minor: number | null
-  min_order_minor: number
-  usage_limit: number | null
-  used_count: number
-  is_active: boolean
-  starts_at: string | null
-  ends_at: string | null
-  created_at: string | null
-  updated_at: string | null
+  discountType: string
+  discountValue: number
+  maxDiscountMinor: number | null
+  minOrderMinor: number
+  usageLimit: number | null
+  usedCount: number
+  isActive: boolean
+  startsAt: string | null
+  endsAt: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface SocialAccount {
   id: number
-  user_id: number
+  userId: number
   provider: string
-  provider_user_id: string
+  providerUserId: string
   email: string | null
-  avatar_url: string | null
-  created_at: string | null
-  updated_at: string | null
+  avatarUrl: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface User {
@@ -202,14 +207,14 @@ export interface User {
   email: string
   password?: string
   role: 'admin' | 'user'
-  created_at: string | null
-  updated_at: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface Wishlist {
   id: number
-  user_id: number
-  produk_item_id: number
-  created_at: string | null
-  updated_at: string | null
+  userId: number
+  produkItemId: number
+  createdAt: string | null
+  updatedAt: string | null
 }

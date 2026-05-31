@@ -21,128 +21,220 @@ export interface ApiError {
   status?: number
 }
 
-export interface Register {
+export interface Category {
   id: number
-  // TODO: Add register fields
-  createdAt?: string
-  updatedAt?: string
+  nama: string
+  createdAt: string | null
+  updatedAt: string | null
 }
 
-export interface Login {
+export interface Order {
   id: number
-  // TODO: Add login fields
-  createdAt?: string
-  updatedAt?: string
+  userId: number
+  totalHarga: number
+  status: string
+  orderNumber: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
-export interface Oauth {
+export interface OrderAmount {
   id: number
-  // TODO: Add oauth fields
-  createdAt?: string
-  updatedAt?: string
+  orderId: number
+  subtotalMinor: number
+  shippingMinor: number
+  discountMinor: number
+  taxMinor: number
+  totalMinor: number
+  createdAt: string | null
+  updatedAt: string | null
 }
 
-export interface Social {
+export interface OrderDetail {
   id: number
-  // TODO: Add social fields
-  createdAt?: string
-  updatedAt?: string
+  orderId: number
+  produkItemId: number
+  qty: number
+  harga: number
+  createdAt: string | null
+  updatedAt: string | null
 }
 
-export interface ForgotPassword {
+export interface OrderFinancial {
   id: number
-  // TODO: Add forgot-password fields
-  createdAt?: string
-  updatedAt?: string
+  orderId: number
+  financialStatus: string
+  refundedAt: string | null
+  refundReason: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
-export interface ResetPassword {
+export interface OrderFulfillment {
   id: number
-  // TODO: Add reset-password fields
-  createdAt?: string
-  updatedAt?: string
+  orderId: number
+  fulfillmentStatus: string
+  processingAt: string | null
+  shippedAt: string | null
+  completedAt: string | null
+  canceledAt: string | null
+  cancelReason: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
-export interface Categories {
+export interface OrderPromotion {
   id: number
-  // TODO: Add categories fields
-  createdAt?: string
-  updatedAt?: string
+  orderId: number
+  promoCodeId: number | null
+  promoCode: string
+  discountMinor: number
+  metadata: unknown | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
-export interface Produk {
+export interface OrderShipping {
   id: number
-  // TODO: Add produk fields
-  createdAt?: string
-  updatedAt?: string
+  orderId: number
+  nama: string | null
+  telepon: string | null
+  alamat: string | null
+  kota: string | null
+  kodePos: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface Payment {
   id: number
-  // TODO: Add payment fields
-  createdAt?: string
-  updatedAt?: string
+  orderId: number
+  metode: string | null
+  status: string
+  paidAt: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
-export interface Profile {
+export interface PaymentAmount {
   id: number
-  // TODO: Add profile fields
-  createdAt?: string
-  updatedAt?: string
+  paymentId: number
+  currencyCode: string
+  amountMinor: number
+  feeMinor: number
+  netAmountMinor: number
+  refundAmountMinor: number
+  createdAt: string | null
+  updatedAt: string | null
 }
 
-export interface Orders {
+export interface PaymentDetail {
   id: number
-  // TODO: Add orders fields
-  createdAt?: string
-  updatedAt?: string
+  paymentId: number
+  detail: unknown | null
+  payloadHash: string | null
+  payloadReceivedAt: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
-export interface Cart {
+export interface PaymentGateway {
   id: number
-  // TODO: Add cart fields
-  createdAt?: string
-  updatedAt?: string
+  paymentId: number
+  provider: string | null
+  providerTxnId: string | null
+  idempotencyKey: string | null
+  gatewayStatus: string | null
+  gatewayCode: string | null
+  gatewayMessage: string | null
+  authorizedAt: string | null
+  capturedAt: string | null
+  failedAt: string | null
+  refundedAt: string | null
+  reconciledAt: string | null
+  reconciliationBatchId: string | null
+  createdAt: string | null
+  updatedAt: string | null
 }
 
-export interface Checkout {
+export interface ProductReview {
   id: number
-  // TODO: Add checkout fields
-  createdAt?: string
-  updatedAt?: string
+  produkItemId: number
+  userId: number
+  rating: number
+  title: string | null
+  comment: string | null
+  isVerifiedPurchase: number
+  createdAt: string | null
+  updatedAt: string | null
 }
 
-export interface BuyNow {
+export interface ProdukItem {
   id: number
-  // TODO: Add buy-now fields
-  createdAt?: string
-  updatedAt?: string
+  nama: string
+  deskripsi: string | null
+  categoryId: number | null
+  harga: number
+  stok: number
+  createdAt: string | null
+  updatedAt: string | null
+  image?: unknown
+  imageUrl?: unknown
+  categoryName?: unknown
+  rating?: unknown
+  reviewCount?: unknown
 }
 
-export interface Keranjang {
+export interface ProdukItemFrontend {
   id: number
-  // TODO: Add keranjang fields
-  createdAt?: string
-  updatedAt?: string
+  produkItemId: number
+  gambar: string | null
+  rating: number
+  jumlahReview: number
+  createdAt: string | null
+  updatedAt: string | null
+}
+
+export interface PromoCode {
+  id: number
+  code: string
+  discountType: string
+  discountValue: number
+  maxDiscountMinor: number | null
+  minOrderMinor: number
+  usageLimit: number | null
+  usedCount: number
+  isActive: number
+  startsAt: string | null
+  endsAt: string | null
+  createdAt: string | null
+  updatedAt: string | null
+}
+
+export interface SocialAccount {
+  id: number
+  userId: number
+  provider: string
+  providerUserId: string
+  email: string | null
+  avatarUrl: string | null
+  createdAt: string | null
+  updatedAt: string | null
+}
+
+export interface User {
+  id: number
+  name: string
+  email: string
+  role: string
+  createdAt: string | null
+  updatedAt: string | null
 }
 
 export interface Wishlist {
   id: number
-  // TODO: Add wishlist fields
-  createdAt?: string
-  updatedAt?: string
-}
-
-export interface Logout {
-  id: number
-  // TODO: Add logout fields
-  createdAt?: string
-  updatedAt?: string
-}
-
-export interface Admin {
-  id: number
-  // TODO: Add admin fields
-  createdAt?: string
-  updatedAt?: string
+  userId: number
+  produkItemId: number
+  createdAt: string | null
+  updatedAt: string | null
 }

@@ -23,16 +23,16 @@ export function useLoginPost() {
  * @deprecated Generated hooks will become optional in v2.
  * Prefer `useApiQuery(api.oauth.getProviderRedirect, ...args)` for future compatibility.
  */
-export function useOauthGetProviderRedirect(...args: Parameters<typeof api.oauth.getProviderRedirect>) {
-  return useApiQuery(api.oauth.getProviderRedirect, ...args as any)
+export function useOauthGetProviderRedirect(...args: [options: import('./api').OauthGetProviderRedirectContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').OauthGetProviderRedirectContract['response'], import('./types').ApiError>]) {
+  return useApiQuery<import('./api').OauthGetProviderRedirectContract['response'], import('./api').OauthGetProviderRedirectContract['request']['params'], import('./api').OauthGetProviderRedirectContract['request']['body'], import('./types').ApiError>(api.oauth.getProviderRedirect, ...args)
 }
 
 /**
  * @deprecated Generated hooks will become optional in v2.
  * Prefer `useApiQuery(api.oauth.getProviderCallback, ...args)` for future compatibility.
  */
-export function useOauthGetProviderCallback(...args: Parameters<typeof api.oauth.getProviderCallback>) {
-  return useApiQuery(api.oauth.getProviderCallback, ...args as any)
+export function useOauthGetProviderCallback(...args: [options: import('./api').OauthGetProviderCallbackContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').OauthGetProviderCallbackContract['response'], import('./types').ApiError>]) {
+  return useApiQuery<import('./api').OauthGetProviderCallbackContract['response'], import('./api').OauthGetProviderCallbackContract['request']['params'], import('./api').OauthGetProviderCallbackContract['request']['body'], import('./types').ApiError>(api.oauth.getProviderCallback, ...args)
 }
 
 /**
@@ -71,32 +71,32 @@ export function useResetPasswordPost() {
  * @deprecated Generated hooks will become optional in v2.
  * Prefer `useApiQuery(api.categories.get, ...args)` for future compatibility.
  */
-export function useCategoriesGet(...args: Parameters<typeof api.categories.get>) {
-  return useApiQuery(api.categories.get, ...args as any)
+export function useCategoriesGet(...args: [options?: import('./api').CategoriesGetContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').CategoriesGetContract['response'], import('./types').ApiError>]) {
+  return useApiQuery<import('./api').CategoriesGetContract['response'], import('./api').CategoriesGetContract['request']['params'], import('./api').CategoriesGetContract['request']['body'], import('./types').ApiError>(api.categories.get, ...args)
 }
 
 /**
  * @deprecated Generated hooks will become optional in v2.
  * Prefer `useApiQuery(api.produk.get, ...args)` for future compatibility.
  */
-export function useProdukGet(...args: Parameters<typeof api.produk.get>) {
-  return useApiQuery(api.produk.get, ...args as any)
+export function useProdukGet(...args: [options?: import('./api').ProdukGetContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').ProdukGetContract['response'], import('./types').ApiError>]) {
+  return useApiQuery<import('./api').ProdukGetContract['response'], import('./api').ProdukGetContract['request']['params'], import('./api').ProdukGetContract['request']['body'], import('./types').ApiError>(api.produk.get, ...args)
 }
 
 /**
  * @deprecated Generated hooks will become optional in v2.
  * Prefer `useApiQuery(api.produk.getId, ...args)` for future compatibility.
  */
-export function useProdukGetId(...args: Parameters<typeof api.produk.getId>) {
-  return useApiQuery(api.produk.getId, ...args as any)
+export function useProdukGetId(...args: [options: import('./api').ProdukGetIdContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').ProdukGetIdContract['response'], import('./types').ApiError>]) {
+  return useApiQuery<import('./api').ProdukGetIdContract['response'], import('./api').ProdukGetIdContract['request']['params'], import('./api').ProdukGetIdContract['request']['body'], import('./types').ApiError>(api.produk.getId, ...args)
 }
 
 /**
  * @deprecated Generated hooks will become optional in v2.
  * Prefer `useApiQuery(api.produk.getIdReviews, ...args)` for future compatibility.
  */
-export function useProdukGetIdReviews(...args: Parameters<typeof api.produk.getIdReviews>) {
-  return useApiQuery(api.produk.getIdReviews, ...args as any)
+export function useProdukGetIdReviews(...args: [options: import('./api').ProdukGetIdReviewsContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').ProdukGetIdReviewsContract['response'], import('./types').ApiError>]) {
+  return useApiQuery<import('./api').ProdukGetIdReviewsContract['response'], import('./api').ProdukGetIdReviewsContract['request']['params'], import('./api').ProdukGetIdReviewsContract['request']['body'], import('./types').ApiError>(api.produk.getIdReviews, ...args)
 }
 
 /**
@@ -127,8 +127,8 @@ export function usePaymentPostOrderId() {
  * @deprecated Generated hooks will become optional in v2.
  * Prefer `useApiQuery(api.profile.get, ...args)` for future compatibility.
  */
-export function useProfileGet(...args: Parameters<typeof api.profile.get>) {
-  return useApiQuery(api.profile.get, ...args as any)
+export function useProfileGet(...args: [options?: import('./api').ProfileGetContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').ProfileGetContract['response'], import('./types').ApiError>]) {
+  return useApiQuery<import('./api').ProfileGetContract['response'], import('./api').ProfileGetContract['request']['params'], import('./api').ProfileGetContract['request']['body'], import('./types').ApiError>(api.profile.get, ...args)
 }
 
 /**
@@ -151,24 +151,24 @@ export function useProfilePatch() {
  * @deprecated Generated hooks will become optional in v2.
  * Prefer `useApiQuery(api.orders.get, ...args)` for future compatibility.
  */
-export function useOrdersGet(...args: Parameters<typeof api.orders.get>) {
-  return useApiQuery(api.orders.get, ...args as any)
+export function useOrdersGet(...args: [options?: import('./api').OrdersGetContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').OrdersGetContract['response'], import('./types').ApiError>]) {
+  return useApiQuery<import('./api').OrdersGetContract['response'], import('./api').OrdersGetContract['request']['params'], import('./api').OrdersGetContract['request']['body'], import('./types').ApiError>(api.orders.get, ...args)
 }
 
 /**
  * @deprecated Generated hooks will become optional in v2.
  * Prefer `useApiQuery(api.orders.getId, ...args)` for future compatibility.
  */
-export function useOrdersGetId(...args: Parameters<typeof api.orders.getId>) {
-  return useApiQuery(api.orders.getId, ...args as any)
+export function useOrdersGetId(...args: [options: import('./api').OrdersGetIdContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').OrdersGetIdContract['response'], import('./types').ApiError>]) {
+  return useApiQuery<import('./api').OrdersGetIdContract['response'], import('./api').OrdersGetIdContract['request']['params'], import('./api').OrdersGetIdContract['request']['body'], import('./types').ApiError>(api.orders.getId, ...args)
 }
 
 /**
  * @deprecated Generated hooks will become optional in v2.
  * Prefer `useApiQuery(api.orders.getIdInvoice, ...args)` for future compatibility.
  */
-export function useOrdersGetIdInvoice(...args: Parameters<typeof api.orders.getIdInvoice>) {
-  return useApiQuery(api.orders.getIdInvoice, ...args as any)
+export function useOrdersGetIdInvoice(...args: [options: import('./api').OrdersGetIdInvoiceContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').OrdersGetIdInvoiceContract['response'], import('./types').ApiError>]) {
+  return useApiQuery<import('./api').OrdersGetIdInvoiceContract['response'], import('./api').OrdersGetIdInvoiceContract['request']['params'], import('./api').OrdersGetIdInvoiceContract['request']['body'], import('./types').ApiError>(api.orders.getIdInvoice, ...args)
 }
 
 /**
@@ -239,16 +239,16 @@ export function useBuyNowPost() {
  * @deprecated Generated hooks will become optional in v2.
  * Prefer `useApiQuery(api.keranjang.get, ...args)` for future compatibility.
  */
-export function useKeranjangGet(...args: Parameters<typeof api.keranjang.get>) {
-  return useApiQuery(api.keranjang.get, ...args as any)
+export function useKeranjangGet(...args: [options?: import('./api').KeranjangGetContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').KeranjangGetContract['response'], import('./types').ApiError>]) {
+  return useApiQuery<import('./api').KeranjangGetContract['response'], import('./api').KeranjangGetContract['request']['params'], import('./api').KeranjangGetContract['request']['body'], import('./types').ApiError>(api.keranjang.get, ...args)
 }
 
 /**
  * @deprecated Generated hooks will become optional in v2.
  * Prefer `useApiQuery(api.wishlist.get, ...args)` for future compatibility.
  */
-export function useWishlistGet(...args: Parameters<typeof api.wishlist.get>) {
-  return useApiQuery(api.wishlist.get, ...args as any)
+export function useWishlistGet(...args: [options?: import('./api').WishlistGetContract['request'], queryOptions?: import('routesync/react').ApiQueryOptions<import('./api').WishlistGetContract['response'], import('./types').ApiError>]) {
+  return useApiQuery<import('./api').WishlistGetContract['response'], import('./api').WishlistGetContract['request']['params'], import('./api').WishlistGetContract['request']['body'], import('./types').ApiError>(api.wishlist.get, ...args)
 }
 
 /**
