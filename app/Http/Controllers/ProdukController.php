@@ -14,6 +14,8 @@ class ProdukController extends Controller
      * List produk (guest boleh)
      */
 
+    #[Response(ProdukItem
+ *::class, collection: true)]
     public function index(Request $request)
     {
         $query = ProdukItem::query()
@@ -59,6 +61,8 @@ class ProdukController extends Controller
      * Detail produk (guest boleh)
      */
 
+    #[Response(ProdukItem
+ *::class)]
     public function show($id)
     {
         $produk = ProdukItem::with(['category', 'frontend'])->findOrFail($id);
@@ -67,6 +71,8 @@ class ProdukController extends Controller
     }
 
 
+    #[Response(ProdukItem
+ *::class)]
     public function store(Request $request)
     {
         $request->validate([

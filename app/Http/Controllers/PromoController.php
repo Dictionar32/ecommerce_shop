@@ -8,9 +8,11 @@ use App\Models\OrderPromotion;
 use App\Models\PromoCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Attributes\Response;
 
 class PromoController extends Controller
 {
+    #[Response(Order::class)]
     public function apply(Request $request)
     {
         $request->validate([
@@ -79,6 +81,7 @@ class PromoController extends Controller
         });
     }
 
+    #[Response(Order::class)]
     public function remove(Request $request)
     {
         return DB::transaction(function () use ($request) {

@@ -11,9 +11,11 @@ use App\Models\Order;
 use App\Models\ProdukItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Attributes\Response;
 
 class OrderController extends Controller
 {
+    #[Response(Order::class, collection: true)]
     public function index(Request $request)
     {
         $orders = Order::where('user_id', $request->user()->id)
@@ -24,6 +26,7 @@ class OrderController extends Controller
         return OrderResource::collection($orders);
     }
 
+    #[Response(Order::class)]
     public function show(Request $request, int $id)
     {
         $order = Order::where('user_id', $request->user()->id)
@@ -36,6 +39,7 @@ class OrderController extends Controller
     // =========================
     // Checkout / BuyNow version
     // =========================
+    #[Response(Order::class)]
     public function store(StoreOrderRequest $request)
     {
         return DB::transaction(function () use ($request) {
@@ -57,6 +61,7 @@ class OrderController extends Controller
         });
     }
 
+    #[Response(Order::class)]
     public function buyNow(StoreBuyNowRequest $request)
     {
         return DB::transaction(function () use ($request) {
@@ -105,6 +110,7 @@ class OrderController extends Controller
     // =========================
     // Keranjang
     // =========================
+    #[Response(Order::class)]
     public function keranjang(Request $request)
     {
         $order = $this->getPendingOrder($request);
@@ -117,6 +123,7 @@ class OrderController extends Controller
         return new OrderResource($order->load(['details.produkItem.frontend', 'payment', 'shipping', 'promotion.promoCode']));
     }
 
+    #[Response(Order::class)]
     public function addItem(StoreCartItemRequest $request)
     {
         return DB::transaction(function () use ($request) {
@@ -134,6 +141,7 @@ class OrderController extends Controller
         });
     }
 
+    #[Response(Order::class)]
     public function updateItem(UpdateCartItemRequest $request, int $produkItemId)
     {
         return DB::transaction(function () use ($request, $produkItemId) {
@@ -154,6 +162,7 @@ class OrderController extends Controller
         });
     }
 
+    #[Response(Order::class)]
     public function removeItem(Request $request, int $produkItemId)
     {
         return DB::transaction(function () use ($request, $produkItemId) {

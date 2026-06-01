@@ -11,6 +11,7 @@ use App\Models\ProdukItem;
 use App\Services\PaymentGateways\MidtransGateway;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Attributes\Response;
 
 class PaymentController extends Controller
 {
@@ -18,6 +19,7 @@ class PaymentController extends Controller
         private readonly MidtransGateway $midtransGateway
     ) {}
 
+    #[Response(Payment::class)]
     public function store(StorePaymentRequest $request, int $orderId)
     {
         $provider = strtolower((string) $request->input('provider', 'mock'));

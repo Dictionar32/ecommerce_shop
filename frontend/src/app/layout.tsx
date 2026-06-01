@@ -33,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${playfair.variable} ${dmSans.variable}`}>
-      <StyledBody>
+      <body>
         <QueryProvider>
           <AppContainer>
             <Navbar />
@@ -45,7 +45,7 @@ export default function RootLayout({
           <CartModal />
           <Toaster />
         </QueryProvider>
-      </StyledBody>
+      </body>
     </html>
   )
 }
