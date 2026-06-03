@@ -203,11 +203,6 @@ export interface ProdukItem {
   stok: number
   created_at: string | null
   updated_at: string | null
-  image?: unknown
-  image_url?: unknown
-  category_name?: unknown
-  rating?: unknown
-  review_count?: unknown
   image?: string
   image_url?: string
   category_name?: string
