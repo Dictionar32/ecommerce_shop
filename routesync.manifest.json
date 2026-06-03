@@ -100,20 +100,6 @@
                         "name": "user"
                       },
                       "property": "id"
-                    },
-                    "resolved": {
-                      "status": "resolved",
-                      "type": "number",
-                      "nullable": false,
-                      "confidence": 90,
-                      "provenance": [
-                        {
-                          "step": "kernel_resolve",
-                          "input": "id",
-                          "output": "number",
-                          "rule": "Field lookup from Schema Model User.id"
-                        }
-                      ]
                     }
                   },
                   "name": {
@@ -129,20 +115,6 @@
                         "name": "user"
                       },
                       "property": "name"
-                    },
-                    "resolved": {
-                      "status": "resolved",
-                      "type": "string",
-                      "nullable": false,
-                      "confidence": 90,
-                      "provenance": [
-                        {
-                          "step": "kernel_resolve",
-                          "input": "name",
-                          "output": "string",
-                          "rule": "Field lookup from Schema Model User.name"
-                        }
-                      ]
                     }
                   },
                   "email": {
@@ -158,20 +130,6 @@
                         "name": "user"
                       },
                       "property": "email"
-                    },
-                    "resolved": {
-                      "status": "resolved",
-                      "type": "string",
-                      "nullable": false,
-                      "confidence": 90,
-                      "provenance": [
-                        {
-                          "step": "kernel_resolve",
-                          "input": "email",
-                          "output": "string",
-                          "rule": "Field lookup from Schema Model User.email"
-                        }
-                      ]
                     }
                   },
                   "role": {
@@ -187,20 +145,6 @@
                         "name": "user"
                       },
                       "property": "role"
-                    },
-                    "resolved": {
-                      "status": "resolved",
-                      "type": "string",
-                      "nullable": false,
-                      "confidence": 90,
-                      "provenance": [
-                        {
-                          "step": "kernel_resolve",
-                          "input": "role",
-                          "output": "string",
-                          "rule": "Field lookup from Schema Model User.role"
-                        }
-                      ]
                     }
                   },
                   "created_at": {
@@ -225,13 +169,13 @@
                     "resolved": {
                       "status": "resolved",
                       "type": "string",
-                      "confidence": 90,
+                      "confidence": 0,
                       "provenance": [
                         {
                           "step": "kernel_resolve",
                           "input": "created_at",
-                          "output": "string",
-                          "rule": "Field lookup from Schema Model User.created_at"
+                          "output": "unknown",
+                          "rule": "Property not found in Schema Model Unknown"
                         },
                         {
                           "step": "kernel_resolve",
@@ -264,13 +208,13 @@
                     "resolved": {
                       "status": "resolved",
                       "type": "string",
-                      "confidence": 90,
+                      "confidence": 0,
                       "provenance": [
                         {
                           "step": "kernel_resolve",
                           "input": "updated_at",
-                          "output": "string",
-                          "rule": "Field lookup from Schema Model User.updated_at"
+                          "output": "unknown",
+                          "rule": "Property not found in Schema Model Unknown"
                         },
                         {
                           "step": "kernel_resolve",
@@ -491,20 +435,6 @@
                     "name": "user"
                   },
                   "property": "id"
-                },
-                "resolved": {
-                  "status": "resolved",
-                  "type": "number",
-                  "nullable": false,
-                  "confidence": 90,
-                  "provenance": [
-                    {
-                      "step": "kernel_resolve",
-                      "input": "id",
-                      "output": "number",
-                      "rule": "Field lookup from Schema Model User.id"
-                    }
-                  ]
                 }
               },
               "name": {
@@ -520,20 +450,6 @@
                     "name": "user"
                   },
                   "property": "name"
-                },
-                "resolved": {
-                  "status": "resolved",
-                  "type": "string",
-                  "nullable": false,
-                  "confidence": 90,
-                  "provenance": [
-                    {
-                      "step": "kernel_resolve",
-                      "input": "name",
-                      "output": "string",
-                      "rule": "Field lookup from Schema Model User.name"
-                    }
-                  ]
                 }
               },
               "email": {
@@ -549,20 +465,6 @@
                     "name": "user"
                   },
                   "property": "email"
-                },
-                "resolved": {
-                  "status": "resolved",
-                  "type": "string",
-                  "nullable": false,
-                  "confidence": 90,
-                  "provenance": [
-                    {
-                      "step": "kernel_resolve",
-                      "input": "email",
-                      "output": "string",
-                      "rule": "Field lookup from Schema Model User.email"
-                    }
-                  ]
                 }
               },
               "role": {
@@ -578,20 +480,6 @@
                     "name": "user"
                   },
                   "property": "role"
-                },
-                "resolved": {
-                  "status": "resolved",
-                  "type": "string",
-                  "nullable": false,
-                  "confidence": 90,
-                  "provenance": [
-                    {
-                      "step": "kernel_resolve",
-                      "input": "role",
-                      "output": "string",
-                      "rule": "Field lookup from Schema Model User.role"
-                    }
-                  ]
                 }
               },
               "created_at": {
@@ -616,13 +504,13 @@
                 "resolved": {
                   "status": "resolved",
                   "type": "string",
-                  "confidence": 90,
+                  "confidence": 0,
                   "provenance": [
                     {
                       "step": "kernel_resolve",
                       "input": "created_at",
-                      "output": "string",
-                      "rule": "Field lookup from Schema Model User.created_at"
+                      "output": "unknown",
+                      "rule": "Property not found in Schema Model Unknown"
                     },
                     {
                       "step": "kernel_resolve",
@@ -655,13 +543,13 @@
                 "resolved": {
                   "status": "resolved",
                   "type": "string",
-                  "confidence": 90,
+                  "confidence": 0,
                   "provenance": [
                     {
                       "step": "kernel_resolve",
                       "input": "updated_at",
-                      "output": "string",
-                      "rule": "Field lookup from Schema Model User.updated_at"
+                      "output": "unknown",
+                      "rule": "Property not found in Schema Model Unknown"
                     },
                     {
                       "step": "kernel_resolve",
@@ -756,28 +644,6 @@
             "parsed_ast": {
               "kind": "variable",
               "name": "categories"
-            },
-            "resolved": {
-              "status": "resolved",
-              "type": "model",
-              "model": "Category",
-              "collection": true,
-              "paginated": false,
-              "confidence": 90,
-              "provenance": [
-                {
-                  "step": "kernel_resolve",
-                  "input": "orderBy",
-                  "output": "model Category",
-                  "rule": "Static method call Category::orderBy"
-                },
-                {
-                  "step": "kernel_resolve",
-                  "input": "get",
-                  "output": "Category",
-                  "rule": "Eloquent query collection method get"
-                }
-              ]
             }
           }
         }
@@ -932,28 +798,6 @@
             "parsed_ast": {
               "kind": "variable",
               "name": "reviews"
-            },
-            "resolved": {
-              "status": "resolved",
-              "type": "model",
-              "model": "ProductReview",
-              "collection": true,
-              "paginated": true,
-              "confidence": 90,
-              "provenance": [
-                {
-                  "step": "kernel_resolve",
-                  "input": "where",
-                  "output": "model ProductReview",
-                  "rule": "Static method call ProductReview::where"
-                },
-                {
-                  "step": "kernel_resolve",
-                  "input": "paginate",
-                  "output": "ProductReview",
-                  "rule": "Eloquent query collection method paginate"
-                }
-              ]
             }
           }
         }
@@ -1058,28 +902,6 @@
             "parsed_ast": {
               "kind": "variable",
               "name": "reviews"
-            },
-            "resolved": {
-              "status": "resolved",
-              "type": "model",
-              "model": "ProductReview",
-              "collection": true,
-              "paginated": true,
-              "confidence": 90,
-              "provenance": [
-                {
-                  "step": "kernel_resolve",
-                  "input": "where",
-                  "output": "model ProductReview",
-                  "rule": "Static method call ProductReview::where"
-                },
-                {
-                  "step": "kernel_resolve",
-                  "input": "paginate",
-                  "output": "ProductReview",
-                  "rule": "Eloquent query collection method paginate"
-                }
-              ]
             }
           }
         }
@@ -1788,20 +1610,6 @@
                     "name": "review"
                   },
                   "property": "id"
-                },
-                "resolved": {
-                  "status": "resolved",
-                  "type": "number",
-                  "nullable": false,
-                  "confidence": 90,
-                  "provenance": [
-                    {
-                      "step": "kernel_resolve",
-                      "input": "id",
-                      "output": "number",
-                      "rule": "Field lookup from Schema Model ProductReview.id"
-                    }
-                  ]
                 }
               },
               "rating": {
@@ -1817,20 +1625,6 @@
                     "name": "review"
                   },
                   "property": "rating"
-                },
-                "resolved": {
-                  "status": "resolved",
-                  "type": "number",
-                  "nullable": false,
-                  "confidence": 90,
-                  "provenance": [
-                    {
-                      "step": "kernel_resolve",
-                      "input": "rating",
-                      "output": "number",
-                      "rule": "Field lookup from Schema Model ProductReview.rating"
-                    }
-                  ]
                 }
               },
               "title": {
@@ -1846,20 +1640,6 @@
                     "name": "review"
                   },
                   "property": "title"
-                },
-                "resolved": {
-                  "status": "resolved",
-                  "type": "string",
-                  "nullable": true,
-                  "confidence": 90,
-                  "provenance": [
-                    {
-                      "step": "kernel_resolve",
-                      "input": "title",
-                      "output": "string",
-                      "rule": "Field lookup from Schema Model ProductReview.title"
-                    }
-                  ]
                 }
               },
               "comment": {
@@ -1875,20 +1655,6 @@
                     "name": "review"
                   },
                   "property": "comment"
-                },
-                "resolved": {
-                  "status": "resolved",
-                  "type": "string",
-                  "nullable": true,
-                  "confidence": 90,
-                  "provenance": [
-                    {
-                      "step": "kernel_resolve",
-                      "input": "comment",
-                      "output": "string",
-                      "rule": "Field lookup from Schema Model ProductReview.comment"
-                    }
-                  ]
                 }
               },
               "is_verified_purchase": {
@@ -1904,20 +1670,6 @@
                     "name": "review"
                   },
                   "property": "is_verified_purchase"
-                },
-                "resolved": {
-                  "status": "resolved",
-                  "type": "boolean",
-                  "nullable": false,
-                  "confidence": 90,
-                  "provenance": [
-                    {
-                      "step": "kernel_resolve",
-                      "input": "is_verified_purchase",
-                      "output": "boolean",
-                      "rule": "Field lookup from Schema Model ProductReview.is_verified_purchase"
-                    }
-                  ]
                 }
               },
               "created_at": {
@@ -1933,20 +1685,6 @@
                     "name": "review"
                   },
                   "property": "created_at"
-                },
-                "resolved": {
-                  "status": "resolved",
-                  "type": "string",
-                  "nullable": true,
-                  "confidence": 90,
-                  "provenance": [
-                    {
-                      "step": "kernel_resolve",
-                      "input": "created_at",
-                      "output": "string",
-                      "rule": "Field lookup from Schema Model ProductReview.created_at"
-                    }
-                  ]
                 }
               }
             }
@@ -2077,7 +1815,7 @@
     }
   ],
   "channels": [],
-  "generatedAt": "2026-06-03T10:54:41.507Z",
+  "generatedAt": "2026-06-03T11:07:47.925Z",
   "models": [
     {
       "name": "Category",

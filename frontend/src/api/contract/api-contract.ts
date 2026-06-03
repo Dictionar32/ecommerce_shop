@@ -453,7 +453,7 @@ export const ResetPasswordPostResponseSchema = z.object({ message: z.string() })
 export type ResetPasswordPostResponse = z.infer<typeof ResetPasswordPostResponseSchema>
 export const validateResetPasswordPostResponse = (payload: unknown): ResetPasswordPostResponse => ResetPasswordPostResponseSchema.parse(payload)
 
-export const CategoriesGetResponseSchema = z.object({ data: z.array(CategorySchema) })
+export const CategoriesGetResponseSchema = z.object({ data: z.unknown() })
 export type CategoriesGetResponse = z.infer<typeof CategoriesGetResponseSchema>
 export const validateCategoriesGetResponse = (payload: unknown): CategoriesGetResponse => CategoriesGetResponseSchema.parse(payload)
 
@@ -465,7 +465,7 @@ export const ProdukGetIdResponseSchema = ProdukItemResourceSchema
 export type ProdukGetIdResponse = z.infer<typeof ProdukGetIdResponseSchema>
 export const validateProdukGetIdResponse = (payload: unknown): ProdukGetIdResponse => ProdukGetIdResponseSchema.parse(payload)
 
-export const ProdukGetIdReviewsResponseSchema = z.object({ summary: z.object({ avg_rating: z.number(), total_review: z.number() }), reviews: z.object({ data: z.array(ProductReviewSchema), current_page: z.number().optional(), total: z.number().optional() }) })
+export const ProdukGetIdReviewsResponseSchema = z.object({ summary: z.object({ avg_rating: z.number(), total_review: z.number() }), reviews: z.unknown() })
 export type ProdukGetIdReviewsResponse = z.infer<typeof ProdukGetIdReviewsResponseSchema>
 export const validateProdukGetIdReviewsResponse = (payload: unknown): ProdukGetIdReviewsResponse => ProdukGetIdReviewsResponseSchema.parse(payload)
 
@@ -477,11 +477,11 @@ export const ProdukPostIdReviewsPayloadSchema = z.object({
 export type ProdukPostIdReviewsPayload = z.infer<typeof ProdukPostIdReviewsPayloadSchema>
 export const validateProdukPostIdReviewsPayload = (payload: unknown): ProdukPostIdReviewsPayload => ProdukPostIdReviewsPayloadSchema.parse(payload)
 
-export const ProdukPostIdReviewsResponseSchema = z.object({ message: z.string(), data: z.object({ id: z.number(), rating: z.number(), title: z.string().nullable(), comment: z.string().nullable(), is_verified_purchase: z.boolean(), created_at: z.string().nullable() }) })
+export const ProdukPostIdReviewsResponseSchema = z.object({ message: z.string(), data: z.object({ id: z.unknown(), rating: z.unknown(), title: z.unknown(), comment: z.unknown(), is_verified_purchase: z.unknown(), created_at: z.unknown() }) })
 export type ProdukPostIdReviewsResponse = z.infer<typeof ProdukPostIdReviewsResponseSchema>
 export const validateProdukPostIdReviewsResponse = (payload: unknown): ProdukPostIdReviewsResponse => ProdukPostIdReviewsResponseSchema.parse(payload)
 
-export const PaymentPostWebhookResponseSchema = z.object({ summary: z.object({ avg_rating: z.number(), total_review: z.number() }), reviews: z.object({ data: z.array(ProductReviewSchema), current_page: z.number().optional(), total: z.number().optional() }) })
+export const PaymentPostWebhookResponseSchema = z.object({ summary: z.object({ avg_rating: z.number(), total_review: z.number() }), reviews: z.unknown() })
 export type PaymentPostWebhookResponse = z.infer<typeof PaymentPostWebhookResponseSchema>
 export const validatePaymentPostWebhookResponse = (payload: unknown): PaymentPostWebhookResponse => PaymentPostWebhookResponseSchema.parse(payload)
 
