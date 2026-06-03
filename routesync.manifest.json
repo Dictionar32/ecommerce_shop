@@ -26,7 +26,7 @@
           "type": "model",
           "model": "RegisterResponse",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": null
@@ -74,9 +74,15 @@
                   "type": "string",
                   "nullable": false,
                   "confidence": 100,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "createToken",
+                      "output": "object",
+                      "rule": "Sanctum createToken method call"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "plainTextToken",
                       "output": "string",
                       "rule": "Field lookup from resolved object type fields.plainTextToken"
@@ -106,9 +112,21 @@
                       "type": "number",
                       "nullable": false,
                       "confidence": 90,
-                      "provenance": [
+                      "trace": [
                         {
-                          "step": "kernel_resolve",
+                          "source": "SemanticKernelV2",
+                          "input": "where",
+                          "output": "model User",
+                          "rule": "Static method call User::where"
+                        },
+                        {
+                          "source": "SemanticKernelV2",
+                          "input": "first",
+                          "output": "User",
+                          "rule": "Eloquent query single instance method first"
+                        },
+                        {
+                          "source": "SemanticKernelV2",
                           "input": "id",
                           "output": "number",
                           "rule": "Field lookup from Schema Model User.id"
@@ -135,9 +153,21 @@
                       "type": "string",
                       "nullable": false,
                       "confidence": 90,
-                      "provenance": [
+                      "trace": [
                         {
-                          "step": "kernel_resolve",
+                          "source": "SemanticKernelV2",
+                          "input": "where",
+                          "output": "model User",
+                          "rule": "Static method call User::where"
+                        },
+                        {
+                          "source": "SemanticKernelV2",
+                          "input": "first",
+                          "output": "User",
+                          "rule": "Eloquent query single instance method first"
+                        },
+                        {
+                          "source": "SemanticKernelV2",
                           "input": "name",
                           "output": "string",
                           "rule": "Field lookup from Schema Model User.name"
@@ -164,9 +194,21 @@
                       "type": "string",
                       "nullable": false,
                       "confidence": 90,
-                      "provenance": [
+                      "trace": [
                         {
-                          "step": "kernel_resolve",
+                          "source": "SemanticKernelV2",
+                          "input": "where",
+                          "output": "model User",
+                          "rule": "Static method call User::where"
+                        },
+                        {
+                          "source": "SemanticKernelV2",
+                          "input": "first",
+                          "output": "User",
+                          "rule": "Eloquent query single instance method first"
+                        },
+                        {
+                          "source": "SemanticKernelV2",
                           "input": "email",
                           "output": "string",
                           "rule": "Field lookup from Schema Model User.email"
@@ -193,9 +235,21 @@
                       "type": "string",
                       "nullable": false,
                       "confidence": 90,
-                      "provenance": [
+                      "trace": [
                         {
-                          "step": "kernel_resolve",
+                          "source": "SemanticKernelV2",
+                          "input": "where",
+                          "output": "model User",
+                          "rule": "Static method call User::where"
+                        },
+                        {
+                          "source": "SemanticKernelV2",
+                          "input": "first",
+                          "output": "User",
+                          "rule": "Eloquent query single instance method first"
+                        },
+                        {
+                          "source": "SemanticKernelV2",
                           "input": "role",
                           "output": "string",
                           "rule": "Field lookup from Schema Model User.role"
@@ -226,15 +280,27 @@
                       "status": "resolved",
                       "type": "string",
                       "confidence": 90,
-                      "provenance": [
+                      "trace": [
                         {
-                          "step": "kernel_resolve",
+                          "source": "SemanticKernelV2",
+                          "input": "where",
+                          "output": "model User",
+                          "rule": "Static method call User::where"
+                        },
+                        {
+                          "source": "SemanticKernelV2",
+                          "input": "first",
+                          "output": "User",
+                          "rule": "Eloquent query single instance method first"
+                        },
+                        {
+                          "source": "SemanticKernelV2",
                           "input": "created_at",
                           "output": "string",
                           "rule": "Field lookup from Schema Model User.created_at"
                         },
                         {
-                          "step": "kernel_resolve",
+                          "source": "SemanticKernelV2",
                           "input": "toISOString",
                           "output": "string",
                           "rule": "Carbon date method call"
@@ -265,15 +331,27 @@
                       "status": "resolved",
                       "type": "string",
                       "confidence": 90,
-                      "provenance": [
+                      "trace": [
                         {
-                          "step": "kernel_resolve",
+                          "source": "SemanticKernelV2",
+                          "input": "where",
+                          "output": "model User",
+                          "rule": "Static method call User::where"
+                        },
+                        {
+                          "source": "SemanticKernelV2",
+                          "input": "first",
+                          "output": "User",
+                          "rule": "Eloquent query single instance method first"
+                        },
+                        {
+                          "source": "SemanticKernelV2",
                           "input": "updated_at",
                           "output": "string",
                           "rule": "Field lookup from Schema Model User.updated_at"
                         },
                         {
-                          "step": "kernel_resolve",
+                          "source": "SemanticKernelV2",
                           "input": "toISOString",
                           "output": "string",
                           "rule": "Carbon date method call"
@@ -322,7 +400,7 @@
               "status": "resolved",
               "type": "string",
               "confidence": 100,
-              "provenance": []
+              "trace": []
             }
           },
           "auth_url": {
@@ -465,9 +543,15 @@
               "type": "string",
               "nullable": false,
               "confidence": 100,
-              "provenance": [
+              "trace": [
                 {
-                  "step": "kernel_resolve",
+                  "source": "SemanticKernelV2",
+                  "input": "createToken",
+                  "output": "object",
+                  "rule": "Sanctum createToken method call"
+                },
+                {
+                  "source": "SemanticKernelV2",
                   "input": "plainTextToken",
                   "output": "string",
                   "rule": "Field lookup from resolved object type fields.plainTextToken"
@@ -497,9 +581,15 @@
                   "type": "number",
                   "nullable": false,
                   "confidence": 90,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "create",
+                      "output": "model User",
+                      "rule": "Static method call User::create"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "id",
                       "output": "number",
                       "rule": "Field lookup from Schema Model User.id"
@@ -526,9 +616,15 @@
                   "type": "string",
                   "nullable": false,
                   "confidence": 90,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "create",
+                      "output": "model User",
+                      "rule": "Static method call User::create"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "name",
                       "output": "string",
                       "rule": "Field lookup from Schema Model User.name"
@@ -555,9 +651,15 @@
                   "type": "string",
                   "nullable": false,
                   "confidence": 90,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "create",
+                      "output": "model User",
+                      "rule": "Static method call User::create"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "email",
                       "output": "string",
                       "rule": "Field lookup from Schema Model User.email"
@@ -584,9 +686,15 @@
                   "type": "string",
                   "nullable": false,
                   "confidence": 90,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "create",
+                      "output": "model User",
+                      "rule": "Static method call User::create"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "role",
                       "output": "string",
                       "rule": "Field lookup from Schema Model User.role"
@@ -617,15 +725,21 @@
                   "status": "resolved",
                   "type": "string",
                   "confidence": 90,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "create",
+                      "output": "model User",
+                      "rule": "Static method call User::create"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "created_at",
                       "output": "string",
                       "rule": "Field lookup from Schema Model User.created_at"
                     },
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
                       "input": "toISOString",
                       "output": "string",
                       "rule": "Carbon date method call"
@@ -656,15 +770,21 @@
                   "status": "resolved",
                   "type": "string",
                   "confidence": 90,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "create",
+                      "output": "model User",
+                      "rule": "Static method call User::create"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "updated_at",
                       "output": "string",
                       "rule": "Field lookup from Schema Model User.updated_at"
                     },
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
                       "input": "toISOString",
                       "output": "string",
                       "rule": "Carbon date method call"
@@ -764,15 +884,15 @@
               "collection": true,
               "paginated": false,
               "confidence": 90,
-              "provenance": [
+              "trace": [
                 {
-                  "step": "kernel_resolve",
+                  "source": "SemanticKernelV2",
                   "input": "orderBy",
                   "output": "model Category",
                   "rule": "Static method call Category::orderBy"
                 },
                 {
-                  "step": "kernel_resolve",
+                  "source": "SemanticKernelV2",
                   "input": "get",
                   "output": "Category",
                   "rule": "Eloquent query collection method get"
@@ -804,7 +924,7 @@
           "type": "model",
           "model": "ProdukItem",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -831,7 +951,7 @@
           "type": "model",
           "model": "ProdukItem",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -884,7 +1004,7 @@
                   "status": "resolved",
                   "type": "number",
                   "confidence": 100,
-                  "provenance": []
+                  "trace": []
                 }
               },
               "total_review": {
@@ -918,7 +1038,7 @@
                   "status": "resolved",
                   "type": "number",
                   "confidence": 100,
-                  "provenance": []
+                  "trace": []
                 }
               }
             }
@@ -940,15 +1060,15 @@
               "collection": true,
               "paginated": true,
               "confidence": 90,
-              "provenance": [
+              "trace": [
                 {
-                  "step": "kernel_resolve",
+                  "source": "SemanticKernelV2",
                   "input": "where",
                   "output": "model ProductReview",
                   "rule": "Static method call ProductReview::where"
                 },
                 {
-                  "step": "kernel_resolve",
+                  "source": "SemanticKernelV2",
                   "input": "paginate",
                   "output": "ProductReview",
                   "rule": "Eloquent query collection method paginate"
@@ -1010,7 +1130,7 @@
                   "status": "resolved",
                   "type": "number",
                   "confidence": 100,
-                  "provenance": []
+                  "trace": []
                 }
               },
               "total_review": {
@@ -1044,7 +1164,7 @@
                   "status": "resolved",
                   "type": "number",
                   "confidence": 100,
-                  "provenance": []
+                  "trace": []
                 }
               }
             }
@@ -1066,15 +1186,15 @@
               "collection": true,
               "paginated": true,
               "confidence": 90,
-              "provenance": [
+              "trace": [
                 {
-                  "step": "kernel_resolve",
+                  "source": "SemanticKernelV2",
                   "input": "where",
                   "output": "model ProductReview",
                   "rule": "Static method call ProductReview::where"
                 },
                 {
-                  "step": "kernel_resolve",
+                  "source": "SemanticKernelV2",
                   "input": "paginate",
                   "output": "ProductReview",
                   "rule": "Eloquent query collection method paginate"
@@ -1339,7 +1459,7 @@
           "type": "model",
           "model": "Order",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -1365,7 +1485,7 @@
           "type": "model",
           "model": "Order",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -1396,7 +1516,7 @@
           "type": "model",
           "model": "Order",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -1427,7 +1547,7 @@
           "type": "model",
           "model": "Order",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -1455,7 +1575,7 @@
           "type": "model",
           "model": "Order",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -1509,7 +1629,7 @@
           "type": "model",
           "model": "Order",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -1540,7 +1660,7 @@
           "type": "model",
           "model": "Order",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -1578,7 +1698,7 @@
           "type": "model",
           "model": "Order",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -1614,7 +1734,7 @@
           "type": "model",
           "model": "Order",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -1642,7 +1762,7 @@
           "type": "model",
           "model": "Order",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -1668,7 +1788,7 @@
           "type": "model",
           "model": "ProdukItem",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -1740,7 +1860,7 @@
               "status": "resolved",
               "type": "string",
               "confidence": 100,
-              "provenance": []
+              "trace": []
             }
           }
         }
@@ -1794,9 +1914,15 @@
                   "type": "number",
                   "nullable": false,
                   "confidence": 90,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "updateOrCreate",
+                      "output": "model ProductReview",
+                      "rule": "Static method call ProductReview::updateOrCreate"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "id",
                       "output": "number",
                       "rule": "Field lookup from Schema Model ProductReview.id"
@@ -1823,9 +1949,15 @@
                   "type": "number",
                   "nullable": false,
                   "confidence": 90,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "updateOrCreate",
+                      "output": "model ProductReview",
+                      "rule": "Static method call ProductReview::updateOrCreate"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "rating",
                       "output": "number",
                       "rule": "Field lookup from Schema Model ProductReview.rating"
@@ -1852,9 +1984,15 @@
                   "type": "string",
                   "nullable": true,
                   "confidence": 90,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "updateOrCreate",
+                      "output": "model ProductReview",
+                      "rule": "Static method call ProductReview::updateOrCreate"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "title",
                       "output": "string",
                       "rule": "Field lookup from Schema Model ProductReview.title"
@@ -1881,9 +2019,15 @@
                   "type": "string",
                   "nullable": true,
                   "confidence": 90,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "updateOrCreate",
+                      "output": "model ProductReview",
+                      "rule": "Static method call ProductReview::updateOrCreate"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "comment",
                       "output": "string",
                       "rule": "Field lookup from Schema Model ProductReview.comment"
@@ -1910,9 +2054,15 @@
                   "type": "boolean",
                   "nullable": false,
                   "confidence": 90,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "updateOrCreate",
+                      "output": "model ProductReview",
+                      "rule": "Static method call ProductReview::updateOrCreate"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "is_verified_purchase",
                       "output": "boolean",
                       "rule": "Field lookup from Schema Model ProductReview.is_verified_purchase"
@@ -1939,9 +2089,15 @@
                   "type": "string",
                   "nullable": true,
                   "confidence": 90,
-                  "provenance": [
+                  "trace": [
                     {
-                      "step": "kernel_resolve",
+                      "source": "SemanticKernelV2",
+                      "input": "updateOrCreate",
+                      "output": "model ProductReview",
+                      "rule": "Static method call ProductReview::updateOrCreate"
+                    },
+                    {
+                      "source": "SemanticKernelV2",
                       "input": "created_at",
                       "output": "string",
                       "rule": "Field lookup from Schema Model ProductReview.created_at"
@@ -1989,7 +2145,7 @@
           "type": "model",
           "model": "Payment",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -2068,7 +2224,7 @@
           "type": "model",
           "model": "ProdukItem",
           "confidence": 100,
-          "provenance": []
+          "trace": []
         }
       },
       "assignments": {
@@ -2077,7 +2233,7 @@
     }
   ],
   "channels": [],
-  "generatedAt": "2026-06-03T11:41:43.222Z",
+  "generatedAt": "2026-06-03T23:08:03.064Z",
   "models": [
     {
       "name": "Category",
@@ -2289,7 +2445,7 @@
             "status": "resolved",
             "type": "number",
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         },
         "shipping": {
@@ -2315,7 +2471,7 @@
             "status": "resolved",
             "type": "number",
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         },
         "discount": {
@@ -2341,7 +2497,7 @@
             "status": "resolved",
             "type": "number",
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         },
         "tax": {
@@ -2367,7 +2523,7 @@
             "status": "resolved",
             "type": "number",
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         },
         "total": {
@@ -2393,7 +2549,7 @@
             "status": "resolved",
             "type": "number",
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         }
       }
@@ -2483,9 +2639,9 @@
             "status": "unknown",
             "type": "unknown",
             "confidence": 0,
-            "provenance": [
+            "trace": [
               {
-                "step": "fallback",
+                "source": "SemanticKernelV2",
                 "input": "method_call",
                 "output": "unknown",
                 "rule": "Unsupported AST kind: method_call"
@@ -2832,7 +2988,7 @@
             "status": "resolved",
             "type": "string",
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         },
         "amountMinor": {
@@ -2853,7 +3009,7 @@
             "status": "resolved",
             "type": "number",
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         },
         "providerTxnId": {
@@ -2886,7 +3042,7 @@
             "status": "resolved",
             "type": "string",
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         },
         "provider": {
@@ -2913,9 +3069,21 @@
             "type": "string",
             "nullable": true,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "Payment.paymentGateways",
+                "output": "PaymentGateway",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
+                "input": "first",
+                "output": "PaymentGateway",
+                "rule": "Eloquent query single instance method first"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "provider",
                 "output": "string",
                 "rule": "Field lookup from Schema Model PaymentGateway.provider"
@@ -2941,9 +3109,15 @@
             "status": "unknown",
             "type": "unknown",
             "confidence": 0,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "unknownRelation",
+                "output": "unknown",
+                "rule": "Property not found in Schema Model Payment"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "foo",
                 "output": "unknown",
                 "rule": "Property not found in Schema Model Unknown"
@@ -2965,9 +3139,9 @@
             "status": "unknown",
             "type": "unknown",
             "confidence": 0,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "bar",
                 "output": "unknown",
                 "rule": "Property not found in Schema Model Payment"
@@ -2989,9 +3163,9 @@
             "status": "unknown",
             "type": "unknown",
             "confidence": 0,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "foo",
                 "output": "unknown",
                 "rule": "Property not found in Schema Model Payment"
@@ -3390,9 +3564,9 @@
             "status": "resolved",
             "type": "string",
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "reflection_signature",
+                "source": "ReflectionScanner",
                 "input": "image",
                 "output": "string",
                 "rule": "Reflection return type signature"
@@ -3407,9 +3581,9 @@
             "status": "resolved",
             "type": "string",
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "reflection_signature",
+                "source": "ReflectionScanner",
                 "input": "image_url",
                 "output": "string",
                 "rule": "Reflection return type signature"
@@ -3424,9 +3598,9 @@
             "status": "resolved",
             "type": "string",
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "reflection_signature",
+                "source": "ReflectionScanner",
                 "input": "category_name",
                 "output": "string",
                 "rule": "Reflection return type signature"
@@ -3441,9 +3615,9 @@
             "status": "resolved",
             "type": "number",
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "reflection_signature",
+                "source": "ReflectionScanner",
                 "input": "rating",
                 "output": "number",
                 "rule": "Reflection return type signature"
@@ -3458,9 +3632,9 @@
             "status": "resolved",
             "type": "number",
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "reflection_signature",
+                "source": "ReflectionScanner",
                 "input": "review_count",
                 "output": "number",
                 "rule": "Reflection return type signature"
@@ -3761,7 +3935,7 @@
             "status": "unknown",
             "type": "unknown",
             "confidence": 0,
-            "provenance": []
+            "trace": []
           }
         }
       }
@@ -3863,9 +4037,9 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "id",
                 "output": "number",
                 "rule": "Field lookup from Schema Model OrderDetail.id"
@@ -3892,9 +4066,9 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "produk_item_id",
                 "output": "number",
                 "rule": "Field lookup from Schema Model OrderDetail.produk_item_id"
@@ -3924,9 +4098,15 @@
                 "type": "number",
                 "nullable": false,
                 "confidence": 100,
-                "provenance": [
+                "trace": [
                   {
-                    "step": "kernel_resolve",
+                    "source": "SemanticKernelV2",
+                    "input": "OrderDetail.produkItem",
+                    "output": "ProdukItem",
+                    "rule": "Relation lookup"
+                  },
+                  {
+                    "source": "SemanticKernelV2",
                     "input": "id",
                     "output": "number",
                     "rule": "Field lookup from Schema Model ProdukItem.id"
@@ -3953,9 +4133,15 @@
                 "type": "string",
                 "nullable": false,
                 "confidence": 100,
-                "provenance": [
+                "trace": [
                   {
-                    "step": "kernel_resolve",
+                    "source": "SemanticKernelV2",
+                    "input": "OrderDetail.produkItem",
+                    "output": "ProdukItem",
+                    "rule": "Relation lookup"
+                  },
+                  {
+                    "source": "SemanticKernelV2",
                     "input": "nama",
                     "output": "string",
                     "rule": "Field lookup from Schema Model ProdukItem.nama"
@@ -3978,9 +4164,21 @@
                 "type": "string",
                 "nullable": true,
                 "confidence": 100,
-                "provenance": [
+                "trace": [
                   {
-                    "step": "kernel_resolve",
+                    "source": "SemanticKernelV2",
+                    "input": "OrderDetail.produkItem",
+                    "output": "ProdukItem",
+                    "rule": "Relation lookup"
+                  },
+                  {
+                    "source": "SemanticKernelV2",
+                    "input": "ProdukItem.frontend",
+                    "output": "ProdukItemFrontend",
+                    "rule": "Relation lookup"
+                  },
+                  {
+                    "source": "SemanticKernelV2",
                     "input": "gambar",
                     "output": "string",
                     "rule": "Field lookup from Schema Model ProdukItemFrontend.gambar"
@@ -4002,7 +4200,7 @@
                 "status": "resolved",
                 "type": "string",
                 "confidence": 100,
-                "provenance": []
+                "trace": []
               }
             }
           }
@@ -4026,9 +4224,9 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "qty",
                 "output": "number",
                 "rule": "Field lookup from Schema Model OrderDetail.qty"
@@ -4055,9 +4253,9 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "harga",
                 "output": "number",
                 "rule": "Field lookup from Schema Model OrderDetail.harga"
@@ -4095,7 +4293,7 @@
             "status": "resolved",
             "type": "number",
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         },
         "banana": {
@@ -4117,9 +4315,9 @@
             "type": "string",
             "nullable": true,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "banana",
                 "output": "string",
                 "rule": "Field lookup from Schema Model OrderDetail.banana"
@@ -4146,9 +4344,9 @@
             "type": "number",
             "nullable": true,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "potato",
                 "output": "number",
                 "rule": "Field lookup from Schema Model OrderDetail.potato"
@@ -4175,9 +4373,9 @@
             "type": "boolean",
             "nullable": true,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "flying_dog",
                 "output": "boolean",
                 "rule": "Field lookup from Schema Model OrderDetail.flying_dog"
@@ -4229,9 +4427,9 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "id",
                 "output": "number",
                 "rule": "Field lookup from Schema Model Order.id"
@@ -4258,9 +4456,9 @@
             "type": "string",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "status",
                 "output": "string",
                 "rule": "Field lookup from Schema Model Order.status"
@@ -4287,9 +4485,9 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "total_harga",
                 "output": "number",
                 "rule": "Field lookup from Schema Model Order.total_harga"
@@ -4316,9 +4514,9 @@
             "type": "string",
             "nullable": true,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "order_number",
                 "output": "string",
                 "rule": "Field lookup from Schema Model Order.order_number"
@@ -4358,9 +4556,15 @@
             "type": "string",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "Order.payment",
+                "output": "Payment",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "status",
                 "output": "string",
                 "rule": "Field lookup from Schema Model Payment.status"
@@ -4396,9 +4600,15 @@
             "type": "string",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "Order.financial",
+                "output": "OrderFinancial",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "financial_status",
                 "output": "string",
                 "rule": "Field lookup from Schema Model OrderFinancial.financial_status"
@@ -4434,9 +4644,15 @@
             "type": "string",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "Order.fulfillment",
+                "output": "OrderFulfillment",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "fulfillment_status",
                 "output": "string",
                 "rule": "Field lookup from Schema Model OrderFulfillment.fulfillment_status"
@@ -4459,9 +4675,15 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "Order.amount",
+                "output": "OrderAmount",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "subtotal_minor",
                 "output": "number",
                 "rule": "Field lookup from Schema Model OrderAmount.subtotal_minor"
@@ -4484,9 +4706,15 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "Order.amount",
+                "output": "OrderAmount",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "discount_minor",
                 "output": "number",
                 "rule": "Field lookup from Schema Model OrderAmount.discount_minor"
@@ -4509,9 +4737,15 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "Order.amount",
+                "output": "OrderAmount",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "shipping_minor",
                 "output": "number",
                 "rule": "Field lookup from Schema Model OrderAmount.shipping_minor"
@@ -4534,9 +4768,15 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "Order.amount",
+                "output": "OrderAmount",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "tax_minor",
                 "output": "number",
                 "rule": "Field lookup from Schema Model OrderAmount.tax_minor"
@@ -4559,9 +4799,15 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "Order.amount",
+                "output": "OrderAmount",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "total_minor",
                 "output": "number",
                 "rule": "Field lookup from Schema Model OrderAmount.total_minor"
@@ -4586,7 +4832,7 @@
             "resource": "OrderDetailResource",
             "collection": true,
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         },
         "promotion": {
@@ -4611,9 +4857,15 @@
                 "type": "string",
                 "nullable": false,
                 "confidence": 100,
-                "provenance": [
+                "trace": [
                   {
-                    "step": "kernel_resolve",
+                    "source": "SemanticKernelV2",
+                    "input": "Order.promotion",
+                    "output": "OrderPromotion",
+                    "rule": "Relation lookup"
+                  },
+                  {
+                    "source": "SemanticKernelV2",
                     "input": "promo_code",
                     "output": "string",
                     "rule": "Field lookup from Schema Model OrderPromotion.promo_code"
@@ -4652,7 +4904,7 @@
                 "status": "resolved",
                 "type": "number",
                 "confidence": 100,
-                "provenance": []
+                "trace": []
               }
             }
           }
@@ -4679,9 +4931,15 @@
                 "type": "string",
                 "nullable": true,
                 "confidence": 100,
-                "provenance": [
+                "trace": [
                   {
-                    "step": "kernel_resolve",
+                    "source": "SemanticKernelV2",
+                    "input": "Order.shipping",
+                    "output": "OrderShipping",
+                    "rule": "Relation lookup"
+                  },
+                  {
+                    "source": "SemanticKernelV2",
                     "input": "nama",
                     "output": "string",
                     "rule": "Field lookup from Schema Model OrderShipping.nama"
@@ -4708,9 +4966,15 @@
                 "type": "string",
                 "nullable": true,
                 "confidence": 100,
-                "provenance": [
+                "trace": [
                   {
-                    "step": "kernel_resolve",
+                    "source": "SemanticKernelV2",
+                    "input": "Order.shipping",
+                    "output": "OrderShipping",
+                    "rule": "Relation lookup"
+                  },
+                  {
+                    "source": "SemanticKernelV2",
                     "input": "telepon",
                     "output": "string",
                     "rule": "Field lookup from Schema Model OrderShipping.telepon"
@@ -4737,9 +5001,15 @@
                 "type": "string",
                 "nullable": true,
                 "confidence": 100,
-                "provenance": [
+                "trace": [
                   {
-                    "step": "kernel_resolve",
+                    "source": "SemanticKernelV2",
+                    "input": "Order.shipping",
+                    "output": "OrderShipping",
+                    "rule": "Relation lookup"
+                  },
+                  {
+                    "source": "SemanticKernelV2",
                     "input": "alamat",
                     "output": "string",
                     "rule": "Field lookup from Schema Model OrderShipping.alamat"
@@ -4766,9 +5036,15 @@
                 "type": "string",
                 "nullable": true,
                 "confidence": 100,
-                "provenance": [
+                "trace": [
                   {
-                    "step": "kernel_resolve",
+                    "source": "SemanticKernelV2",
+                    "input": "Order.shipping",
+                    "output": "OrderShipping",
+                    "rule": "Relation lookup"
+                  },
+                  {
+                    "source": "SemanticKernelV2",
                     "input": "kota",
                     "output": "string",
                     "rule": "Field lookup from Schema Model OrderShipping.kota"
@@ -4795,9 +5071,15 @@
                 "type": "string",
                 "nullable": true,
                 "confidence": 100,
-                "provenance": [
+                "trace": [
                   {
-                    "step": "kernel_resolve",
+                    "source": "SemanticKernelV2",
+                    "input": "Order.shipping",
+                    "output": "OrderShipping",
+                    "rule": "Relation lookup"
+                  },
+                  {
+                    "source": "SemanticKernelV2",
                     "input": "kode_pos",
                     "output": "string",
                     "rule": "Field lookup from Schema Model OrderShipping.kode_pos"
@@ -4830,15 +5112,15 @@
             "status": "resolved",
             "type": "string",
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "created_at",
                 "output": "string",
                 "rule": "Field lookup from Schema Model Order.created_at"
               },
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "toDateTimeString",
                 "output": "string",
                 "rule": "Carbon date method call"
@@ -4882,9 +5164,9 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "id",
                 "output": "number",
                 "rule": "Field lookup from Schema Model Payment.id"
@@ -4911,9 +5193,9 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "order_id",
                 "output": "number",
                 "rule": "Field lookup from Schema Model Payment.order_id"
@@ -4936,9 +5218,15 @@
             "type": "string",
             "nullable": true,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "Payment.order",
+                "output": "Order",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "order_number",
                 "output": "string",
                 "rule": "Field lookup from Schema Model Order.order_number"
@@ -4965,9 +5253,9 @@
             "type": "string",
             "nullable": true,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "metode",
                 "output": "string",
                 "rule": "Field lookup from Schema Model Payment.metode"
@@ -4990,9 +5278,15 @@
             "type": "any[]",
             "nullable": true,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "Payment.paymentDetail",
+                "output": "PaymentDetail",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "detail",
                 "output": "any[]",
                 "rule": "Field lookup from Schema Model PaymentDetail.detail"
@@ -5019,9 +5313,9 @@
             "type": "string",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "status",
                 "output": "string",
                 "rule": "Field lookup from Schema Model Payment.status"
@@ -5048,9 +5342,9 @@
             "type": "string",
             "nullable": true,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "paid_at",
                 "output": "string",
                 "rule": "Field lookup from Schema Model Payment.paid_at"
@@ -5077,9 +5371,9 @@
             "type": "string",
             "collection": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "provider",
                 "output": "string",
                 "rule": "Accessor lookup from Schema Model Payment.provider"
@@ -5106,9 +5400,9 @@
             "type": "string",
             "collection": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "provider_txn_id",
                 "output": "string",
                 "rule": "Accessor lookup from Schema Model Payment.provider_txn_id"
@@ -5135,9 +5429,9 @@
             "type": "string",
             "collection": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "gateway_status",
                 "output": "string",
                 "rule": "Accessor lookup from Schema Model Payment.gateway_status"
@@ -5164,9 +5458,9 @@
             "type": "number",
             "collection": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "amount_minor",
                 "output": "number",
                 "rule": "Accessor lookup from Schema Model Payment.amount_minor"
@@ -5206,7 +5500,7 @@
             "resource": "OrderDetailResource",
             "collection": true,
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         },
         "promotion": {
@@ -5231,9 +5525,21 @@
                 "type": "string",
                 "nullable": false,
                 "confidence": 100,
-                "provenance": [
+                "trace": [
                   {
-                    "step": "kernel_resolve",
+                    "source": "SemanticKernelV2",
+                    "input": "Payment.order",
+                    "output": "Order",
+                    "rule": "Relation lookup"
+                  },
+                  {
+                    "source": "SemanticKernelV2",
+                    "input": "Order.promotion",
+                    "output": "OrderPromotion",
+                    "rule": "Relation lookup"
+                  },
+                  {
+                    "source": "SemanticKernelV2",
                     "input": "promo_code",
                     "output": "string",
                     "rule": "Field lookup from Schema Model OrderPromotion.promo_code"
@@ -5272,7 +5578,7 @@
                 "status": "resolved",
                 "type": "number",
                 "confidence": 100,
-                "provenance": []
+                "trace": []
               }
             }
           }
@@ -5322,7 +5628,7 @@
                 "status": "resolved",
                 "type": "null",
                 "confidence": 100,
-                "provenance": []
+                "trace": []
               }
             },
             "order_id": {
@@ -5367,7 +5673,7 @@
                 "status": "resolved",
                 "type": "null",
                 "confidence": 100,
-                "provenance": []
+                "trace": []
               }
             },
             "token": {
@@ -5412,7 +5718,7 @@
                 "status": "resolved",
                 "type": "null",
                 "confidence": 100,
-                "provenance": []
+                "trace": []
               }
             },
             "redirect_url": {
@@ -5457,7 +5763,7 @@
                 "status": "resolved",
                 "type": "null",
                 "confidence": 100,
-                "provenance": []
+                "trace": []
               }
             }
           }
@@ -5500,9 +5806,15 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "Payment.order",
+                "output": "Order",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "total_harga",
                 "output": "number",
                 "rule": "Field lookup from Schema Model Order.total_harga"
@@ -5540,9 +5852,9 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "id",
                 "output": "number",
                 "rule": "Field lookup from Schema Model ProdukItem.id"
@@ -5569,9 +5881,9 @@
             "type": "string",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "nama",
                 "output": "string",
                 "rule": "Field lookup from Schema Model ProdukItem.nama"
@@ -5598,9 +5910,9 @@
             "type": "string",
             "nullable": true,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "deskripsi",
                 "output": "string",
                 "rule": "Field lookup from Schema Model ProdukItem.deskripsi"
@@ -5623,9 +5935,15 @@
             "type": "string",
             "nullable": true,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "ProdukItem.frontend",
+                "output": "ProdukItemFrontend",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "gambar",
                 "output": "string",
                 "rule": "Field lookup from Schema Model ProdukItemFrontend.gambar"
@@ -5647,7 +5965,7 @@
             "status": "resolved",
             "type": "string",
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         },
         "category_id": {
@@ -5669,9 +5987,9 @@
             "type": "number",
             "nullable": true,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "category_id",
                 "output": "number",
                 "rule": "Field lookup from Schema Model ProdukItem.category_id"
@@ -5702,9 +6020,15 @@
             "type": "string",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
+                "input": "ProdukItem.category",
+                "output": "Category",
+                "rule": "Relation lookup"
+              },
+              {
+                "source": "SemanticKernelV2",
                 "input": "nama",
                 "output": "string",
                 "rule": "Field lookup from Schema Model Category.nama"
@@ -5731,9 +6055,9 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "harga",
                 "output": "number",
                 "rule": "Field lookup from Schema Model ProdukItem.harga"
@@ -5760,9 +6084,9 @@
             "type": "number",
             "nullable": false,
             "confidence": 100,
-            "provenance": [
+            "trace": [
               {
-                "step": "kernel_resolve",
+                "source": "SemanticKernelV2",
                 "input": "stok",
                 "output": "number",
                 "rule": "Field lookup from Schema Model ProdukItem.stok"
@@ -5784,7 +6108,7 @@
             "status": "resolved",
             "type": "number",
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         },
         "review_count": {
@@ -5801,7 +6125,7 @@
             "status": "resolved",
             "type": "number",
             "confidence": 100,
-            "provenance": []
+            "trace": []
           }
         }
       },
