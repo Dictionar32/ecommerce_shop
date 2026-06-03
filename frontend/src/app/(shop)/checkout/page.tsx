@@ -33,7 +33,7 @@ import {
 import { useKeranjangGet, useCheckoutPost, usePaymentPostOrderId } from "@/api/hooks"
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice } from "@/lib/utils-frontend"
-import { CartResponse, OrderResponse } from "@/api/types-local"
+import type * as Types from "@/api/types"
 import { z } from "zod"
 
 const CheckoutSchema = z.object({
@@ -90,7 +90,7 @@ export default function CheckoutPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
 
   const { data: resCart, isLoading: cartLoading } = useKeranjangGet({})
-  const cart = (resCart as { data?: CartResponse })?.data
+  const cart = (resCart as { data?: Types.Order })?.data
 
   const createOrder = useCheckoutPost()
 
@@ -110,7 +110,7 @@ export default function CheckoutPage() {
   // ── Step 1: buat order ──────────────────────────────────
   const onShippingSubmit = async (values: OrderFormValues['Create']) => {
     try {
-      const { data: order } = await createOrder.mutateAsync({
+      const order = await createOrder.mutateAsync({
         body: {
           shipping_nama: values.shippingNama,
           shipping_telepon: values.shippingTelepon,
@@ -118,9 +118,9 @@ export default function CheckoutPage() {
           shipping_kota: values.shippingKota,
           shipping_kode_pos: values.shippingKodePos
         }
-      }) as { data: OrderResponse }
+      }) as unknown as Types.Order
       setOrderId(order.id)
-      setSavedOrder({ id: order.id, invoice: order.invoice_number ?? `#${order.id}` })
+      setSavedOrder({ id: order.id, invoice: order.orderNumber ?? `#${order.id}` })
       setStep(2)
       window.scrollTo({ top: 0, behavior: "smooth" })
     } catch {
@@ -132,13 +132,13 @@ export default function CheckoutPage() {
   const onPaymentSubmit = async () => {
     if (!savedOrder) return
     try {
-      const { data: payment } = await createPayment.mutateAsync({
+      const payment = await createPayment.mutateAsync({
         params: { orderId: savedOrder.id.toString() },
         body: {
           metode: paymentMethod,
           provider: "mock",
         }
-      }) as { data: { status: string } }
+      }) as unknown as { status: string }
       toast.success("Pembayaran berhasil!")
       router.push(
         `/payment/success?orderId=${savedOrder.id}&invoice=${savedOrder.invoice}&status=${payment.status ?? "paid"}`
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
 
   if (!isAuthenticated) return <AuthGuard icon={Lock} title="Masuk untuk checkout" />
 
-  const items = cart?.items ?? [];
+  const items = (cart as any)?.items ?? [];
 
   return (
     <PageContainer>
@@ -324,7 +324,7 @@ export default function CheckoutPage() {
               </OrderSummaryCard.skelWrapper>
             ) : (
               <OrderSummaryCard.list>
-                {items.map((item) => (
+                {items.map((item: any) => (
                   <OrderSummaryCard.itemRow key={item.produk_item_id}>
                     <OrderSummaryCard.imgWrapper>
                       {item.product_image_url && (

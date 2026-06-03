@@ -6,7 +6,7 @@ import { X, Minus, Plus, Trash2, Tag, ShoppingBag, ArrowRight } from 'lucide-rea
 import { useCartUiStore } from '@/lib/stores/cart-ui-store';
 import { formatPrice } from '@/lib/utils-frontend';
 import { toast } from 'sonner';
-import { CartResponse } from '@/api/types-local';
+import type * as Types from '@/api/types';
 import {
   useKeranjangGet,
   useCartPatchItemsProdukItemId,
@@ -31,7 +31,7 @@ export default function CartModal() {
   
   // Use generated hooks directly
   const { data: res, isLoading } = useKeranjangGet({});
-  const cart = (res as { data?: CartResponse })?.data;
+  const cart = (res as { data?: Types.Order })?.data;
   
   const updateItemMut = useCartPatchItemsProdukItemId();
   const removeItemMut = useCartDeleteItemsProdukItemId();

@@ -25,6 +25,10 @@ class OrderDetailResource extends JsonResource
             'qty' => $this->qty,
             'harga' => $this->harga,
             'subtotal' => $this->qty * $this->harga,
+            'banana' => $this->banana,
+            'potato' => $this->potato,
+            'flying_dog' => $this->flying_dog,
+            'foo' => $this->foo,
         ];
     }
 }

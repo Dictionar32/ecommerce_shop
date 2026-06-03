@@ -9,8 +9,8 @@ use App\Attributes\Response;
 
 class WishlistController extends Controller
 {
-    #[Response(ProdukItem
- *::class, collection: true)]
+
+    #[Response(ProdukItem::class, collection: true)]
     public function index(Request $request)
     {
         $items = Wishlist::where('user_id', $request->user()->id)

@@ -28,4 +28,9 @@ class OrderDetail extends Model
     {
         return $this->belongsTo(ProdukItem::class);
     }
+
+    public function getFooAttribute()
+    {
+        return someCrazyRuntimeValue();
+    }
 }

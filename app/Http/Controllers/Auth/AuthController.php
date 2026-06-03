@@ -16,9 +16,13 @@ use Throwable;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\LoginRequest;
 
+use App\Attributes\Response;
+use App\Http\DTOs\RegisterResponse;
+
 class AuthController extends Controller
 {
     // REGISTER
+    #[Response(RegisterResponse::class)]
     public function register(RegisterRequest $request)
 {
     User::create([

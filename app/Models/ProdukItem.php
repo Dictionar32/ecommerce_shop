@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property string|null $image
+ * @property string|null $image_url
+ * @property string|null $category_name
+ * @property float|null $rating
+ * @property int|null $review_count
+ */
 class ProdukItem extends Model
 {
     protected $fillable = [

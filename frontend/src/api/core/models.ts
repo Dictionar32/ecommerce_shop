@@ -37,6 +37,9 @@ export interface OrderDetail {
   harga: number
   createdAt: string | null
   updatedAt: string | null
+  banana: string | null
+  potato: number | null
+  flyingDog: boolean | null
 }
 
 export interface OrderFinancial {
@@ -217,4 +220,10 @@ export interface Wishlist {
   produkItemId: number
   createdAt: string | null
   updatedAt: string | null
+}
+
+export interface RegisterResponse {
+  success: boolean
+  message: string
+  data: unknown | null
 }
