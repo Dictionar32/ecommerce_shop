@@ -477,7 +477,7 @@ export const ProdukPostIdReviewsPayloadSchema = z.object({
 export type ProdukPostIdReviewsPayload = z.infer<typeof ProdukPostIdReviewsPayloadSchema>
 export const validateProdukPostIdReviewsPayload = (payload: unknown): ProdukPostIdReviewsPayload => ProdukPostIdReviewsPayloadSchema.parse(payload)
 
-export const ProdukPostIdReviewsResponseSchema = z.object({ message: z.string(), data: z.object({ id: z.number(), rating: z.number(), title: z.string().nullable(), comment: z.string().nullable(), is_verified_purchase: z.boolean(), created_at: z.string().nullable() }) })
+export const ProdukPostIdReviewsResponseSchema = z.object({ message: z.string(), data: z.object({ id: z.number(), rating: z.number(), title: z.string().nullable(), comment: z.string().nullable(), is_verified_purchase: z.number(), created_at: z.string().nullable() }) })
 export type ProdukPostIdReviewsResponse = z.infer<typeof ProdukPostIdReviewsResponseSchema>
 export const validateProdukPostIdReviewsResponse = (payload: unknown): ProdukPostIdReviewsResponse => ProdukPostIdReviewsResponseSchema.parse(payload)
 

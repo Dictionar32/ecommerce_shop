@@ -2077,7 +2077,7 @@
     }
   ],
   "channels": [],
-  "generatedAt": "2026-06-03T11:20:17.403Z",
+  "generatedAt": "2026-06-03T11:41:43.222Z",
   "models": [
     {
       "name": "Category",
@@ -5301,8 +5301,12 @@
                   "kind": "binary_expression",
                   "operator": "??",
                   "left": {
-                    "kind": "primitive",
-                    "type": "unknown"
+                    "kind": "property_access",
+                    "target": {
+                      "kind": "variable",
+                      "name": "gateway"
+                    },
+                    "property": "name"
                   },
                   "right": {
                     "kind": "primitive",
@@ -5342,8 +5346,12 @@
                   "kind": "binary_expression",
                   "operator": "??",
                   "left": {
-                    "kind": "primitive",
-                    "type": "unknown"
+                    "kind": "property_access",
+                    "target": {
+                      "kind": "variable",
+                      "name": "gateway"
+                    },
+                    "property": "order_id"
                   },
                   "right": {
                     "kind": "primitive",
@@ -5383,8 +5391,12 @@
                   "kind": "binary_expression",
                   "operator": "??",
                   "left": {
-                    "kind": "primitive",
-                    "type": "unknown"
+                    "kind": "property_access",
+                    "target": {
+                      "kind": "variable",
+                      "name": "gateway"
+                    },
+                    "property": "token"
                   },
                   "right": {
                     "kind": "primitive",
@@ -5424,8 +5436,12 @@
                   "kind": "binary_expression",
                   "operator": "??",
                   "left": {
-                    "kind": "primitive",
-                    "type": "unknown"
+                    "kind": "property_access",
+                    "target": {
+                      "kind": "variable",
+                      "name": "gateway"
+                    },
+                    "property": "redirect_url"
                   },
                   "right": {
                     "kind": "primitive",
