@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { Trash2, Star, ShoppingCart } from "lucide-react"
 import { formatPrice } from "@/lib/utils-frontend"
-import { ProdukItem } from "@/api/types-local"
 import { WishlistItem } from "@/features/wishlist/types/wishlist-read"
 
 interface WishlistListProps {

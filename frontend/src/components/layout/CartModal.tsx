@@ -7,13 +7,7 @@ import { useCartUiStore } from '@/lib/stores/cart-ui-store';
 import { formatPrice } from '@/lib/utils-frontend';
 import { toast } from 'sonner';
 import type * as Types from '@/api/types';
-import {
-  useKeranjangGet,
-  useCartPatchItemsProdukItemId,
-  useCartDeleteItemsProdukItemId,
-  useCartPostPromo,
-  useCartDeletePromo
-} from '@/api/hooks';
+import { useKeranjang, useCartItems, useCartPromo } from '@/api/hooks';
 import {
   Overlay, Backdrop, Drawer, Header, HeaderTitleArea, Title, CartCountBadge, CloseButton, ContentArea, SkeletonRow, SkeletonImage, SkeletonInfo,
   SkeletonText, SkeletonTextShort, EmptyState, EmptyStateIcon, EmptyStateTitle, EmptyStateSub,
@@ -30,36 +24,36 @@ export default function CartModal() {
   const { isOpen, closeCart } = useCartUiStore();
   
   // Use generated hooks directly
-  const { data: res, isLoading } = useKeranjangGet({});
-  const cart = (res as { data?: Types.Order })?.data;
+  const { data: res, isLoading } = useKeranjang.index();
+  const cart = res as Types.OrderResourceTransformed | undefined;
   
-  const updateItemMut = useCartPatchItemsProdukItemId();
-  const removeItemMut = useCartDeleteItemsProdukItemId();
-  const applyPromoMut = useCartPostPromo();
-  const removePromoMut = useCartDeletePromo();
+  const updateItemMut = useCartItems.useUpdate();
+  const removeItemMut = useCartItems.useRemove();
+  const applyPromoMut = useCartPromo.useCreate();
+  const removePromoMut = useCartPromo.useDelete();
 
   const [promoInput, setPromoInput] = useState('');
 
   if (!isOpen) return null;
 
   const items = cart?.items ?? [];
-  const cartCount = items.reduce((s: number, i: any) => s + i.qty, 0);
+  const cartCount = items.reduce((s: number, i) => s + i.qty, 0);
 
   const handleUpdateQty = async (produkItemId: number, newQty: number) => {
     if (newQty < 1) {
-      removeItemMut.mutate({ params: { produkItemId: String(produkItemId) } }, {
+      removeItemMut.mutate(produkItemId, {
         onError: () => toast.error('Gagal hapus item'),
       });
       return;
     }
     updateItemMut.mutate(
-      { params: { produkItemId: String(produkItemId) }, body: { qty: newQty } },
+      { id: produkItemId, data: { qty: newQty } },
       { onError: () => toast.error('Gagal update jumlah') }
     );
   };
 
   const handleRemove = (produkItemId: number) => {
-    removeItemMut.mutate({ params: { produkItemId: String(produkItemId) } }, {
+    removeItemMut.mutate(produkItemId, {
       onSuccess: () => toast.success('Item dihapus'),
       onError: () => toast.error('Gagal hapus'),
     });
@@ -67,7 +61,7 @@ export default function CartModal() {
 
   const handleApplyPromo = () => {
     if (!promoInput.trim()) return;
-    applyPromoMut.mutate({ body: { code: promoInput.trim() } }, {
+    applyPromoMut.mutate({ code: promoInput.trim() }, {
       onSuccess: () => {
         toast.success('Kode promo diterapkan!');
         setPromoInput('');
@@ -79,7 +73,7 @@ export default function CartModal() {
   };
 
   const handleRemovePromo = () => {
-    removePromoMut.mutate({}, {
+    removePromoMut.mutate(1, {
       onSuccess: () => toast.success('Promo dihapus'),
       onError: () => toast.error('Gagal hapus promo'),
     });
@@ -134,14 +128,14 @@ export default function CartModal() {
               </StartShoppingBtn>
             </EmptyState>
           ) : (
-            items.map((item: any) => (
-              <CartItemRow key={item.produk_item_id}>
+            items.map((item) => (
+              <CartItemRow key={item.produkItemId}>
                 {/* Image */}
                 <CartItemImageContainer>
-                  {item.produk?.image_url ? (
+                  {item.produk?.imageUrl ? (
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img
-                      src={item.produk.image_url}
+                      src={item.produk.imageUrl}
                       alt={item.produk?.nama}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
@@ -159,18 +153,18 @@ export default function CartModal() {
 
                   <CartItemActions>
                     <QtyControls>
-                      <QtyBtn onClick={() => handleUpdateQty(item.produk_item_id, item.qty - 1)}>
+                      <QtyBtn onClick={() => handleUpdateQty(item.produkItemId, item.qty - 1)}>
                         <Minus size={12} />
                       </QtyBtn>
                       <QtyDisplay>{item.qty}</QtyDisplay>
-                      <QtyBtn onClick={() => handleUpdateQty(item.produk_item_id, item.qty + 1)}>
+                      <QtyBtn onClick={() => handleUpdateQty(item.produkItemId, item.qty + 1)}>
                         <Plus size={12} />
                       </QtyBtn>
                     </QtyControls>
 
                     <SubtotalArea>
                       <SubtotalText>{formatPrice(item.subtotal)}</SubtotalText>
-                      <RemoveBtn onClick={() => handleRemove(item.produk_item_id)}>
+                      <RemoveBtn onClick={() => handleRemove(item.produkItemId)}>
                         <Trash2 size={13} />
                       </RemoveBtn>
                     </SubtotalArea>
@@ -192,8 +186,8 @@ export default function CartModal() {
                     <Tag size={14} />
                   </StyledTagIcon>
                   <AppliedPromoCode>{cart.promotion.code}</AppliedPromoCode>
-                  {cart.promotion.discount_minor && (
-                    <AppliedPromoDiscount>-{formatPrice(cart.promotion.discount_minor)}</AppliedPromoDiscount>
+                  {cart.promotion.discountMinor && (
+                    <AppliedPromoDiscount>-{formatPrice(cart.promotion.discountMinor)}</AppliedPromoDiscount>
                   )}
                 </AppliedPromoInfo>
                 <RemovePromoBtn onClick={handleRemovePromo}>
@@ -218,24 +212,24 @@ export default function CartModal() {
             <TotalsContainer>
               <TotalRow>
                 <span>Subtotal</span>
-                <span>{formatPrice(cart.subtotal_minor)}</span>
+                <span>{formatPrice(cart.subtotalMinor)}</span>
               </TotalRow>
-              {cart.discount_minor > 0 && (
+              {(cart.discountMinor ?? 0) > 0 && (
                 <DiscountRow>
                   <span>Diskon</span>
-                  <span>-{formatPrice(cart.discount_minor)}</span>
+                  <span>-{formatPrice(cart.discountMinor)}</span>
                 </DiscountRow>
               )}
-              {cart.shipping_minor > 0 && (
+              {(cart.shippingMinor ?? 0) > 0 && (
                 <TotalRow>
                   <span>Pengiriman</span>
-                  <span>{formatPrice(cart.shipping_minor)}</span>
+                  <span>{formatPrice(cart.shippingMinor)}</span>
                 </TotalRow>
               )}
               <Divider />
               <GrandTotalRow>
                 <span>Total</span>
-                <GrandTotalValue>{formatPrice(cart.total_harga_minor ?? cart.total_minor ?? 0)}</GrandTotalValue>
+                <GrandTotalValue>{formatPrice(cart.totalHargaMinor ?? 0)}</GrandTotalValue>
               </GrandTotalRow>
             </TotalsContainer>
 

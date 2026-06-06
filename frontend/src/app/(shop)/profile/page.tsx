@@ -15,7 +15,7 @@ import { AuthGuard } from "@/components/shared/auth-guard"
 import { SectionHeader } from "@/components/shared/section-header"
 
 import useAuthStore from "@/lib/stores/auth-store"
-import { useLogoutPost, useProfilePatch } from "@/api/hooks"
+import { useLogout, useProfile } from '@/api/hooks'
 import {
   PageContainer, ContentWrapper, AvatarCard, AvatarHeaderRow, AvatarBox, AvatarInfoBox, UserName, UserEmail, MemberBadge,
   FormWrapper, LabelStyle, ActionBtnGroup, InfoListWrapper, InfoItemBox, InfoIconBox, InfoLabelText, InfoValueText,
@@ -31,8 +31,8 @@ export default function ProfilePage() {
   const user = useAuthStore((s) => s.user)
   const logoutLocal = useAuthStore((s) => s.logout)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const logoutMutation = useLogoutPost()
-  const updateProfile = useProfilePatch()
+  const logoutMutation = useLogout.useCreate()
+  const updateProfile = useProfile.usePatch()
   const [isEditing, setIsEditing] = useState(false)
 
   const form = useForm<any>({

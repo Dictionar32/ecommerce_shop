@@ -21,34 +21,34 @@ import {
   QtyBtn, RemoveBtn, RemovePromoBtn, ApplyPromoBtn, CheckoutBtn
 } from "./keranjang.styles"
 
-import { useKeranjangGet, useCartPatchItemsProdukItemId, useCartDeleteItemsProdukItemId, useCartPostPromo, useCartDeletePromo } from "@/api/hooks"
-import { CartResponse } from "@/api/types-local"
+import { useKeranjang, useCartItems, useCartPromo } from '@/api/hooks'
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice } from "@/lib/utils-frontend"
+import type * as Types from "@/api/types"
 
 export default function KeranjangPage() {
   const router = useRouter()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const [promoInput, setPromoInput] = useState("")
 
-  const { data: resCart, isLoading } = useKeranjangGet({})
-  const cart = (resCart as { data?: CartResponse })?.data
-  const updateItemMut = useCartPatchItemsProdukItemId()
-  const removeItemMut = useCartDeleteItemsProdukItemId()
-  const applyPromoMut = useCartPostPromo()
-  const removePromoMut = useCartDeletePromo()
+  const { data: resCart, isLoading } = useKeranjang.index()
+  const cart = resCart as Types.OrderResourceTransformed | undefined
+  const updateItemMut = useCartItems.useUpdate()
+  const removeItemMut = useCartItems.useRemove()
+  const applyPromoMut = useCartPromo.useCreate()
+  const removePromoMut = useCartPromo.useDelete()
 
   const handleQtyChange = (produkItemId: number, currentQty: number, delta: number) => {
     const newQty = currentQty + delta
     if (newQty < 1) {
-      removeItemMut.mutate({ params: { produkItemId: String(produkItemId) } }, { onError: () => toast.error("Gagal menghapus item") })
+      removeItemMut.mutate(produkItemId, { onError: () => toast.error("Gagal menghapus item") })
     } else {
-      updateItemMut.mutate({ params: { produkItemId: String(produkItemId) }, body: { qty: newQty } }, { onError: () => toast.error("Gagal mengubah jumlah") })
+      updateItemMut.mutate({ id: produkItemId, data: { qty: newQty } }, { onError: () => toast.error("Gagal mengubah jumlah") })
     }
   }
 
   const handleRemove = (produkItemId: number) => {
-    removeItemMut.mutate({ params: { produkItemId: String(produkItemId) } }, {
+    removeItemMut.mutate(produkItemId, {
       onSuccess: () => toast.success("Item dihapus"),
       onError: () => toast.error("Gagal menghapus item"),
     })
@@ -56,7 +56,7 @@ export default function KeranjangPage() {
 
   const handleApplyPromo = () => {
     if (!promoInput.trim()) return
-    applyPromoMut.mutate({ body: { code: promoInput.trim() } }, {
+    applyPromoMut.mutate({ code: promoInput.trim() }, {
       onSuccess: () => { toast.success("Kode promo diterapkan!"); setPromoInput("") },
       onError: () => toast.error("Kode promo tidak valid"),
     })
@@ -103,36 +103,36 @@ export default function KeranjangPage() {
             {/* Items */}
             <ItemsList>
               {items.map((item) => (
-                <CartItemCard key={item.produk_item_id}>
+                <CartItemCard key={item.produkItemId}>
                   <CartItemCard.imageWrapper>
-                    {item.product_image_url
+                    {item.produk?.imageUrl
                       ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
-                        <CartItemImg src={item.product_image_url} alt={item.product_name} />
+                        <CartItemImg src={item.produk.imageUrl} alt={item.produk.nama} />
                       )
                       : <CartItemCard.placeholder><IconPackage size={24} /></CartItemCard.placeholder>
                     }
                   </CartItemCard.imageWrapper>
                   <CartItemCard.details>
-                    <CartItemCard.name>{item.product_name}</CartItemCard.name>
-                    <CartItemCard.price>{formatPrice(item.price)}</CartItemCard.price>
+                    <CartItemCard.name>{item.produk?.nama}</CartItemCard.name>
+                    <CartItemCard.price>{formatPrice(item.harga)}</CartItemCard.price>
                     <CartItemCard.actionRow>
                       <CartItemCard.qtyGroup>
                         <QtyBtn variant="ghost" size="icon"
                           disabled={updateItemMut.isPending || removeItemMut.isPending}
-                          onClick={() => handleQtyChange(item.produk_item_id, item.qty, -1)}>
+                          onClick={() => handleQtyChange(item.produkItemId, item.qty, -1)}>
                           <IconMinus size={12} />
                         </QtyBtn>
                         <CartItemCard.qty>{item.qty}</CartItemCard.qty>
                         <QtyBtn variant="ghost" size="icon"
                           disabled={updateItemMut.isPending}
-                          onClick={() => handleQtyChange(item.produk_item_id, item.qty, 1)}>
+                          onClick={() => handleQtyChange(item.produkItemId, item.qty, 1)}>
                           <IconPlus size={12} />
                         </QtyBtn>
                       </CartItemCard.qtyGroup>
                       <RemoveBtn variant="ghost" size="icon"
                         disabled={removeItemMut.isPending}
-                        onClick={() => handleRemove(item.produk_item_id)}>
+                        onClick={() => handleRemove(item.produkItemId)}>
                         <IconTrash size={14} />
                       </RemoveBtn>
                     </CartItemCard.actionRow>
@@ -150,12 +150,12 @@ export default function KeranjangPage() {
                   <IconTag size={14} />
                   <PromoCard.label>Kode Promo</PromoCard.label>
                 </PromoCard.headerRow>
-                {cart?.promotion_code ? (
+                {cart?.promotion?.code ? (
                   <PromoCard.appliedWrapper>
-                    <PromoCard.code>{cart.promotion_code}</PromoCard.code>
+                    <PromoCard.code>{cart.promotion.code}</PromoCard.code>
                     <RemovePromoBtn variant="ghost" size="icon"
                       disabled={removePromoMut.isPending}
-                      onClick={() => removePromoMut.mutate({}, { onSuccess: () => toast.success("Promo dihapus") })}>
+                      onClick={() => removePromoMut.mutate(1, { onSuccess: () => toast.success("Promo dihapus") })}>
                       {removePromoMut.isPending ? <IconLoader size={12} /> : <IconX size={12} />}
                     </RemovePromoBtn>
                   </PromoCard.appliedWrapper>
@@ -178,23 +178,23 @@ export default function KeranjangPage() {
                 <TotalsCard.list>
                   <TotalsCard.row>
                     <TotalsCard.label>Subtotal ({items.length} item)</TotalsCard.label>
-                    <TotalsCard.value>{formatPrice(cart?.subtotal_minor ?? 0)}</TotalsCard.value>
+                    <TotalsCard.value>{formatPrice(cart?.subtotalMinor ?? 0)}</TotalsCard.value>
                   </TotalsCard.row>
-                  {(cart?.discount_minor ?? 0) > 0 && (
+                  {(cart?.discountMinor ?? 0) > 0 && (
                     <TotalsCard.discountRow>
-                      <TotalsCard.label>Diskon</TotalsCard.label><TotalsCard.value>-{formatPrice(cart?.discount_minor ?? 0)}</TotalsCard.value>
+                      <TotalsCard.label>Diskon</TotalsCard.label><TotalsCard.value>-{formatPrice(cart?.discountMinor ?? 0)}</TotalsCard.value>
                     </TotalsCard.discountRow>
                   )}
-                  {(cart?.shipping_minor ?? 0) > 0 && (
+                  {(cart?.shippingMinor ?? 0) > 0 && (
                     <TotalsCard.row>
-                      <TotalsCard.label>Ongkir</TotalsCard.label><TotalsCard.value>{formatPrice(cart?.shipping_minor ?? 0)}</TotalsCard.value>
+                      <TotalsCard.label>Ongkir</TotalsCard.label><TotalsCard.value>{formatPrice(cart?.shippingMinor ?? 0)}</TotalsCard.value>
                     </TotalsCard.row>
                   )}
                 </TotalsCard.list>
                 <StyledSeparator />
                 <TotalsCard.grandTotalWrapper>
                   <TotalsCard.grandLabel>Total</TotalsCard.grandLabel>
-                  <TotalsCard.grandValue>{formatPrice(cart?.total_harga_minor ?? 0)}</TotalsCard.grandValue>
+                  <TotalsCard.grandValue>{formatPrice(cart?.totalHargaMinor ?? 0)}</TotalsCard.grandValue>
                 </TotalsCard.grandTotalWrapper>
                 <CheckoutBtn onClick={() => router.push("/checkout")}>
                   Lanjut Checkout <IconArrowRight size={15} />

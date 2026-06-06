@@ -4,18 +4,18 @@ import { ProdukList } from "./produk-list";
 import { PageLoader } from "@/components/shared/page-loader";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
-import { useProdukGet, useCategoriesGet, useWishlistGet } from "@/api/hooks";
-import { ProdukItem, Category } from "@/api/types-local";
+import { useProduk, useCategories, useWishlist } from '@/api/hooks';
+import { ProdukItemResourceTransformed, CategoryTransformed } from "@/api/types";
 
 export default function ProdukPage() {
   // Fetch all data at page level (Blueprint: Page composes data)
-  const { data: resProduk, isLoading: produkLoading, isError: produkError } = useProdukGet({});
-  const { data: resCat, isLoading: categoryLoading } = useCategoriesGet({});
-  const { data: resWishlist } = useWishlistGet({});
+  const { data: resProduk, isLoading: produkLoading, isError: produkError } = useProduk.index();
+  const { data: resCat, isLoading: categoryLoading } = useCategories.index();
+  const { data: resWishlist } = useWishlist.index();
 
-  const produk = (resProduk as { data?: ProdukItem[] })?.data;
-  const categories = (resCat as { data?: Category[] })?.data;
-  const wishlistData = (resWishlist as { data?: ProdukItem[] })?.data;
+  const produk = resProduk;
+  const categories = resCat;
+  const wishlistData = resWishlist;
 
   // Show loading for initial data fetch
   if (produkLoading || categoryLoading) {

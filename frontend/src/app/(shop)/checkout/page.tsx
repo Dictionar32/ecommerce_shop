@@ -30,7 +30,7 @@ import {
   StyledInput, StyledTextarea, SkelOrder, StyledSeparator, SubmitBtn, PaymentBtn, SummaryAddressChangeBtn, OrderItemImg
 } from "./checkout.styles"
 
-import { useKeranjangGet, useCheckoutPost, usePaymentPostOrderId } from "@/api/hooks"
+import { useKeranjang, useCheckout, usePayment } from '@/api/hooks'
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice } from "@/lib/utils-frontend"
 import type * as Types from "@/api/types"
@@ -89,14 +89,14 @@ export default function CheckoutPage() {
   const router = useRouter()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
 
-  const { data: resCart, isLoading: cartLoading } = useKeranjangGet({})
-  const cart = (resCart as { data?: Types.Order })?.data
+  const { data: resCart, isLoading: cartLoading } = useKeranjang.index()
+  const cart = resCart as Types.OrderResourceTransformed | undefined
 
-  const createOrder = useCheckoutPost()
+  const createOrder = useCheckout.useCreate()
 
   // orderId diisi setelah step 1 selesai — dipakai untuk usePayment
   const [orderId, setOrderId] = useState<number>(0)
-  const createPayment = usePaymentPostOrderId()
+  const createPayment = usePayment.usePost()
 
   const [step, setStep] = useState<1 | 2>(1)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>("transfer_bank")
@@ -111,16 +111,14 @@ export default function CheckoutPage() {
   const onShippingSubmit = async (values: OrderFormValues['Create']) => {
     try {
       const order = await createOrder.mutateAsync({
-        body: {
-          shipping_nama: values.shippingNama,
-          shipping_telepon: values.shippingTelepon,
-          shipping_alamat: values.shippingAlamat,
-          shipping_kota: values.shippingKota,
-          shipping_kode_pos: values.shippingKodePos
-        }
-      }) as unknown as Types.Order
+        shippingNama: values.shippingNama,
+        shippingTelepon: values.shippingTelepon,
+        shippingAlamat: values.shippingAlamat,
+        shippingKota: values.shippingKota,
+        shippingKodePos: values.shippingKodePos
+      }) as unknown as Types.OrderResourceTransformed
       setOrderId(order.id)
-      setSavedOrder({ id: order.id, invoice: order.orderNumber ?? `#${order.id}` })
+      setSavedOrder({ id: order.id, invoice: order.invoiceNumber ?? `#${order.id}` })
       setStep(2)
       window.scrollTo({ top: 0, behavior: "smooth" })
     } catch {
@@ -150,7 +148,7 @@ export default function CheckoutPage() {
 
   if (!isAuthenticated) return <AuthGuard icon={Lock} title="Masuk untuk checkout" />
 
-  const items = (cart as any)?.items ?? [];
+  const items = cart?.items ?? [];
 
   return (
     <PageContainer>
@@ -324,17 +322,17 @@ export default function CheckoutPage() {
               </OrderSummaryCard.skelWrapper>
             ) : (
               <OrderSummaryCard.list>
-                {items.map((item: any) => (
-                  <OrderSummaryCard.itemRow key={item.produk_item_id}>
+                {items.map((item) => (
+                  <OrderSummaryCard.itemRow key={item.produkItemId}>
                     <OrderSummaryCard.imgWrapper>
-                      {item.product_image_url && (
+                      {item.produk?.imageUrl && (
                         /* eslint-disable-next-line @next/next/no-img-element */
-                        <OrderItemImg src={item.product_image_url} alt={item.product_name} />
+                        <OrderItemImg src={item.produk.imageUrl} alt={item.produk.nama} />
                       )}
                     </OrderSummaryCard.imgWrapper>
                     <OrderSummaryCard.itemInfo>
-                      <OrderSummaryCard.name>{item.product_name}</OrderSummaryCard.name>
-                      <OrderSummaryCard.desc>×{item.qty} · {formatPrice(item.price)}</OrderSummaryCard.desc>
+                      <OrderSummaryCard.name>{item.produk?.nama}</OrderSummaryCard.name>
+                      <OrderSummaryCard.desc>×{item.qty} · {formatPrice(item.harga)}</OrderSummaryCard.desc>
                     </OrderSummaryCard.itemInfo>
                     <OrderSummaryCard.subtotal>{formatPrice(item.subtotal)}</OrderSummaryCard.subtotal>
                   </OrderSummaryCard.itemRow>
@@ -345,23 +343,23 @@ export default function CheckoutPage() {
             <StyledSeparator />
             <TotalsList>
               <TotalsList.row>
-                <TotalsList.label>Subtotal</TotalsList.label><TotalsList.value>{formatPrice(cart?.subtotal_minor ?? 0)}</TotalsList.value>
+                <TotalsList.label>Subtotal</TotalsList.label><TotalsList.value>{formatPrice(cart?.subtotalMinor ?? 0)}</TotalsList.value>
               </TotalsList.row>
-              {(cart?.discount_minor ?? 0) > 0 && (
+              {(cart?.discountMinor ?? 0) > 0 && (
                 <TotalsList.discountRow>
-                  <TotalsList.label>Diskon</TotalsList.label><TotalsList.value>-{formatPrice(cart?.discount_minor ?? 0)}</TotalsList.value>
+                  <TotalsList.label>Diskon</TotalsList.label><TotalsList.value>-{formatPrice(cart?.discountMinor ?? 0)}</TotalsList.value>
                 </TotalsList.discountRow>
               )}
-              {(cart?.shipping_minor ?? 0) > 0 && (
+              {(cart?.shippingMinor ?? 0) > 0 && (
                 <TotalsList.row>
-                  <TotalsList.label>Ongkir</TotalsList.label><TotalsList.value>{formatPrice(cart?.shipping_minor ?? 0)}</TotalsList.value>
+                  <TotalsList.label>Ongkir</TotalsList.label><TotalsList.value>{formatPrice(cart?.shippingMinor ?? 0)}</TotalsList.value>
                 </TotalsList.row>
               )}
             </TotalsList>
             <StyledSeparator />
             <GrandTotalWrapper>
               <GrandTotalWrapper.label>Total</GrandTotalWrapper.label>
-              <GrandTotalWrapper.value>{formatPrice(cart?.total_harga_minor ?? 0)}</GrandTotalWrapper.value>
+              <GrandTotalWrapper.value>{formatPrice(cart?.totalHargaMinor ?? 0)}</GrandTotalWrapper.value>
             </GrandTotalWrapper>
 
             {savedOrder && (

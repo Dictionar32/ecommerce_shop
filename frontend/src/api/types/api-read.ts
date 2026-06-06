@@ -290,7 +290,7 @@ export type RegisterResponseIndex = RegisterResponseTransformed[]
 export interface OrderDetailResourceTransformed {
   id: number
   produkItemId: number
-  produk: { id: number; nama: string; gambar: (string) | null; imageUrl: string }
+  produk?: { id: number; nama: string; gambar: (string) | null; imageUrl: string }
   qty: number
   harga: number
   subtotal: number
@@ -317,8 +317,8 @@ export interface OrderResourceTransformed {
   taxMinor: number
   totalHargaMinor: number
   items?: OrderDetailResourceTransformed[]
-  promotion: { code: string; discountMinor: number }
-  shipping: { nama: (string) | null; telepon: (string) | null; alamat: (string) | null; kota: (string) | null; kodePos: (string) | null }
+  promotion?: { code: string; discountMinor: number }
+  shipping?: { nama: (string) | null; telepon: (string) | null; alamat: (string) | null; kota: (string) | null; kodePos: (string) | null }
   createdAt: string
 }
 
@@ -339,8 +339,8 @@ export interface PaymentResourceTransformed {
   amountMinor: number
   refundAmountMinor: unknown
   items?: OrderDetailResourceTransformed[]
-  promotion: { code: string; discountMinor: number }
-  gateway: { name: null; orderId: null; token: null; redirectUrl: null }
+  promotion?: { code: string; discountMinor: number }
+  gateway?: { name: null; orderId: null; token: null; redirectUrl: null }
   totalHarga: number
 }
 

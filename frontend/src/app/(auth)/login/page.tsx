@@ -33,10 +33,10 @@ const DefaultValues: LoginFormValues = {
   password: "",
 }
 
-import { useLoginPost } from "@/api/hooks"
+import { useLogin } from '@/api/hooks'
 
 export default function LoginPage() {
-  const loginMutation = useLoginPost()
+  const loginMutation = useLogin.useCreate()
 
   const form = useForm<any>({
     resolver: zodResolver(LoginSchema),

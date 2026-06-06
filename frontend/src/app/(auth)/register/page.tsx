@@ -41,10 +41,10 @@ const DefaultValues: RegisterFormValues = {
   passwordConfirmation: "",
 }
 
-import { useRegisterPost } from "@/api/hooks"
+import { useRegister } from '@/api/hooks'
 
 export default function RegisterPage() {
-  const registerMutation = useRegisterPost()
+  const registerMutation = useRegister.useCreate()
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(RegisterSchema),
@@ -54,12 +54,9 @@ export default function RegisterPage() {
   const onSubmit = async (values: RegisterFormValues) => {
     try {
       await registerMutation.mutateAsync({
-        body: {
-          name: values.name,
-          email: values.email,
-          password: values.password,
-          password_confirmation: values.passwordConfirmation
-        }
+        name: values.name,
+        email: values.email,
+        password: values.password,
       })
       toast.success("Akun dibuat! Selamat datang.")
       window.location.href = "/"

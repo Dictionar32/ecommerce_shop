@@ -2,46 +2,37 @@
 import { z } from 'zod'
 
 export const ApiSchema = {
-  RegisterPost: z.object({
+  RegisterCreate: z.object({
     name: z.string(),
     email: z.string(),
     password: z.string(),
   }),
-  LoginPost: z.object({
+  LoginCreate: z.object({
     email: z.string(),
     password: z.string(),
   }),
-  OauthGetProviderRedirect: z.object({
+  OauthRedirectGet: z.object({
     redirectTo: z.string().optional().nullable(),
   }),
-  SocialPostLogin: z.object({
+  SocialLoginCreate: z.object({
     provider: z.enum(['google', 'facebook', 'apple']),
     providerUserId: z.string(),
     email: z.string(),
     name: z.string().optional().nullable(),
     avatarUrl: z.string().optional().nullable(),
   }),
-  ForgotPasswordPost: z.object({
+  ForgotPasswordCreate: z.object({
     email: z.string(),
   }),
-  ResetPasswordPost: z.object({
+  ResetPasswordCreate: z.object({
     email: z.string(),
     token: z.string(),
     password: z.string(),
   }),
-  ProdukPostIdReviews: z.object({
+  ProdukReviewsPost: z.object({
     rating: z.number(),
     title: z.string().optional().nullable(),
     comment: z.string().optional().nullable(),
-  }),
-  PaymentPostOrderId: z.object({
-    metode: z.string(),
-    detail: z.array(z.unknown()).optional().nullable(),
-    provider: z.enum(['mock', 'midtrans']).optional().nullable(),
-    providerTxnId: z.string().optional().nullable(),
-    idempotencyKey: z.string().optional().nullable(),
-    gatewayCode: z.string().optional().nullable(),
-    gatewayMessage: z.string().optional().nullable(),
   }),
   ProfilePut: z.object({
     name: z.string(),
@@ -51,17 +42,17 @@ export const ApiSchema = {
     name: z.string(),
     email: z.string(),
   }),
-  CartPostItems: z.object({
+  CartItemsCreate: z.object({
     produkItemId: z.string(),
     qty: z.number(),
   }),
-  CartPatchItemsProdukItemId: z.object({
+  CartItemsUpdate: z.object({
     qty: z.number(),
   }),
-  CartPostPromo: z.object({
+  CartPromoCreate: z.object({
     code: z.string(),
   }),
-  CheckoutPost: z.object({
+  CheckoutCreate: z.object({
     items: z.array(z.object({
     produkItemId: z.string(),
     qty: z.number(),
@@ -72,7 +63,7 @@ export const ApiSchema = {
     shippingKota: z.string().optional().nullable(),
     shippingKodePos: z.string().optional().nullable(),
   }),
-  BuyNowPost: z.object({
+  BuyNowCreate: z.object({
     produkItemId: z.string(),
     qty: z.number(),
     shippingNama: z.string().optional().nullable(),
@@ -81,10 +72,19 @@ export const ApiSchema = {
     shippingKota: z.string().optional().nullable(),
     shippingKodePos: z.string().optional().nullable(),
   }),
-  WishlistPost: z.object({
+  WishlistCreate: z.object({
     produkItemId: z.string(),
   }),
-  AdminPostProduk: z.object({
+  PaymentPost: z.object({
+    metode: z.string(),
+    detail: z.array(z.unknown()).optional().nullable(),
+    provider: z.enum(['mock', 'midtrans']).optional().nullable(),
+    providerTxnId: z.string().optional().nullable(),
+    idempotencyKey: z.string().optional().nullable(),
+    gatewayCode: z.string().optional().nullable(),
+    gatewayMessage: z.string().optional().nullable(),
+  }),
+  AdminProdukCreate: z.object({
     nama: z.string(),
     deskripsi: z.string().optional().nullable(),
     gambar: z.string().optional().nullable(),
@@ -97,41 +97,41 @@ export const ApiSchema = {
 }
 
 export type ApiFormValues = {
-  RegisterPost: z.infer<typeof ApiSchema.RegisterPost>
-  LoginPost: z.infer<typeof ApiSchema.LoginPost>
-  OauthGetProviderRedirect: z.infer<typeof ApiSchema.OauthGetProviderRedirect>
-  SocialPostLogin: z.infer<typeof ApiSchema.SocialPostLogin>
-  ForgotPasswordPost: z.infer<typeof ApiSchema.ForgotPasswordPost>
-  ResetPasswordPost: z.infer<typeof ApiSchema.ResetPasswordPost>
-  ProdukPostIdReviews: z.infer<typeof ApiSchema.ProdukPostIdReviews>
-  PaymentPostOrderId: z.infer<typeof ApiSchema.PaymentPostOrderId>
+  RegisterCreate: z.infer<typeof ApiSchema.RegisterCreate>
+  LoginCreate: z.infer<typeof ApiSchema.LoginCreate>
+  OauthRedirectGet: z.infer<typeof ApiSchema.OauthRedirectGet>
+  SocialLoginCreate: z.infer<typeof ApiSchema.SocialLoginCreate>
+  ForgotPasswordCreate: z.infer<typeof ApiSchema.ForgotPasswordCreate>
+  ResetPasswordCreate: z.infer<typeof ApiSchema.ResetPasswordCreate>
+  ProdukReviewsPost: z.infer<typeof ApiSchema.ProdukReviewsPost>
   ProfilePut: z.infer<typeof ApiSchema.ProfilePut>
   ProfilePatch: z.infer<typeof ApiSchema.ProfilePatch>
-  CartPostItems: z.infer<typeof ApiSchema.CartPostItems>
-  CartPatchItemsProdukItemId: z.infer<typeof ApiSchema.CartPatchItemsProdukItemId>
-  CartPostPromo: z.infer<typeof ApiSchema.CartPostPromo>
-  CheckoutPost: z.infer<typeof ApiSchema.CheckoutPost>
-  BuyNowPost: z.infer<typeof ApiSchema.BuyNowPost>
-  WishlistPost: z.infer<typeof ApiSchema.WishlistPost>
-  AdminPostProduk: z.infer<typeof ApiSchema.AdminPostProduk>
+  CartItemsCreate: z.infer<typeof ApiSchema.CartItemsCreate>
+  CartItemsUpdate: z.infer<typeof ApiSchema.CartItemsUpdate>
+  CartPromoCreate: z.infer<typeof ApiSchema.CartPromoCreate>
+  CheckoutCreate: z.infer<typeof ApiSchema.CheckoutCreate>
+  BuyNowCreate: z.infer<typeof ApiSchema.BuyNowCreate>
+  WishlistCreate: z.infer<typeof ApiSchema.WishlistCreate>
+  PaymentPost: z.infer<typeof ApiSchema.PaymentPost>
+  AdminProdukCreate: z.infer<typeof ApiSchema.AdminProdukCreate>
 }
 
 export const ApiDefaultValues = {
-  registerPost: {} as ApiFormValues['RegisterPost'],
-  loginPost: {} as ApiFormValues['LoginPost'],
-  oauthGetProviderRedirect: {} as ApiFormValues['OauthGetProviderRedirect'],
-  socialPostLogin: {} as ApiFormValues['SocialPostLogin'],
-  forgotPasswordPost: {} as ApiFormValues['ForgotPasswordPost'],
-  resetPasswordPost: {} as ApiFormValues['ResetPasswordPost'],
-  produkPostIdReviews: {} as ApiFormValues['ProdukPostIdReviews'],
-  paymentPostOrderId: {} as ApiFormValues['PaymentPostOrderId'],
+  registerCreate: {} as ApiFormValues['RegisterCreate'],
+  loginCreate: {} as ApiFormValues['LoginCreate'],
+  oauthRedirectGet: {} as ApiFormValues['OauthRedirectGet'],
+  socialLoginCreate: {} as ApiFormValues['SocialLoginCreate'],
+  forgotPasswordCreate: {} as ApiFormValues['ForgotPasswordCreate'],
+  resetPasswordCreate: {} as ApiFormValues['ResetPasswordCreate'],
+  produkReviewsPost: {} as ApiFormValues['ProdukReviewsPost'],
   profilePut: {} as ApiFormValues['ProfilePut'],
   profilePatch: {} as ApiFormValues['ProfilePatch'],
-  cartPostItems: {} as ApiFormValues['CartPostItems'],
-  cartPatchItemsProdukItemId: {} as ApiFormValues['CartPatchItemsProdukItemId'],
-  cartPostPromo: {} as ApiFormValues['CartPostPromo'],
-  checkoutPost: {} as ApiFormValues['CheckoutPost'],
-  buyNowPost: {} as ApiFormValues['BuyNowPost'],
-  wishlistPost: {} as ApiFormValues['WishlistPost'],
-  adminPostProduk: {} as ApiFormValues['AdminPostProduk'],
+  cartItemsCreate: {} as ApiFormValues['CartItemsCreate'],
+  cartItemsUpdate: {} as ApiFormValues['CartItemsUpdate'],
+  cartPromoCreate: {} as ApiFormValues['CartPromoCreate'],
+  checkoutCreate: {} as ApiFormValues['CheckoutCreate'],
+  buyNowCreate: {} as ApiFormValues['BuyNowCreate'],
+  wishlistCreate: {} as ApiFormValues['WishlistCreate'],
+  paymentPost: {} as ApiFormValues['PaymentPost'],
+  adminProdukCreate: {} as ApiFormValues['AdminProdukCreate'],
 }

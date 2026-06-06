@@ -25,23 +25,25 @@ import type {
   OrderResourceResponse,
   PaymentResourceResponse,
   ProdukItemResourceResponse,
-  RegisterPostPayload,
-  LoginPostPayload,
-  OauthGetProviderRedirectPayload,
-  SocialPostLoginPayload,
-  ForgotPasswordPostPayload,
-  ResetPasswordPostPayload,
-  ProdukPostIdReviewsPayload,
-  PaymentPostOrderIdPayload,
+  CategoriesListResponse,
+  ProdukReviewsGetResponse,
+  RegisterCreatePayload,
+  LoginCreatePayload,
+  OauthRedirectGetPayload,
+  SocialLoginCreatePayload,
+  ForgotPasswordCreatePayload,
+  ResetPasswordCreatePayload,
+  ProdukReviewsPostPayload,
   ProfilePutPayload,
   ProfilePatchPayload,
-  CartPostItemsPayload,
-  CartPatchItemsProdukItemIdPayload,
-  CartPostPromoPayload,
-  CheckoutPostPayload,
-  BuyNowPostPayload,
-  WishlistPostPayload,
-  AdminPostProdukPayload,
+  CartItemsCreatePayload,
+  CartItemsUpdatePayload,
+  CartPromoCreatePayload,
+  CheckoutCreatePayload,
+  BuyNowCreatePayload,
+  WishlistCreatePayload,
+  PaymentPostPayload,
+  AdminProdukCreatePayload,
 } from '../contract/api-contract'
 import type {
   CategoryTransformed,
@@ -79,6 +81,8 @@ export const toCategoryRead = (api: CategoryApiResponse): CategoryTransformed =>
   updatedAt: api.updated_at,
 })
 
+export const toCategoryReadList = (api: CategoryApiResponse[]): CategoryTransformed[] => api.map(toCategoryRead)
+
 export const toOrderRead = (api: OrderApiResponse): OrderTransformed => ({
   id: api.id,
   userId: api.user_id,
@@ -88,6 +92,8 @@ export const toOrderRead = (api: OrderApiResponse): OrderTransformed => ({
   createdAt: api.created_at,
   updatedAt: api.updated_at,
 })
+
+export const toOrderReadList = (api: OrderApiResponse[]): OrderTransformed[] => api.map(toOrderRead)
 
 export const toOrderAmountRead = (api: OrderAmountApiResponse): OrderAmountTransformed => ({
   id: api.id,
@@ -100,6 +106,8 @@ export const toOrderAmountRead = (api: OrderAmountApiResponse): OrderAmountTrans
   createdAt: api.created_at,
   updatedAt: api.updated_at,
 })
+
+export const toOrderAmountReadList = (api: OrderAmountApiResponse[]): OrderAmountTransformed[] => api.map(toOrderAmountRead)
 
 export const toOrderDetailRead = (api: OrderDetailApiResponse): OrderDetailTransformed => ({
   id: api.id,
@@ -114,6 +122,8 @@ export const toOrderDetailRead = (api: OrderDetailApiResponse): OrderDetailTrans
   flyingDog: api.flying_dog,
 })
 
+export const toOrderDetailReadList = (api: OrderDetailApiResponse[]): OrderDetailTransformed[] => api.map(toOrderDetailRead)
+
 export const toOrderFinancialRead = (api: OrderFinancialApiResponse): OrderFinancialTransformed => ({
   id: api.id,
   orderId: api.order_id,
@@ -123,6 +133,8 @@ export const toOrderFinancialRead = (api: OrderFinancialApiResponse): OrderFinan
   createdAt: api.created_at,
   updatedAt: api.updated_at,
 })
+
+export const toOrderFinancialReadList = (api: OrderFinancialApiResponse[]): OrderFinancialTransformed[] => api.map(toOrderFinancialRead)
 
 export const toOrderFulfillmentRead = (api: OrderFulfillmentApiResponse): OrderFulfillmentTransformed => ({
   id: api.id,
@@ -137,6 +149,8 @@ export const toOrderFulfillmentRead = (api: OrderFulfillmentApiResponse): OrderF
   updatedAt: api.updated_at,
 })
 
+export const toOrderFulfillmentReadList = (api: OrderFulfillmentApiResponse[]): OrderFulfillmentTransformed[] => api.map(toOrderFulfillmentRead)
+
 export const toOrderPromotionRead = (api: OrderPromotionApiResponse): OrderPromotionTransformed => ({
   id: api.id,
   orderId: api.order_id,
@@ -147,6 +161,8 @@ export const toOrderPromotionRead = (api: OrderPromotionApiResponse): OrderPromo
   createdAt: api.created_at,
   updatedAt: api.updated_at,
 })
+
+export const toOrderPromotionReadList = (api: OrderPromotionApiResponse[]): OrderPromotionTransformed[] => api.map(toOrderPromotionRead)
 
 export const toOrderShippingRead = (api: OrderShippingApiResponse): OrderShippingTransformed => ({
   id: api.id,
@@ -160,6 +176,8 @@ export const toOrderShippingRead = (api: OrderShippingApiResponse): OrderShippin
   updatedAt: api.updated_at,
 })
 
+export const toOrderShippingReadList = (api: OrderShippingApiResponse[]): OrderShippingTransformed[] => api.map(toOrderShippingRead)
+
 export const toPaymentRead = (api: PaymentApiResponse): PaymentTransformed => ({
   id: api.id,
   orderId: api.order_id,
@@ -169,6 +187,8 @@ export const toPaymentRead = (api: PaymentApiResponse): PaymentTransformed => ({
   createdAt: api.created_at,
   updatedAt: api.updated_at,
 })
+
+export const toPaymentReadList = (api: PaymentApiResponse[]): PaymentTransformed[] => api.map(toPaymentRead)
 
 export const toPaymentAmountRead = (api: PaymentAmountApiResponse): PaymentAmountTransformed => ({
   id: api.id,
@@ -182,6 +202,8 @@ export const toPaymentAmountRead = (api: PaymentAmountApiResponse): PaymentAmoun
   updatedAt: api.updated_at,
 })
 
+export const toPaymentAmountReadList = (api: PaymentAmountApiResponse[]): PaymentAmountTransformed[] => api.map(toPaymentAmountRead)
+
 export const toPaymentDetailRead = (api: PaymentDetailApiResponse): PaymentDetailTransformed => ({
   id: api.id,
   paymentId: api.payment_id,
@@ -191,6 +213,8 @@ export const toPaymentDetailRead = (api: PaymentDetailApiResponse): PaymentDetai
   createdAt: api.created_at,
   updatedAt: api.updated_at,
 })
+
+export const toPaymentDetailReadList = (api: PaymentDetailApiResponse[]): PaymentDetailTransformed[] => api.map(toPaymentDetailRead)
 
 export const toPaymentGatewayRead = (api: PaymentGatewayApiResponse): PaymentGatewayTransformed => ({
   id: api.id,
@@ -211,6 +235,8 @@ export const toPaymentGatewayRead = (api: PaymentGatewayApiResponse): PaymentGat
   updatedAt: api.updated_at,
 })
 
+export const toPaymentGatewayReadList = (api: PaymentGatewayApiResponse[]): PaymentGatewayTransformed[] => api.map(toPaymentGatewayRead)
+
 export const toProductReviewRead = (api: ProductReviewApiResponse): ProductReviewTransformed => ({
   id: api.id,
   produkItemId: api.produk_item_id,
@@ -222,6 +248,8 @@ export const toProductReviewRead = (api: ProductReviewApiResponse): ProductRevie
   createdAt: api.created_at,
   updatedAt: api.updated_at,
 })
+
+export const toProductReviewReadList = (api: ProductReviewApiResponse[]): ProductReviewTransformed[] => api.map(toProductReviewRead)
 
 export const toProdukItemRead = (api: ProdukItemApiResponse): ProdukItemTransformed => ({
   id: api.id,
@@ -239,6 +267,8 @@ export const toProdukItemRead = (api: ProdukItemApiResponse): ProdukItemTransfor
   reviewCount: api.review_count,
 })
 
+export const toProdukItemReadList = (api: ProdukItemApiResponse[]): ProdukItemTransformed[] => api.map(toProdukItemRead)
+
 export const toProdukItemFrontendRead = (api: ProdukItemFrontendApiResponse): ProdukItemFrontendTransformed => ({
   id: api.id,
   produkItemId: api.produk_item_id,
@@ -248,6 +278,8 @@ export const toProdukItemFrontendRead = (api: ProdukItemFrontendApiResponse): Pr
   createdAt: api.created_at,
   updatedAt: api.updated_at,
 })
+
+export const toProdukItemFrontendReadList = (api: ProdukItemFrontendApiResponse[]): ProdukItemFrontendTransformed[] => api.map(toProdukItemFrontendRead)
 
 export const toPromoCodeRead = (api: PromoCodeApiResponse): PromoCodeTransformed => ({
   id: api.id,
@@ -265,6 +297,8 @@ export const toPromoCodeRead = (api: PromoCodeApiResponse): PromoCodeTransformed
   updatedAt: api.updated_at,
 })
 
+export const toPromoCodeReadList = (api: PromoCodeApiResponse[]): PromoCodeTransformed[] => api.map(toPromoCodeRead)
+
 export const toSocialAccountRead = (api: SocialAccountApiResponse): SocialAccountTransformed => ({
   id: api.id,
   userId: api.user_id,
@@ -276,6 +310,8 @@ export const toSocialAccountRead = (api: SocialAccountApiResponse): SocialAccoun
   updatedAt: api.updated_at,
 })
 
+export const toSocialAccountReadList = (api: SocialAccountApiResponse[]): SocialAccountTransformed[] => api.map(toSocialAccountRead)
+
 export const toUserRead = (api: UserApiResponse): UserTransformed => ({
   id: api.id,
   name: api.name,
@@ -285,6 +321,8 @@ export const toUserRead = (api: UserApiResponse): UserTransformed => ({
   updatedAt: api.updated_at,
 })
 
+export const toUserReadList = (api: UserApiResponse[]): UserTransformed[] => api.map(toUserRead)
+
 export const toWishlistRead = (api: WishlistApiResponse): WishlistTransformed => ({
   id: api.id,
   userId: api.user_id,
@@ -293,16 +331,25 @@ export const toWishlistRead = (api: WishlistApiResponse): WishlistTransformed =>
   updatedAt: api.updated_at,
 })
 
+export const toWishlistReadList = (api: WishlistApiResponse[]): WishlistTransformed[] => api.map(toWishlistRead)
+
 export const toRegisterResponseRead = (api: RegisterResponseApiResponse): RegisterResponseTransformed => ({
   success: api.success,
   message: api.message,
   data: api.data,
 })
 
+export const toRegisterResponseReadList = (api: RegisterResponseApiResponse[]): RegisterResponseTransformed[] => api.map(toRegisterResponseRead)
+
 export const toOrderDetailResourceRead = (api: OrderDetailResourceResponse): OrderDetailResourceTransformed => ({
   id: api.id,
   produkItemId: api.produk_item_id,
-  produk: api.produk,
+  produk: api.produk ? {
+    id: api.produk.id,
+    nama: api.produk.nama,
+    gambar: api.produk.gambar,
+    imageUrl: api.produk.image_url,
+  } : undefined,
   qty: api.qty,
   harga: api.harga,
   subtotal: api.subtotal,
@@ -311,6 +358,8 @@ export const toOrderDetailResourceRead = (api: OrderDetailResourceResponse): Ord
   flyingDog: api.flying_dog,
   foo: api.foo,
 })
+
+export const toOrderDetailResourceReadList = (api: OrderDetailResourceResponse[]): OrderDetailResourceTransformed[] => api.map(toOrderDetailResourceRead)
 
 export const toOrderResourceRead = (api: OrderResourceResponse): OrderResourceTransformed => ({
   id: api.id,
@@ -325,11 +374,22 @@ export const toOrderResourceRead = (api: OrderResourceResponse): OrderResourceTr
   shippingMinor: api.shipping_minor,
   taxMinor: api.tax_minor,
   totalHargaMinor: api.total_harga_minor,
-  items: api.items,
-  promotion: api.promotion,
-  shipping: api.shipping,
+  items: api.items?.map((item) => toOrderDetailResourceRead(item)) ?? [],
+  promotion: api.promotion ? {
+    code: api.promotion.code,
+    discountMinor: api.promotion.discount_minor,
+  } : undefined,
+  shipping: api.shipping ? {
+    nama: api.shipping.nama,
+    telepon: api.shipping.telepon,
+    alamat: api.shipping.alamat,
+    kota: api.shipping.kota,
+    kodePos: api.shipping.kode_pos,
+  } : undefined,
   createdAt: api.created_at,
 })
+
+export const toOrderResourceReadList = (api: OrderResourceResponse[]): OrderResourceTransformed[] => api.map(toOrderResourceRead)
 
 export const toPaymentResourceRead = (api: PaymentResourceResponse): PaymentResourceTransformed => ({
   id: api.id,
@@ -344,11 +404,21 @@ export const toPaymentResourceRead = (api: PaymentResourceResponse): PaymentReso
   gatewayStatus: api.gateway_status,
   amountMinor: api.amount_minor,
   refundAmountMinor: api.refund_amount_minor,
-  items: api.items,
-  promotion: api.promotion,
-  gateway: api.gateway,
+  items: api.items?.map((item) => toOrderDetailResourceRead(item)) ?? [],
+  promotion: api.promotion ? {
+    code: api.promotion.code,
+    discountMinor: api.promotion.discount_minor,
+  } : undefined,
+  gateway: api.gateway ? {
+    name: api.gateway.name,
+    orderId: api.gateway.order_id,
+    token: api.gateway.token,
+    redirectUrl: api.gateway.redirect_url,
+  } : undefined,
   totalHarga: api.total_harga,
 })
+
+export const toPaymentResourceReadList = (api: PaymentResourceResponse[]): PaymentResourceTransformed[] => api.map(toPaymentResourceRead)
 
 export const toProdukItemResourceRead = (api: ProdukItemResourceResponse): ProdukItemResourceTransformed => ({
   id: api.id,
@@ -364,22 +434,36 @@ export const toProdukItemResourceRead = (api: ProdukItemResourceResponse): Produ
   reviewCount: api.review_count,
 })
 
-export const toApiRegisterPost = (form: ApiFormValues['RegisterPost']): RegisterPostPayload => ({
+export const toProdukItemResourceReadList = (api: ProdukItemResourceResponse[]): ProdukItemResourceTransformed[] => api.map(toProdukItemResourceRead)
+
+export const toCategoriesListResponseRead = (api: CategoriesListResponse): { data: CategoryTransformed[] } => (api ? {
+    data: api.data?.map((item) => toCategoryRead(item)) ?? [],
+  } : undefined) as unknown as { data: CategoryTransformed[] }
+
+export const toProdukReviewsGetResponseRead = (api: ProdukReviewsGetResponse): { summary: { avgRating: number; totalReview: number }; reviews: { data: ProductReviewTransformed[]; currentPage?: number; total?: number } } => (api ? {
+    summary: api.summary ? {
+    avgRating: api.summary.avg_rating,
+    totalReview: api.summary.total_review,
+  } : undefined,
+    reviews: api.reviews ? { ...api.reviews, data: api.reviews.data?.map((item) => toProductReviewRead(item)) ?? [], currentPage: api.reviews.current_page, total: api.reviews.total } : undefined,
+  } : undefined) as unknown as { summary: { avgRating: number; totalReview: number }; reviews: { data: ProductReviewTransformed[]; currentPage?: number; total?: number } }
+
+export const toApiRegisterCreate = (form: ApiFormValues['RegisterCreate']): RegisterCreatePayload => ({
   [ApiApiField.NAME]: form.name,
   [ApiApiField.EMAIL]: form.email,
   [ApiApiField.PASSWORD]: form.password,
 })
 
-export const toApiLoginPost = (form: ApiFormValues['LoginPost']): LoginPostPayload => ({
+export const toApiLoginCreate = (form: ApiFormValues['LoginCreate']): LoginCreatePayload => ({
   [ApiApiField.EMAIL]: form.email,
   [ApiApiField.PASSWORD]: form.password,
 })
 
-export const toApiOauthGetProviderRedirect = (form: ApiFormValues['OauthGetProviderRedirect']): OauthGetProviderRedirectPayload => ({
+export const toApiOauthRedirectGet = (form: ApiFormValues['OauthRedirectGet']): OauthRedirectGetPayload => ({
   [ApiApiField.REDIRECTTO]: form.redirectTo,
 })
 
-export const toApiSocialPostLogin = (form: ApiFormValues['SocialPostLogin']): SocialPostLoginPayload => ({
+export const toApiSocialLoginCreate = (form: ApiFormValues['SocialLoginCreate']): SocialLoginCreatePayload => ({
   [ApiApiField.PROVIDER]: form.provider,
   [ApiApiField.PROVIDERUSERID]: form.providerUserId,
   [ApiApiField.EMAIL]: form.email,
@@ -387,30 +471,20 @@ export const toApiSocialPostLogin = (form: ApiFormValues['SocialPostLogin']): So
   [ApiApiField.AVATARURL]: form.avatarUrl,
 })
 
-export const toApiForgotPasswordPost = (form: ApiFormValues['ForgotPasswordPost']): ForgotPasswordPostPayload => ({
+export const toApiForgotPasswordCreate = (form: ApiFormValues['ForgotPasswordCreate']): ForgotPasswordCreatePayload => ({
   [ApiApiField.EMAIL]: form.email,
 })
 
-export const toApiResetPasswordPost = (form: ApiFormValues['ResetPasswordPost']): ResetPasswordPostPayload => ({
+export const toApiResetPasswordCreate = (form: ApiFormValues['ResetPasswordCreate']): ResetPasswordCreatePayload => ({
   [ApiApiField.EMAIL]: form.email,
   [ApiApiField.TOKEN]: form.token,
   [ApiApiField.PASSWORD]: form.password,
 })
 
-export const toApiProdukPostIdReviews = (form: ApiFormValues['ProdukPostIdReviews']): ProdukPostIdReviewsPayload => ({
+export const toApiProdukReviewsPost = (form: ApiFormValues['ProdukReviewsPost']): ProdukReviewsPostPayload => ({
   [ApiApiField.RATING]: form.rating,
   [ApiApiField.TITLE]: form.title,
   [ApiApiField.COMMENT]: form.comment,
-})
-
-export const toApiPaymentPostOrderId = (form: ApiFormValues['PaymentPostOrderId']): PaymentPostOrderIdPayload => ({
-  [ApiApiField.METODE]: form.metode,
-  [ApiApiField.DETAIL]: form.detail,
-  [ApiApiField.PROVIDER]: form.provider,
-  [ApiApiField.PROVIDERTXNID]: form.providerTxnId,
-  [ApiApiField.IDEMPOTENCYKEY]: form.idempotencyKey,
-  [ApiApiField.GATEWAYCODE]: form.gatewayCode,
-  [ApiApiField.GATEWAYMESSAGE]: form.gatewayMessage,
 })
 
 export const toApiProfilePut = (form: ApiFormValues['ProfilePut']): ProfilePutPayload => ({
@@ -423,20 +497,20 @@ export const toApiProfilePatch = (form: ApiFormValues['ProfilePatch']): ProfileP
   [ApiApiField.EMAIL]: form.email,
 })
 
-export const toApiCartPostItems = (form: ApiFormValues['CartPostItems']): CartPostItemsPayload => ({
+export const toApiCartItemsCreate = (form: ApiFormValues['CartItemsCreate']): CartItemsCreatePayload => ({
   [ApiApiField.PRODUKITEMID]: form.produkItemId,
   [ApiApiField.QTY]: form.qty,
 })
 
-export const toApiCartPatchItemsProdukItemId = (form: ApiFormValues['CartPatchItemsProdukItemId']): CartPatchItemsProdukItemIdPayload => ({
+export const toApiCartItemsUpdate = (form: ApiFormValues['CartItemsUpdate']): CartItemsUpdatePayload => ({
   [ApiApiField.QTY]: form.qty,
 })
 
-export const toApiCartPostPromo = (form: ApiFormValues['CartPostPromo']): CartPostPromoPayload => ({
+export const toApiCartPromoCreate = (form: ApiFormValues['CartPromoCreate']): CartPromoCreatePayload => ({
   [ApiApiField.CODE]: form.code,
 })
 
-export const toApiCheckoutPost = (form: ApiFormValues['CheckoutPost']): CheckoutPostPayload => ({
+export const toApiCheckoutCreate = (form: ApiFormValues['CheckoutCreate']): CheckoutCreatePayload => ({
   [ApiApiField.ITEMS]: form.items?.map((item1) => ({
       [ApiApiField.PRODUKITEMID]: item1.produkItemId,
       [ApiApiField.QTY]: item1.qty,
@@ -448,7 +522,7 @@ export const toApiCheckoutPost = (form: ApiFormValues['CheckoutPost']): Checkout
   [ApiApiField.SHIPPINGKODEPOS]: form.shippingKodePos,
 })
 
-export const toApiBuyNowPost = (form: ApiFormValues['BuyNowPost']): BuyNowPostPayload => ({
+export const toApiBuyNowCreate = (form: ApiFormValues['BuyNowCreate']): BuyNowCreatePayload => ({
   [ApiApiField.PRODUKITEMID]: form.produkItemId,
   [ApiApiField.QTY]: form.qty,
   [ApiApiField.SHIPPINGNAMA]: form.shippingNama,
@@ -458,11 +532,21 @@ export const toApiBuyNowPost = (form: ApiFormValues['BuyNowPost']): BuyNowPostPa
   [ApiApiField.SHIPPINGKODEPOS]: form.shippingKodePos,
 })
 
-export const toApiWishlistPost = (form: ApiFormValues['WishlistPost']): WishlistPostPayload => ({
+export const toApiWishlistCreate = (form: ApiFormValues['WishlistCreate']): WishlistCreatePayload => ({
   [ApiApiField.PRODUKITEMID]: form.produkItemId,
 })
 
-export const toApiAdminPostProduk = (form: ApiFormValues['AdminPostProduk']): AdminPostProdukPayload => ({
+export const toApiPaymentPost = (form: ApiFormValues['PaymentPost']): PaymentPostPayload => ({
+  [ApiApiField.METODE]: form.metode,
+  [ApiApiField.DETAIL]: form.detail,
+  [ApiApiField.PROVIDER]: form.provider,
+  [ApiApiField.PROVIDERTXNID]: form.providerTxnId,
+  [ApiApiField.IDEMPOTENCYKEY]: form.idempotencyKey,
+  [ApiApiField.GATEWAYCODE]: form.gatewayCode,
+  [ApiApiField.GATEWAYMESSAGE]: form.gatewayMessage,
+})
+
+export const toApiAdminProdukCreate = (form: ApiFormValues['AdminProdukCreate']): AdminProdukCreatePayload => ({
   [ApiApiField.NAMA]: form.nama,
   [ApiApiField.DESKRIPSI]: form.deskripsi,
   [ApiApiField.GAMBAR]: form.gambar,

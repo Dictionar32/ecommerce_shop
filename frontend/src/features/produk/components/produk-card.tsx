@@ -9,7 +9,6 @@ import { useCartUiStore } from "@/lib/stores/cart-ui-store";
 import useAuthStore from "@/lib/stores/auth-store";
 import { ProdukIndex } from "@/features/produk/types/produk-read";
 import { formatPrice } from "@/lib/utils-frontend"
-import { ProdukItem } from "@/api/types-local";
 
 interface ProdukCardProps {
   item: ProdukIndex;

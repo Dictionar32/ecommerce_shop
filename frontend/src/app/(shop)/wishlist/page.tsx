@@ -5,7 +5,7 @@ import { Heart } from "lucide-react"
 import { toast } from "sonner"
 import { AuthGuard } from "@/components/shared"
 import { WishlistList } from "./wishlist-list"
-import { useWishlistGet, useWishlistDeleteProdukItemId } from "@/api/hooks"
+import { useWishlist } from '@/api/hooks'
 import useAuthStore from "@/lib/stores/auth-store"
 import {
   PageContainer, ContentWrapper, SkelContainer, SkelTitle, SkelLine, SkelGrid, SkelCard,
@@ -16,12 +16,12 @@ import {
 export default function WishlistPage() {
   const router = useRouter()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const { data: resWishlist, isLoading } = useWishlistGet({})
-  const items = (resWishlist as { data?: import("@/api/types-local").WishlistItem[] })?.data ?? []
-  const deleteMutation = useWishlistDeleteProdukItemId()
+  const { data: resWishlist, isLoading } = useWishlist.index()
+  const items = resWishlist ?? []
+  const deleteMutation = useWishlist.useDelete()
 
   const handleRemove = (produkItemId: number) => {
-    deleteMutation.mutate({ params: { produkItemId: String(produkItemId) } }, {
+    deleteMutation.mutate(produkItemId, {
       onSuccess: () => toast.success("Dihapus dari wishlist"),
       onError: () => toast.error("Gagal menghapus"),
     })

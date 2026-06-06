@@ -13,8 +13,8 @@ import { PageLoader, ErrorState, AuthGuard, SectionHeader, StatusBadge } from "@
 
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice, formatDate } from "@/lib/utils-frontend"
-import { useOrdersGet, useOrdersGetId } from "@/api/hooks"
-import { OrderResponse } from "@/api/types-local"
+import { useOrders } from '@/api/hooks'
+import { OrderResourceTransformed } from "@/api/types"
 import apiClient from "@/lib/core/api-client"
 import {
   PageContainer, ContentWrapper, GridContainer, SidebarWrapper, SidebarCard, SidebarCardSm,
@@ -35,10 +35,10 @@ export default function OrdersPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [downloadingId, setDownloadingId] = useState<number | null>(null)
 
-  const { data: resOrders, isLoading, isError } = useOrdersGet({})
-  const orders = ((resOrders as { data?: OrderResponse[] })?.data) ?? []
-  const { data: resDetail, isLoading: detailLoading } = useOrdersGetId({ params: { id: String(selectedId ?? 0) } })
-  const detail = (resDetail as { data?: OrderResponse })?.data
+  const { data: resOrders, isLoading, isError } = useOrders.index()
+  const orders = resOrders ?? []
+  const { data: resDetail, isLoading: detailLoading } = useOrders.show(selectedId ?? 0)
+  const detail = resDetail
 
   const handleDownloadInvoice = async (orderId: number) => {
     setDownloadingId(orderId)
@@ -110,11 +110,11 @@ export default function OrdersPage() {
                       <OrderListItemBtn key={order.id} onClick={() => setSelectedId(order.id)}
                         active={selectedId === order.id ? "true" : "false"}>
                         <OrderListRow>
-                          <OrderListInv>{order.invoice_number || `#${order.id}`}</OrderListInv>
-                          <StatusBadge status={order.payment_status} />
+                          <OrderListInv>{order.invoiceNumber || `#${order.id}`}</OrderListInv>
+                          <StatusBadge status={order.paymentStatus} />
                         </OrderListRow>
-                        <OrderListDate>{formatDate(order.created_at)}</OrderListDate>
-                        <OrderListTotal>{formatPrice(order.total_harga_minor)}</OrderListTotal>
+                        <OrderListDate>{formatDate(order.createdAt)}</OrderListDate>
+                        <OrderListTotal>{formatPrice(order.totalHargaMinor)}</OrderListTotal>
                       </OrderListItemBtn>
                     ))}
                   </OrderListWrapper>
@@ -146,12 +146,12 @@ export default function OrdersPage() {
                 {/* Header */}
                 <DetailHeaderRow>
                   <div>
-                    <DetailInvoiceTitle>{detail.invoice_number || `Order #${detail.id}`}</DetailInvoiceTitle>
-                    <DetailDate>{formatDate(detail.created_at ?? "")}</DetailDate>
+                    <DetailInvoiceTitle>{detail.invoiceNumber || `Order #${detail.id}`}</DetailInvoiceTitle>
+                    <DetailDate>{formatDate(detail.createdAt ?? "")}</DetailDate>
                     <DetailStatusWrapper>
-                      <StatusBadge status={detail.payment_status ?? detail.status ?? ""} />
-                      {detail.fulfillment_status && detail.fulfillment_status !== detail.payment_status && (
-                        <StatusBadge status={detail.fulfillment_status} />
+                      <StatusBadge status={detail.paymentStatus ?? detail.status ?? ""} />
+                      {detail.fulfillmentStatus && detail.fulfillmentStatus !== detail.paymentStatus && (
+                        <StatusBadge status={detail.fulfillmentStatus} />
                       )}
                     </DetailStatusWrapper>
                   </div>
@@ -164,13 +164,13 @@ export default function OrdersPage() {
                 </DetailHeaderRow>
 
                 {/* Shipping */}
-                {detail.shipping_nama && (
+                {detail.shipping?.nama && (
                   <ShippingCard>
                     <ShippingTitle>Alamat Pengiriman</ShippingTitle>
-                    <ShippingName>{detail.shipping_nama}</ShippingName>
-                    <ShippingAddress>{detail.shipping_alamat}</ShippingAddress>
-                    <ShippingCity>{detail.shipping_kota}{detail.shipping_kode_pos ? `, ${detail.shipping_kode_pos}` : ""}</ShippingCity>
-                    {detail.shipping_telepon && <ShippingPhone>{detail.shipping_telepon}</ShippingPhone>}
+                    <ShippingName>{detail.shipping.nama}</ShippingName>
+                    <ShippingAddress>{detail.shipping.alamat}</ShippingAddress>
+                    <ShippingCity>{detail.shipping.kota}{detail.shipping.kodePos ? `, ${detail.shipping.kodePos}` : ""}</ShippingCity>
+                    {detail.shipping.telepon && <ShippingPhone>{detail.shipping.telepon}</ShippingPhone>}
                   </ShippingCard>
                 )}
 
@@ -178,19 +178,19 @@ export default function OrdersPage() {
                 <ItemsTitle>Item Pesanan</ItemsTitle>
                 <ItemsWrapper>
                   {detail.items?.map((item: any) => (
-                    <ItemCard key={item.produk_item_id}>
+                    <ItemCard key={item.produkItemId}>
                       <ItemImageBox>
-                        {item.product_image_url
+                        {item.produk?.imageUrl
                           ? (
                             /* eslint-disable-next-line @next/next/no-img-element */
-                            <ItemImage src={item.product_image_url} alt={item.product_name} />
+                            <ItemImage src={item.produk.imageUrl} alt={item.produk.nama} />
                           )
                           : <ItemImagePlaceholder><Package size={18} className="text-obsidian-600" /></ItemImagePlaceholder>
                         }
                       </ItemImageBox>
                       <ItemInfoWrapper>
-                        <ItemName>{item.product_name}</ItemName>
-                        <ItemQty>{item.qty} × {formatPrice(item.price)}</ItemQty>
+                        <ItemName>{item.produk?.nama}</ItemName>
+                        <ItemQty>{item.qty} × {formatPrice(item.harga)}</ItemQty>
                       </ItemInfoWrapper>
                       <ItemSubtotal>{formatPrice(item.subtotal)}</ItemSubtotal>
                     </ItemCard>
@@ -201,9 +201,9 @@ export default function OrdersPage() {
                 <DetailSeparator />
                 <TotalsWrapper>
                   {[
-                    { label: "Subtotal", val: detail.subtotal_minor, show: true },
-                    { label: `Diskon${detail.promotion_code ? ` (${detail.promotion_code})` : ""}`, val: -(detail.discount_minor ?? 0), show: (detail.discount_minor ?? 0) > 0, cls: "gold" as const },
-                    { label: "Ongkos Kirim", val: detail.shipping_minor ?? 0, show: (detail.shipping_minor ?? 0) > 0 },
+                    { label: "Subtotal", val: detail.subtotalMinor, show: true },
+                    { label: `Diskon${detail.promotion?.code ? ` (${detail.promotion.code})` : ""}`, val: -(detail.discountMinor ?? 0), show: (detail.discountMinor ?? 0) > 0, cls: "gold" as const },
+                    { label: "Ongkos Kirim", val: detail.shippingMinor ?? 0, show: (detail.shippingMinor ?? 0) > 0 },
                   ].filter(r => r.show).map(row => (
                     <TotalRowBox key={row.label} color={row.cls ?? "default"}>
                       <span>{row.label}</span>
@@ -213,7 +213,7 @@ export default function OrdersPage() {
                   <DetailSeparatorSm />
                   <GrandTotalRowBox>
                     <GrandTotalLabel>Total</GrandTotalLabel>
-                    <GrandTotalValue>{formatPrice(detail.total_harga_minor ?? detail.total_harga ?? 0)}</GrandTotalValue>
+                    <GrandTotalValue>{formatPrice(detail.totalHargaMinor ?? detail.totalHarga ?? 0)}</GrandTotalValue>
                   </GrandTotalRowBox>
                 </TotalsWrapper>
               </DetailContentWrapper>

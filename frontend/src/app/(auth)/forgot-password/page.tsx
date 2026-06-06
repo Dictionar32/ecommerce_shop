@@ -32,14 +32,14 @@ const DefaultValues: ForgotPasswordFormValues = {
   email: "",
 }
 
-import { useForgotPasswordPost } from "@/api/hooks"
+import { useForgotPassword } from '@/api/hooks'
 
 function ForgotPasswordContent() {
   const searchParams = useSearchParams()
   const [sent, setSent] = useState(false)
   const [sentEmail, setSentEmail] = useState("")
 
-  const forgotMutation = useForgotPasswordPost()
+  const forgotMutation = useForgotPassword.useCreate()
 
   const form = useForm<any>({
     resolver: zodResolver(ForgotPasswordSchema),

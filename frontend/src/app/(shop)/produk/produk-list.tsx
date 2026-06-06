@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ProdukCard } from "./produk-card";
-import { Category } from "@/api/types-local";
+import { CategoryTransformed } from "@/api/types";
 
 import {
   PageContainer, HeaderArea, IconGem, ContentContainer, ToolbarCard, ToolbarRow, SearchWrapper, SearchInput, SearchClearBtn, IconSearch, IconX,
@@ -17,7 +17,7 @@ type SortOption = "default" | "harga_asc" | "harga_desc" | "rating" | "nama_asc"
 
 interface ProdukListProps {
   initialData: any[];
-  categories: Category[];
+  categories: CategoryTransformed[];
   wishlistData?: { id: number }[];
 }
 
@@ -28,7 +28,7 @@ function FilterSheet({
   sortBy,
   onSortChange,
 }: {
-  categories: Category[];
+  categories: CategoryTransformed[];
   selectedCategory: any;
   onCategoryChange: (value: any) => void;
   sortBy: SortOption;
@@ -106,22 +106,22 @@ export function ProdukList({ initialData, categories = [], wishlistData = [] }: 
       const query = searchQuery.toLowerCase().trim();
       result = result.filter(
         (p) =>
-          p.name?.toLowerCase().includes(query) ||
-          p.description?.toLowerCase().includes(query) ||
-          p.category_name?.toLowerCase().includes(query)
+          p.nama?.toLowerCase().includes(query) ||
+          p.deskripsi?.toLowerCase().includes(query) ||
+          p.categoryName?.toLowerCase().includes(query)
       );
     }
     if (selectedCategory !== "all") {
       const catId = Number(selectedCategory);
-      result = result.filter((p) => p.category_id === catId);
+      result = result.filter((p) => p.categoryId === catId);
     }
     switch (sortBy) {
-      case "harga_asc":  result.sort((a, b) => a.price - b.price); break;
-      case "harga_desc": result.sort((a, b) => b.price - a.price); break;
+      case "harga_asc":  result.sort((a, b) => a.harga - b.harga); break;
+      case "harga_desc": result.sort((a, b) => b.harga - a.harga); break;
       case "rating":     result.sort((a, b) => b.rating - a.rating); break;
-      case "nama_asc":   result.sort((a, b) => (a.name || '').localeCompare(b.name || '')); break;
-      case "nama_desc":  result.sort((a, b) => (b.name || '').localeCompare(a.name || '')); break;
-      default:           result.sort((a, b) => (b.review_count ?? 0) - (a.review_count ?? 0));
+      case "nama_asc":   result.sort((a, b) => (a.nama || '').localeCompare(b.nama || '')); break;
+      case "nama_desc":  result.sort((a, b) => (b.nama || '').localeCompare(a.nama || '')); break;
+      default:           result.sort((a, b) => (b.reviewCount ?? 0) - (a.reviewCount ?? 0));
     }
     return result;
   }, [products, searchQuery, selectedCategory, sortBy]);

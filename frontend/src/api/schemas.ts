@@ -29,11 +29,6 @@ export const OrderAmountSchema = z.object({
   totalMinor: z.number(),
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable(),
-  subtotal: z.number().optional(), // accessor attribute
-  shipping: z.number().optional(), // accessor attribute
-  discount: z.number().optional(), // accessor attribute
-  tax: z.number().optional(), // accessor attribute
-  total: z.number().optional(), // accessor attribute
 })
 
 export const OrderDetailSchema = z.object({
@@ -46,8 +41,7 @@ export const OrderDetailSchema = z.object({
   updatedAt: z.string().nullable(),
   banana: z.string().nullable(),
   potato: z.number().nullable(),
-  flyingDog: z.boolean().nullable(),
-  foo: z.unknown().optional(), // accessor attribute
+  flyingDog: z.number().nullable(),
 })
 
 export const OrderFinancialSchema = z.object({
@@ -104,13 +98,6 @@ export const PaymentSchema = z.object({
   paidAt: z.string().nullable(),
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable(),
-  gatewayStatus: z.string().optional(), // accessor attribute
-  amountMinor: z.number().optional(), // accessor attribute
-  providerTxnId: z.string().optional(), // accessor attribute
-  provider: z.string().optional(), // accessor attribute
-  refundAmountMinor: z.unknown().optional(), // accessor attribute
-  foo: z.unknown().optional(), // accessor attribute
-  bar: z.unknown().optional(), // accessor attribute
 })
 
 export const PaymentAmountSchema = z.object({
@@ -180,11 +167,6 @@ export const ProdukItemSchema = z.object({
   categoryName: z.unknown().optional(), // appended attribute
   rating: z.unknown().optional(), // appended attribute
   reviewCount: z.unknown().optional(), // appended attribute
-  image: z.string().optional(), // accessor attribute
-  imageUrl: z.string().optional(), // accessor attribute
-  categoryName: z.string().optional(), // accessor attribute
-  rating: z.number().optional(), // accessor attribute
-  reviewCount: z.number().optional(), // accessor attribute
 })
 
 export const ProdukItemFrontendSchema = z.object({
@@ -232,7 +214,6 @@ export const UserSchema = z.object({
   role: z.union([z.literal('admin'), z.literal('user')]),
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable(),
-  useFactory: z.unknown().optional(), // accessor attribute
 })
 
 export const WishlistSchema = z.object({
@@ -241,12 +222,6 @@ export const WishlistSchema = z.object({
   produkItemId: z.number(),
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable(),
-})
-
-export const RegisterResponseSchema = z.object({
-  success: z.boolean(),
-  message: z.string(),
-  data: z.unknown().nullable(),
 })
 
 export const RegisterPostSchema = z.object({

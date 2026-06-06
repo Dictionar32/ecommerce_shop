@@ -4,28 +4,28 @@ import { toast } from "sonner";
 import useAuthStore from "@/lib/stores/auth-store";
 import { useCartUiStore } from "@/lib/stores/cart-ui-store";
 import { formatPrice } from "@/lib/utils-frontend";
-import { useWishlistPost, useWishlistDeleteProdukItemId, useCartPostItems } from "@/api/hooks";
+import { useWishlist, useCartItems } from '@/api/hooks';
 import {
   CardLink, CardContainer, CardImageArea, CardImage, IconCartLarge, WishlistBtn, IconHeart,
   CardContentArea, IconStar, CardAddToCartBtn, IconCartSmall
 } from "./produk.styles"
-import { ProdukItem } from "@/api/types-local";
+import { ProdukItemResourceTransformed } from "@/api/types";
 
 interface ProdukCardProps {
-  item: ProdukItem;
+  item: ProdukItemResourceTransformed;
   isInWishlist?: boolean;
 }
 
 export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const addToCart = useCartPostItems();
+  const addToCart = useCartItems.useCreate();
   const { openCart } = useCartUiStore();
-  const addToWishlist = useWishlistPost();
-  const removeFromWishlist = useWishlistDeleteProdukItemId();
+  const addToWishlist = useWishlist.useCreate();
+  const removeFromWishlist = useWishlist.useRemove();
 
   const isOutOfStock = (item.stok ?? 0) === 0;
 
-  const firstItemId = item.first_item_id ?? item.id;
+  const firstItemId = item.id;
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -43,7 +43,7 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
     }
 
     addToCart.mutate(
-      { body: { produk_item_id: firstItemId, qty: 1 } },
+      { produkItemId: String(firstItemId), qty: 1 },
       {
         onSuccess: () => {
           toast.success("Ditambahkan ke keranjang!");
@@ -68,12 +68,12 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
     }
 
     if (isInWishlist) {
-      removeFromWishlist.mutate({ params: { produkItemId: String(firstItemId) } }, {
+      removeFromWishlist.mutate(firstItemId, {
         onSuccess: () => toast.success("Dihapus dari wishlist"),
         onError: () => toast.error("Gagal menghapus dari wishlist"),
       });
     } else {
-      addToWishlist.mutate({ body: { produk_item_id: firstItemId } }, {
+      addToWishlist.mutate({ produkItemId: String(firstItemId) }, {
         onSuccess: () => toast.success("Ditambahkan ke wishlist!"),
         onError: () => toast.error("Gagal menambahkan ke wishlist"),
       });
@@ -87,9 +87,9 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
       <CardContainer>
         {/* Image */}
         <CardImageArea>
-          {item.image_url ? (
+          {item.imageUrl ? (
             /* eslint-disable-next-line @next/next/no-img-element */
-            <CardImage src={item.image_url} alt={item.name} />
+            <CardImage src={item.imageUrl} alt={item.nama} />
           ) : (
             <CardImageArea.placeholderBox>
               <IconCartLarge size={32} />
@@ -116,15 +116,15 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
         {/* Content */}
         <CardContentArea>
           {/* Category */}
-          <CardContentArea.category>{item.category_name}</CardContentArea.category>
+          <CardContentArea.category>{item.categoryName}</CardContentArea.category>
 
           {/* Name */}
           <CardContentArea.name>
-            {item.name}
+            {item.nama}
           </CardContentArea.name>
 
           {/* Rating */}
-          {(item.review_count ?? 0) > 0 && (
+          {(item.reviewCount ?? 0) > 0 && (
             <CardContentArea.ratingRow>
               <CardContentArea.starsWrap>
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -136,12 +136,12 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
                   />
                 ))}
               </CardContentArea.starsWrap>
-              <CardContentArea.reviewCount>({item.review_count})</CardContentArea.reviewCount>
+              <CardContentArea.reviewCount>({item.reviewCount})</CardContentArea.reviewCount>
             </CardContentArea.ratingRow>
           )}
 
           {/* Price */}
-          <CardContentArea.Price>{formatPrice(item.price ?? item.harga)}</CardContentArea.Price>
+          <CardContentArea.price>{formatPrice(item.harga)}</CardContentArea.price>
 
           {/* Add to Cart */}
           <CardAddToCartBtn
