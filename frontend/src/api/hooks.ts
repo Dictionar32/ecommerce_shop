@@ -20,7 +20,7 @@ import type {
   ResetPasswordForm,
   SocialLoginForm,
   WishlistForm,
-} from './types'
+} from './types/index'
 
 export const typeOf = <T>() => ({} as T)
 
@@ -34,6 +34,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.register,
+    actionKeys: {
+      create: QueryKey.register.create,
+    },
     endpoint: api.register,
 
     cache: {
@@ -51,6 +54,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.login,
+    actionKeys: {
+      create: QueryKey.login.create,
+    },
     endpoint: api.login,
 
     cache: {
@@ -68,6 +74,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.oauthRedirect,
+    actionKeys: {
+      get: QueryKey.oauthRedirect.get,
+    },
     endpoint: api.oauthRedirect,
   },
   oauthCallback: {
@@ -79,7 +88,19 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.oauthCallback,
+    actionKeys: {
+      get: QueryKey.oauthCallback.get,
+      post: QueryKey.oauthCallback.post,
+    },
     endpoint: api.oauthCallback,
+
+    cache: {
+      post: {
+        invalidate: [
+          QueryKey.oauthCallback.get,
+        ],
+      },
+    },
   },
   socialLogin: {
     types: {
@@ -90,6 +111,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.socialLogin,
+    actionKeys: {
+      create: QueryKey.socialLogin.create,
+    },
     endpoint: api.socialLogin,
 
     cache: {
@@ -107,6 +131,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.forgotPassword,
+    actionKeys: {
+      create: QueryKey.forgotPassword.create,
+    },
     endpoint: api.forgotPassword,
 
     cache: {
@@ -124,6 +151,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.resetPassword,
+    actionKeys: {
+      create: QueryKey.resetPassword.create,
+    },
     endpoint: api.resetPassword,
 
     cache: {
@@ -141,6 +171,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.categories,
+    actionKeys: {
+      list: QueryKey.categories.list,
+    },
     endpoint: api.categories,
 
     cache: {
@@ -156,6 +189,10 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.produk,
+    actionKeys: {
+      list: QueryKey.produk.list,
+      get: QueryKey.produk.get,
+    },
     endpoint: api.produk,
 
     cache: {
@@ -172,7 +209,19 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.produkReviews,
+    actionKeys: {
+      get: QueryKey.produkReviews.get,
+      post: QueryKey.produkReviews.post,
+    },
     endpoint: api.produkReviews,
+
+    cache: {
+      post: {
+        invalidate: [
+          QueryKey.produkReviews.get,
+        ],
+      },
+    },
   },
   paymentWebhook: {
     types: {
@@ -183,6 +232,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.paymentWebhook,
+    actionKeys: {
+      create: QueryKey.paymentWebhook.create,
+    },
     endpoint: api.paymentWebhook,
 
     cache: {
@@ -200,10 +252,25 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.profile,
+    actionKeys: {
+      list: QueryKey.profile.list,
+      put: QueryKey.profile.put,
+      patch: QueryKey.profile.patch,
+    },
     endpoint: api.profile,
 
     cache: {
       list: QueryKey.profile.list,
+      put: {
+        invalidate: [
+          QueryKey.profile.list,
+        ],
+      },
+      patch: {
+        invalidate: [
+          QueryKey.profile.list,
+        ],
+      },
     },
   },
   orders: {
@@ -215,6 +282,10 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.orders,
+    actionKeys: {
+      list: QueryKey.orders.list,
+      get: QueryKey.orders.get,
+    },
     endpoint: api.orders,
 
     cache: {
@@ -231,6 +302,11 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.cartItems,
+    actionKeys: {
+      create: QueryKey.cartItems.create,
+      update: QueryKey.cartItems.update,
+      remove: QueryKey.cartItems.remove,
+    },
     endpoint: api.cartItems,
 
     cache: {
@@ -254,7 +330,19 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.cart,
+    actionKeys: {
+      delete: QueryKey.cart.delete,
+    },
     endpoint: api.cart,
+
+    cache: {
+      delete: {
+        invalidate: [
+          QueryKey.keranjang.list,
+          QueryKey.orders.lists,
+        ],
+      },
+    },
   },
   cartPromo: {
     types: {
@@ -265,11 +353,21 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.cartPromo,
+    actionKeys: {
+      create: QueryKey.cartPromo.create,
+      delete: QueryKey.cartPromo.delete,
+    },
     endpoint: api.cartPromo,
 
     cache: {
       create: {
         invalidate: [],
+      },
+      delete: {
+        invalidate: [
+          QueryKey.keranjang.list,
+          QueryKey.orders.lists,
+        ],
       },
     },
   },
@@ -282,6 +380,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.checkout,
+    actionKeys: {
+      create: QueryKey.checkout.create,
+    },
     endpoint: api.checkout,
 
     cache: {
@@ -299,6 +400,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.buyNow,
+    actionKeys: {
+      create: QueryKey.buyNow.create,
+    },
     endpoint: api.buyNow,
 
     cache: {
@@ -309,13 +413,16 @@ export const hooks = defineHooks({
   },
   keranjang: {
     types: {
-      list: typeOf<OrderResourceIndex>(),
+      list: typeOf<OrderResourceShow>(),
       detail: typeOf<never>(),
       create: typeOf<never>(),
       update: typeOf<never>(),
     },
 
     queryKey: QueryKey.keranjang,
+    actionKeys: {
+      list: QueryKey.keranjang.list,
+    },
     endpoint: api.keranjang,
 
     cache: {
@@ -331,6 +438,11 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.wishlist,
+    actionKeys: {
+      list: QueryKey.wishlist.list,
+      create: QueryKey.wishlist.create,
+      remove: QueryKey.wishlist.remove,
+    },
     endpoint: api.wishlist,
 
     cache: {
@@ -356,7 +468,19 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.payment,
+    actionKeys: {
+      post: QueryKey.payment.post,
+    },
     endpoint: api.payment,
+
+    cache: {
+      post: {
+        invalidate: [
+          QueryKey.orders.lists,
+          QueryKey.keranjang.list,
+        ],
+      },
+    },
   },
   ordersInvoice: {
     types: {
@@ -367,6 +491,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.ordersInvoice,
+    actionKeys: {
+      get: QueryKey.ordersInvoice.get,
+    },
     endpoint: api.ordersInvoice,
   },
   logout: {
@@ -378,6 +505,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.logout,
+    actionKeys: {
+      create: QueryKey.logout.create,
+    },
     endpoint: api.logout,
 
     cache: {
@@ -395,6 +525,9 @@ export const hooks = defineHooks({
     },
 
     queryKey: QueryKey.adminProduk,
+    actionKeys: {
+      create: QueryKey.adminProduk.create,
+    },
     endpoint: api.adminProduk,
 
     cache: {

@@ -2,6 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
+import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { createClient } from 'routesync';
 import { API_URL } from '@/api';
 import useAuthStore from '@/lib/stores/auth-store';
@@ -13,20 +14,20 @@ const client = createClient({
 
 // Add dynamic authorization header interceptor
 client.getInstance().interceptors.request.use(
-  (config) => {
+  (config: InternalAxiosRequestConfig) => {
     const token = useAuthStore.getState().accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error: AxiosError) => Promise.reject(error)
 );
 
 // Add response interceptor to handle 401 Unauthorized globally
 client.getInstance().interceptors.response.use(
-  (response) => response,
-  (error) => {
+  (response: AxiosResponse) => response,
+  (error: AxiosError) => {
     const status = error?.status || error?.response?.status;
     if (status === 401) {
       if (typeof window !== 'undefined') {

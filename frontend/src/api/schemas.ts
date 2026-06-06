@@ -224,6 +224,12 @@ export const WishlistSchema = z.object({
   updatedAt: z.string().nullable(),
 })
 
+export const RegisterResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string(),
+  data: z.string().nullable(),
+})
+
 export const RegisterPostSchema = z.object({
   name: z.string(),
   email: z.string(),
