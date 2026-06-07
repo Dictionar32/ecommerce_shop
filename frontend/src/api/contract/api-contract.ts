@@ -457,7 +457,7 @@ export const CategoriesListResponseSchema = z.object({ data: z.array(CategorySch
 export type CategoriesListResponse = z.infer<typeof CategoriesListResponseSchema>
 export const validateCategoriesListResponse = (payload: unknown): CategoriesListResponse => CategoriesListResponseSchema.parse(payload)
 
-export const ProdukListResponseSchema = ProdukItemResourceSchema
+export const ProdukListResponseSchema = z.array(ProdukItemResourceSchema)
 export type ProdukListResponse = z.infer<typeof ProdukListResponseSchema>
 export const validateProdukListResponse = (payload: unknown): ProdukListResponse => ProdukListResponseSchema.parse(payload)
 
@@ -481,7 +481,7 @@ export const ProdukReviewsPostResponseSchema = z.object({ message: z.string(), d
 export type ProdukReviewsPostResponse = z.infer<typeof ProdukReviewsPostResponseSchema>
 export const validateProdukReviewsPostResponse = (payload: unknown): ProdukReviewsPostResponse => ProdukReviewsPostResponseSchema.parse(payload)
 
-export const ProfileListResponseSchema = z.object({ id: z.number(), name: z.string(), email: z.string() })
+export const ProfileListResponseSchema = z.array(z.object({ id: z.number(), name: z.string(), email: z.string() }))
 export type ProfileListResponse = z.infer<typeof ProfileListResponseSchema>
 export const validateProfileListResponse = (payload: unknown): ProfileListResponse => ProfileListResponseSchema.parse(payload)
 
@@ -507,7 +507,7 @@ export const ProfilePatchResponseSchema = z.object({ message: z.string(), data: 
 export type ProfilePatchResponse = z.infer<typeof ProfilePatchResponseSchema>
 export const validateProfilePatchResponse = (payload: unknown): ProfilePatchResponse => ProfilePatchResponseSchema.parse(payload)
 
-export const OrdersListResponseSchema = OrderResourceSchema
+export const OrdersListResponseSchema = z.array(OrderResourceSchema)
 export type OrdersListResponse = z.infer<typeof OrdersListResponseSchema>
 export const validateOrdersListResponse = (payload: unknown): OrdersListResponse => OrdersListResponseSchema.parse(payload)
 
@@ -592,11 +592,11 @@ export const BuyNowCreateResponseSchema = OrderResourceSchema
 export type BuyNowCreateResponse = z.infer<typeof BuyNowCreateResponseSchema>
 export const validateBuyNowCreateResponse = (payload: unknown): BuyNowCreateResponse => BuyNowCreateResponseSchema.parse(payload)
 
-export const KeranjangListResponseSchema = OrderResourceSchema
+export const KeranjangListResponseSchema = z.array(OrderResourceSchema)
 export type KeranjangListResponse = z.infer<typeof KeranjangListResponseSchema>
 export const validateKeranjangListResponse = (payload: unknown): KeranjangListResponse => KeranjangListResponseSchema.parse(payload)
 
-export const WishlistListResponseSchema = ProdukItemResourceSchema
+export const WishlistListResponseSchema = z.array(ProdukItemResourceSchema)
 export type WishlistListResponse = z.infer<typeof WishlistListResponseSchema>
 export const validateWishlistListResponse = (payload: unknown): WishlistListResponse => WishlistListResponseSchema.parse(payload)
 

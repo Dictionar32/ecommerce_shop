@@ -25,8 +25,12 @@ import type {
   OrderResourceResponse,
   PaymentResourceResponse,
   ProdukItemResourceResponse,
+  LoginCreateResponse,
+  OauthRedirectGetResponse,
+  SocialLoginCreateResponse,
   CategoriesListResponse,
   ProdukReviewsGetResponse,
+  ProdukReviewsPostResponse,
   RegisterCreatePayload,
   LoginCreatePayload,
   OauthRedirectGetPayload,
@@ -344,12 +348,7 @@ export const toRegisterResponseReadList = (api: RegisterResponseApiResponse[]): 
 export const toOrderDetailResourceRead = (api: OrderDetailResourceResponse): OrderDetailResourceTransformed => ({
   id: api.id,
   produkItemId: api.produk_item_id,
-  produk: api.produk ? {
-    id: api.produk.id,
-    nama: api.produk.nama,
-    gambar: api.produk.gambar,
-    imageUrl: api.produk.image_url,
-  } : undefined,
+  produk: (api.produk ? {\n    id: api.produk.id,\n    nama: api.produk.nama,\n    gambar: api.produk.gambar,\n    imageUrl: api.produk.image_url,\n  } : undefined) as any,
   qty: api.qty,
   harga: api.harga,
   subtotal: api.subtotal,
@@ -375,17 +374,8 @@ export const toOrderResourceRead = (api: OrderResourceResponse): OrderResourceTr
   taxMinor: api.tax_minor,
   totalHargaMinor: api.total_harga_minor,
   items: api.items?.map((item) => toOrderDetailResourceRead(item)) ?? [],
-  promotion: api.promotion ? {
-    code: api.promotion.code,
-    discountMinor: api.promotion.discount_minor,
-  } : undefined,
-  shipping: api.shipping ? {
-    nama: api.shipping.nama,
-    telepon: api.shipping.telepon,
-    alamat: api.shipping.alamat,
-    kota: api.shipping.kota,
-    kodePos: api.shipping.kode_pos,
-  } : undefined,
+  promotion: (api.promotion ? {\n    code: api.promotion.code,\n    discountMinor: api.promotion.discount_minor,\n  } : undefined) as any,
+  shipping: (api.shipping ? {\n    nama: api.shipping.nama,\n    telepon: api.shipping.telepon,\n    alamat: api.shipping.alamat,\n    kota: api.shipping.kota,\n    kodePos: api.shipping.kode_pos,\n  } : undefined) as any,
   createdAt: api.created_at,
 })
 
@@ -405,16 +395,8 @@ export const toPaymentResourceRead = (api: PaymentResourceResponse): PaymentReso
   amountMinor: api.amount_minor,
   refundAmountMinor: api.refund_amount_minor,
   items: api.items?.map((item) => toOrderDetailResourceRead(item)) ?? [],
-  promotion: api.promotion ? {
-    code: api.promotion.code,
-    discountMinor: api.promotion.discount_minor,
-  } : undefined,
-  gateway: api.gateway ? {
-    name: api.gateway.name,
-    orderId: api.gateway.order_id,
-    token: api.gateway.token,
-    redirectUrl: api.gateway.redirect_url,
-  } : undefined,
+  promotion: (api.promotion ? {\n    code: api.promotion.code,\n    discountMinor: api.promotion.discount_minor,\n  } : undefined) as any,
+  gateway: (api.gateway ? {\n    name: api.gateway.name,\n    orderId: api.gateway.order_id,\n    token: api.gateway.token,\n    redirectUrl: api.gateway.redirect_url,\n  } : undefined) as any,
   totalHarga: api.total_harga,
 })
 
@@ -436,17 +418,17 @@ export const toProdukItemResourceRead = (api: ProdukItemResourceResponse): Produ
 
 export const toProdukItemResourceReadList = (api: ProdukItemResourceResponse[]): ProdukItemResourceTransformed[] => api.map(toProdukItemResourceRead)
 
-export const toCategoriesListResponseRead = (api: CategoriesListResponse): { data: CategoryTransformed[] } => (api ? {
-    data: api.data?.map((item) => toCategoryRead(item)) ?? [],
-  } : undefined) as unknown as { data: CategoryTransformed[] }
+export const toLoginCreateResponseRead = (api: LoginCreateResponse): { success: boolean; message: string; data: { token: string; user: { id: number; name: string; email: string; role: string; createdAt: string; updatedAt: string } } } | undefined => ((api ? {\n    success: api.success,\n    message: api.message,\n    data: (api.data ? {\n    token: api.data.token,\n    user: (api.data.user ? {\n    id: api.data.user.id,\n    name: api.data.user.name,\n    email: api.data.user.email,\n    role: api.data.user.role,\n    createdAt: api.data.user.created_at,\n    updatedAt: api.data.user.updated_at,\n  } : undefined) as any,\n  } : undefined) as any,\n  } : undefined) as any)
 
-export const toProdukReviewsGetResponseRead = (api: ProdukReviewsGetResponse): { summary: { avgRating: number; totalReview: number }; reviews: { data: ProductReviewTransformed[]; currentPage?: number; total?: number } } => (api ? {
-    summary: api.summary ? {
-    avgRating: api.summary.avg_rating,
-    totalReview: api.summary.total_review,
-  } : undefined,
-    reviews: api.reviews ? { ...api.reviews, data: api.reviews.data?.map((item) => toProductReviewRead(item)) ?? [], currentPage: api.reviews.current_page, total: api.reviews.total } : undefined,
-  } : undefined) as unknown as { summary: { avgRating: number; totalReview: number }; reviews: { data: ProductReviewTransformed[]; currentPage?: number; total?: number } }
+export const toOauthRedirectGetResponseRead = (api: OauthRedirectGetResponse): { provider: string; authUrl: unknown } | undefined => ((api ? {\n    provider: api.provider,\n    authUrl: api.auth_url,\n  } : undefined) as any)
+
+export const toSocialLoginCreateResponseRead = (api: SocialLoginCreateResponse): { token: string; user: { id: number; name: string; email: string; role: string; createdAt: string; updatedAt: string } } | undefined => ((api ? {\n    token: api.token,\n    user: (api.user ? {\n    id: api.user.id,\n    name: api.user.name,\n    email: api.user.email,\n    role: api.user.role,\n    createdAt: api.user.created_at,\n    updatedAt: api.user.updated_at,\n  } : undefined) as any,\n  } : undefined) as any)
+
+export const toCategoriesListResponseRead = (api: CategoriesListResponse): { data: CategoryTransformed[] } | undefined => ((api ? {\n    data: api.data?.map((item) => toCategoryRead(item)) ?? [],\n  } : undefined) as any)
+
+export const toProdukReviewsGetResponseRead = (api: ProdukReviewsGetResponse): { summary: { avgRating: number; totalReview: number }; reviews: { data: ProductReviewTransformed[]; currentPage?: number; total?: number } } | undefined => ((api ? {\n    summary: (api.summary ? {\n    avgRating: api.summary.avg_rating,\n    totalReview: api.summary.total_review,\n  } : undefined) as any,\n    reviews: api.reviews ? { ...api.reviews, data: api.reviews.data?.map((item) => toProductReviewRead(item)) ?? [], currentPage: api.reviews.current_page, total: api.reviews.total } : undefined,\n  } : undefined) as any)
+
+export const toProdukReviewsPostResponseRead = (api: ProdukReviewsPostResponse): { message: string; data: { id: number; rating: number; title: (string) | null; comment: (string) | null; isVerifiedPurchase: number; createdAt: (string) | null } } | undefined => ((api ? {\n    message: api.message,\n    data: (api.data ? {\n    id: api.data.id,\n    rating: api.data.rating,\n    title: api.data.title,\n    comment: api.data.comment,\n    isVerifiedPurchase: api.data.is_verified_purchase,\n    createdAt: api.data.created_at,\n  } : undefined) as any,\n  } : undefined) as any)
 
 export const toApiRegisterCreate = (form: ApiFormValues['RegisterCreate']): RegisterCreatePayload => ({
   [ApiApiField.NAME]: form.name,
