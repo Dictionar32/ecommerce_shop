@@ -76,10 +76,8 @@ export default function ProdukDetailPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const { openCart } = useCartUiStore()
 
-  const { data: resProduct, isLoading, isError } = useProduk.show(id)
-  const product: any = (resProduct as { data?: any })?.data
-  const { data: resReview } = useProdukReviews.useGet({ params: { id: String(id) } })
-  const reviewData: any = (resReview as { data?: any })?.data
+  const { data: product, isLoading, isError } = useProduk.show(id)
+  const { data: reviewData } = useProdukReviews.useGet({ id })
   const addToCart    = useCartItems.useCreate()
   const addToWishlist = useWishlist.useCreate()
   const submitReview = useProdukReviews.usePost()
@@ -93,8 +91,8 @@ export default function ProdukDetailPage() {
 
   const handleAddToCart = () => {
     if (!isAuthenticated) { toast.error("Masuk untuk menambahkan ke keranjang"); return }
-    if (!product?.first_item_id) { toast.error("Produk tidak tersedia"); return }
-    addToCart.mutate({ produkItemId: String(product.first_item_id), qty: qty }, {
+    if (!product?.id) { toast.error("Produk tidak tersedia"); return }
+    addToCart.mutate({ produkItemId: String(product.id), qty: qty }, {
       onSuccess: () => { toast.success("Ditambahkan ke keranjang!"); openCart() },
       onError: () => toast.error("Gagal menambahkan ke keranjang"),
     })
@@ -102,8 +100,8 @@ export default function ProdukDetailPage() {
 
   const handleBuyNow = () => {
     if (!isAuthenticated) { toast.error("Masuk terlebih dahulu"); return }
-    if (!product?.first_item_id) return
-    addToCart.mutate({ produkItemId: String(product.first_item_id), qty: qty }, {
+    if (!product?.id) return
+    addToCart.mutate({ produkItemId: String(product.id), qty: qty }, {
       onSuccess: () => router.push("/keranjang"),
       onError: () => toast.error("Gagal"),
     })
@@ -111,8 +109,8 @@ export default function ProdukDetailPage() {
 
   const handleWishlist = () => {
     if (!isAuthenticated) { toast.error("Masuk untuk menambahkan ke wishlist"); return }
-    if (!product?.first_item_id) return
-    addToWishlist.mutate({ produkItemId: String(product.first_item_id) }, {
+    if (!product?.id) return
+    addToWishlist.mutate({ produkItemId: String(product.id) }, {
       onSuccess: () => toast.success("Ditambahkan ke wishlist!"),
       onError: () => toast.error("Gagal"),
     })
@@ -121,7 +119,12 @@ export default function ProdukDetailPage() {
   const onReviewSubmit = async (values: z.infer<typeof ReviewSchema>) => {
     if (!isAuthenticated) { toast.error("Masuk untuk menulis ulasan"); return }
     try {
-      await submitReview.mutateAsync({ params: { id: String(id) }, body: { rating: values.rating, title: values.title ?? undefined, comment: values.comment ?? undefined } })
+      await submitReview.mutateAsync({
+        id,
+        rating: values.rating,
+        title: values.title ?? undefined,
+        comment: values.comment ?? undefined
+      })
       toast.success("Ulasan berhasil dikirim!")
       form.reset()
     } catch {
@@ -137,9 +140,12 @@ export default function ProdukDetailPage() {
       onAction={() => router.push("/produk")} />
   )
 
-  const isOutOfStock = product.stock === 0
-  const reviews = reviewData?.reviews ?? []
-  const summary = reviewData?.summary
+  const isOutOfStock = product.stok === 0
+  const reviews = reviewData?.reviewsData ?? []
+  const summary = reviewData ? {
+    avg_rating: reviewData.summaryAvgRating,
+    total_review: reviewData.summaryTotalReview
+  } : undefined
 
   return (
     <PageContainer>
@@ -150,18 +156,18 @@ export default function ProdukDetailPage() {
             <IconChevronLeft size={12} /> Semua Produk
           </BreadcrumbLink>
           <span>/</span>
-          <BreadcrumbText color="dark">{product.category_name}</BreadcrumbText>
+          <BreadcrumbText color="dark">{product.categoryName}</BreadcrumbText>
           <span>/</span>
-          <BreadcrumbText color="light">{product.name}</BreadcrumbText>
+          <BreadcrumbText color="light">{product.nama}</BreadcrumbText>
         </BreadcrumbNav>
 
         {/* Product Main */}
         <ProductGrid>
           {/* Image */}
           <ProductImageWrapper>
-            {product.image_url ? (
+            {product.imageUrl ? (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <ProductImage src={product.image_url} alt={product.name} />
+              <ProductImage src={product.imageUrl} alt={product.nama} />
             ) : (
               <ProductImageWrapper.placeholderBox>
                 <IconPackageLarge size={64} />
@@ -172,23 +178,23 @@ export default function ProdukDetailPage() {
           {/* Info */}
           <ProductInfoWrapper>
             <CategoryBadge>
-              {product.category_name}
+              {product.categoryName}
             </CategoryBadge>
-            <ProductName>{product.name}</ProductName>
+            <ProductName>{product.nama}</ProductName>
 
-            {(product.review_count ?? 0) > 0 && (
+            {(product.reviewCount ?? 0) > 0 && (
               <ProductRatingBox>
-                <StarRating rating={product.rating} count={product.review_count} size={16} />
+                <StarRating rating={product.rating} count={product.reviewCount} size={16} />
               </ProductRatingBox>
             )}
 
-            <ProductPrice>{formatPrice(product.price)}</ProductPrice>
-            <ProductStockText status={product.stock > 0 ? "available" : "empty"}>
-              {product.stock > 0 ? `Stok: ${product.stock} tersedia` : "Stok habis"}
+            <ProductPrice>{formatPrice(product.harga)}</ProductPrice>
+            <ProductStockText status={product.stok > 0 ? "available" : "empty"}>
+              {product.stok > 0 ? `Stok: ${product.stok} tersedia` : "Stok habis"}
             </ProductStockText>
 
-            {product.description && (
-              <ProductDesc>{product.description}</ProductDesc>
+            {product.deskripsi && (
+              <ProductDesc>{product.deskripsi}</ProductDesc>
             )}
 
             {!isOutOfStock && (
@@ -200,11 +206,11 @@ export default function ProdukDetailPage() {
                   </QtyBtn>
                   <QtyValue>{qty}</QtyValue>
                   <QtyBtn variant="ghost" size="icon"
-                    onClick={() => setQty(q => Math.min(product.stock, q + 1))}>
+                    onClick={() => setQty(q => Math.min(product.stok, q + 1))}>
                     <IconPlus size={14} />
                   </QtyBtn>
                 </QtyControlBox>
-                <QtyMaxText>Maks. {product.stock}</QtyMaxText>
+                <QtyMaxText>Maks. {product.stok}</QtyMaxText>
               </QtyControlWrapper>
             )}
 
@@ -255,7 +261,7 @@ export default function ProdukDetailPage() {
               </ReviewsEmptyBox>
             ) : (
               <ReviewsListWrapper>
-                {reviews.map((review: any) => (
+                {reviews.map((review) => (
                   <ReviewCard key={review.id}>
                     <ReviewHeaderRow>
                       <div>
@@ -263,10 +269,10 @@ export default function ProdukDetailPage() {
                         {review.title && <ReviewTitle>{review.title}</ReviewTitle>}
                       </div>
                       <ReviewMetaWrapper>
-                        {review.is_verified_purchase && (
+                        {review.isVerifiedPurchase && (
                           <ReviewVerifiedBadge>Verified</ReviewVerifiedBadge>
                         )}
-                        <ReviewDateText>{new Date(review.created_at).toLocaleDateString("id-ID")}</ReviewDateText>
+                        <ReviewDateText>{review.createdAt ? new Date(review.createdAt).toLocaleDateString("id-ID") : ""}</ReviewDateText>
                       </ReviewMetaWrapper>
                     </ReviewHeaderRow>
                     <ReviewComment>{review.comment}</ReviewComment>

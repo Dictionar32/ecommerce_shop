@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
       react: "./node_modules/react",
       "react-dom": "./node_modules/react-dom",
       "@tanstack/react-query": "./node_modules/@tanstack/react-query",
+      routesync: "./node_modules/routesync",
     },
   },
 };

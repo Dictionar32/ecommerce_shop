@@ -30,7 +30,7 @@ import {
   StyledInput, StyledTextarea, SkelOrder, StyledSeparator, SubmitBtn, PaymentBtn, SummaryAddressChangeBtn, OrderItemImg
 } from "./checkout.styles"
 
-import { useKeranjang, useCheckout, usePayment } from '@/api/hooks'
+import { useCheckout, usePayment, Enums, routes, useCart } from '@/api'
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice } from "@/lib/utils-frontend"
 import type * as Types from "@/api/types"
@@ -89,18 +89,15 @@ export default function CheckoutPage() {
   const router = useRouter()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
 
-  const { data: resCart, isLoading: cartLoading } = useKeranjang.index()
-  const cart = resCart as Types.OrderResourceTransformed | undefined
+  const { cart, isLoading: cartLoading } = useCart()
 
   const createOrder = useCheckout.useCreate()
 
-  // orderId diisi setelah step 1 selesai — dipakai untuk usePayment
-  const [orderId, setOrderId] = useState<number>(0)
   const createPayment = usePayment.usePost()
 
   const [step, setStep] = useState<1 | 2>(1)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>("transfer_bank")
-  const [savedOrder, setSavedOrder] = useState<{ id: number; invoice: string } | null>(null)
+  const [savedOrder, setSavedOrder] = useState<Types.OrderResourceTransformed | null>(null)
 
   const form = useForm<OrderFormValues['Create']>({
     resolver: zodResolver(CheckoutSchema),
@@ -110,15 +107,8 @@ export default function CheckoutPage() {
   // ── Step 1: buat order ──────────────────────────────────
   const onShippingSubmit = async (values: OrderFormValues['Create']) => {
     try {
-      const order = await createOrder.mutateAsync({
-        shippingNama: values.shippingNama,
-        shippingTelepon: values.shippingTelepon,
-        shippingAlamat: values.shippingAlamat,
-        shippingKota: values.shippingKota,
-        shippingKodePos: values.shippingKodePos
-      }) as unknown as Types.OrderResourceTransformed
-      setOrderId(order.id)
-      setSavedOrder({ id: order.id, invoice: order.invoiceNumber ?? `#${order.id}` })
+      const order = await createOrder.mutateAsync(values)
+      setSavedOrder(order)
       setStep(2)
       window.scrollTo({ top: 0, behavior: "smooth" })
     } catch {
@@ -131,15 +121,17 @@ export default function CheckoutPage() {
     if (!savedOrder) return
     try {
       const payment = await createPayment.mutateAsync({
-        params: { orderId: savedOrder.id.toString() },
-        body: {
-          metode: paymentMethod,
-          provider: "mock",
-        }
-      }) as unknown as { status: string }
+        orderId: savedOrder.id,
+        metode: paymentMethod,
+        provider: Enums.Payment.Provider.MOCK,
+      })
       toast.success("Pembayaran berhasil!")
       router.push(
-        `/payment/success?orderId=${savedOrder.id}&invoice=${savedOrder.invoice}&status=${payment.status ?? "paid"}`
+        routes.payment.success({
+          orderId: savedOrder.id,
+          invoice: savedOrder.invoiceNumber,
+          status: payment.status,
+        })
       )
     } catch {
       toast.error("Pembayaran gagal, coba lagi")
@@ -325,13 +317,13 @@ export default function CheckoutPage() {
                 {items.map((item) => (
                   <OrderSummaryCard.itemRow key={item.produkItemId}>
                     <OrderSummaryCard.imgWrapper>
-                      {item.produk?.imageUrl && (
+                      {item.produkImageUrl && (
                         /* eslint-disable-next-line @next/next/no-img-element */
-                        <OrderItemImg src={item.produk.imageUrl} alt={item.produk.nama} />
+                        <OrderItemImg src={item.produkImageUrl} alt={item.produkNama} />
                       )}
                     </OrderSummaryCard.imgWrapper>
                     <OrderSummaryCard.itemInfo>
-                      <OrderSummaryCard.name>{item.produk?.nama}</OrderSummaryCard.name>
+                      <OrderSummaryCard.name>{item.produkNama}</OrderSummaryCard.name>
                       <OrderSummaryCard.desc>×{item.qty} · {formatPrice(item.harga)}</OrderSummaryCard.desc>
                     </OrderSummaryCard.itemInfo>
                     <OrderSummaryCard.subtotal>{formatPrice(item.subtotal)}</OrderSummaryCard.subtotal>
@@ -365,7 +357,7 @@ export default function CheckoutPage() {
             {savedOrder && (
               <InvoiceWrapper>
                 <InvoiceWrapper.label>Nomor Pesanan</InvoiceWrapper.label>
-                <InvoiceWrapper.value>{savedOrder.invoice}</InvoiceWrapper.value>
+                <InvoiceWrapper.value>{savedOrder.invoiceNumber ?? `#${savedOrder.id}`}</InvoiceWrapper.value>
               </InvoiceWrapper>
             )}
           </OrderSummaryCard>

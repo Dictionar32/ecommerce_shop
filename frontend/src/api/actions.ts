@@ -218,6 +218,15 @@ export async function cartDeleteAction(payload?: Parameters<typeof api.cart.dele
   }
 }
 
+export async function cartListAction(payload?: Parameters<typeof api.cart.list>[0]) {
+  try {
+    const data = await api.cart.list({ query: payload?.query, headers: await getAuthHeaders() })
+    return { success: true, data }
+  } catch (error: unknown) {
+    return { success: false, error: error instanceof Error ? error.message : String(error) }
+  }
+}
+
 export async function cartPromoCreateAction(payload: Parameters<typeof api.cartPromo.create>[0]) {
   try {
     const data = await api.cartPromo.create({ body: payload.body, headers: await getAuthHeaders() })
@@ -248,15 +257,6 @@ export async function checkoutCreateAction(payload: Parameters<typeof api.checko
 export async function buyNowCreateAction(payload: Parameters<typeof api.buyNow.create>[0]) {
   try {
     const data = await api.buyNow.create({ body: payload.body, headers: await getAuthHeaders() })
-    return { success: true, data }
-  } catch (error: unknown) {
-    return { success: false, error: error instanceof Error ? error.message : String(error) }
-  }
-}
-
-export async function keranjangListAction(payload?: Parameters<typeof api.keranjang.list>[0]) {
-  try {
-    const data = await api.keranjang.list({ query: payload?.query, headers: await getAuthHeaders() })
     return { success: true, data }
   } catch (error: unknown) {
     return { success: false, error: error instanceof Error ? error.message : String(error) }

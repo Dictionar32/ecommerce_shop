@@ -27,6 +27,8 @@ const UpdateSchema = z.object({
   email: z.string().email("Email tidak valid"),
 })
 
+type UpdateFormValues = z.infer<typeof UpdateSchema>
+
 export default function ProfilePage() {
   const user = useAuthStore((s) => s.user)
   const logoutLocal = useAuthStore((s) => s.logout)
@@ -35,12 +37,12 @@ export default function ProfilePage() {
   const updateProfile = useProfile.usePatch()
   const [isEditing, setIsEditing] = useState(false)
 
-  const form = useForm<any>({
+  const form = useForm<UpdateFormValues>({
     resolver: zodResolver(UpdateSchema),
     values: { name: user?.name ?? "", email: user?.email ?? "" },
   })
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: UpdateFormValues) => {
     try {
       await updateProfile.mutateAsync(values)
       toast.success("Profil berhasil diperbarui")
@@ -51,7 +53,7 @@ export default function ProfilePage() {
   }
 
   const handleLogout = () => {
-    logoutMutation.mutate({}, {
+    logoutMutation.mutate(undefined, {
       onSuccess: () => { 
         logoutLocal()
         toast.success("Berhasil keluar") 

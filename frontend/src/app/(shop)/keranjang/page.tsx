@@ -3,7 +3,6 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
 import { ShoppingCart, Trash2, Plus, Minus, Tag, X, ArrowRight, Loader2, Package } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -21,45 +20,33 @@ import {
   QtyBtn, RemoveBtn, RemovePromoBtn, ApplyPromoBtn, CheckoutBtn
 } from "./keranjang.styles"
 
-import { useKeranjang, useCartItems, useCartPromo } from '@/api/hooks'
+import { useCart } from '@/api'
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice } from "@/lib/utils-frontend"
-import type * as Types from "@/api/types"
+
 
 export default function KeranjangPage() {
   const router = useRouter()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const [promoInput, setPromoInput] = useState("")
 
-  const { data: resCart, isLoading } = useKeranjang.index()
-  const cart = resCart as Types.OrderResourceTransformed | undefined
-  const updateItemMut = useCartItems.useUpdate()
-  const removeItemMut = useCartItems.useRemove()
-  const applyPromoMut = useCartPromo.useCreate()
-  const removePromoMut = useCartPromo.useDelete()
+  const { cart, isLoading, inc, dec, remove, applyPromo, removePromo, updateItemMut, removeItemMut, removePromoMut, applyPromoMut } = useCart()
 
   const handleQtyChange = (produkItemId: number, currentQty: number, delta: number) => {
-    const newQty = currentQty + delta
-    if (newQty < 1) {
-      removeItemMut.mutate(produkItemId, { onError: () => toast.error("Gagal menghapus item") })
+    if (delta > 0) {
+      inc(produkItemId)
     } else {
-      updateItemMut.mutate({ id: produkItemId, data: { qty: newQty } }, { onError: () => toast.error("Gagal mengubah jumlah") })
+      dec(produkItemId)
     }
   }
 
   const handleRemove = (produkItemId: number) => {
-    removeItemMut.mutate(produkItemId, {
-      onSuccess: () => toast.success("Item dihapus"),
-      onError: () => toast.error("Gagal menghapus item"),
-    })
+    remove(produkItemId)
   }
 
   const handleApplyPromo = () => {
     if (!promoInput.trim()) return
-    applyPromoMut.mutate({ code: promoInput.trim() }, {
-      onSuccess: () => { toast.success("Kode promo diterapkan!"); setPromoInput("") },
-      onError: () => toast.error("Kode promo tidak valid"),
-    })
+    applyPromo(promoInput.trim()).then(() => setPromoInput(""))
   }
 
   if (!isAuthenticated) return <AuthGuard icon={ShoppingCart} title="Masuk untuk melihat keranjang" description="Item keranjang tersimpan di akun Anda" />
@@ -105,16 +92,16 @@ export default function KeranjangPage() {
               {items.map((item) => (
                 <CartItemCard key={item.produkItemId}>
                   <CartItemCard.imageWrapper>
-                    {item.produk?.imageUrl
+                    {item.produkImageUrl
                       ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
-                        <CartItemImg src={item.produk.imageUrl} alt={item.produk.nama} />
+                        <CartItemImg src={item.produkImageUrl} alt={item.produkNama} />
                       )
                       : <CartItemCard.placeholder><IconPackage size={24} /></CartItemCard.placeholder>
                     }
                   </CartItemCard.imageWrapper>
                   <CartItemCard.details>
-                    <CartItemCard.name>{item.produk?.nama}</CartItemCard.name>
+                    <CartItemCard.name>{item.produkNama}</CartItemCard.name>
                     <CartItemCard.price>{formatPrice(item.harga)}</CartItemCard.price>
                     <CartItemCard.actionRow>
                       <CartItemCard.qtyGroup>
@@ -125,7 +112,7 @@ export default function KeranjangPage() {
                         </QtyBtn>
                         <CartItemCard.qty>{item.qty}</CartItemCard.qty>
                         <QtyBtn variant="ghost" size="icon"
-                          disabled={updateItemMut.isPending}
+                          disabled={updateItemMut.isPending || removeItemMut.isPending}
                           onClick={() => handleQtyChange(item.produkItemId, item.qty, 1)}>
                           <IconPlus size={12} />
                         </QtyBtn>
@@ -150,12 +137,12 @@ export default function KeranjangPage() {
                   <IconTag size={14} />
                   <PromoCard.label>Kode Promo</PromoCard.label>
                 </PromoCard.headerRow>
-                {cart?.promotion?.code ? (
+                {cart?.promotionCode ? (
                   <PromoCard.appliedWrapper>
-                    <PromoCard.code>{cart.promotion.code}</PromoCard.code>
+                    <PromoCard.code>{cart.promotionCode}</PromoCard.code>
                     <RemovePromoBtn variant="ghost" size="icon"
                       disabled={removePromoMut.isPending}
-                      onClick={() => removePromoMut.mutate(1, { onSuccess: () => toast.success("Promo dihapus") })}>
+                      onClick={() => removePromo()}>
                       {removePromoMut.isPending ? <IconLoader size={12} /> : <IconX size={12} />}
                     </RemovePromoBtn>
                   </PromoCard.appliedWrapper>

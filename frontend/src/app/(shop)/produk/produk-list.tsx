@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ProdukCard } from "./produk-card";
-import { CategoryTransformed } from "@/api/types";
+import { CategoryTransformed, ProdukItemResourceTransformed } from "@/api/types";
 
 import {
   PageContainer, HeaderArea, IconGem, ContentContainer, ToolbarCard, ToolbarRow, SearchWrapper, SearchInput, SearchClearBtn, IconSearch, IconX,
@@ -16,7 +16,7 @@ import {
 type SortOption = "default" | "harga_asc" | "harga_desc" | "rating" | "nama_asc" | "nama_desc";
 
 interface ProdukListProps {
-  initialData: any[];
+  initialData: ProdukItemResourceTransformed[];
   categories: CategoryTransformed[];
   wishlistData?: { id: number }[];
 }
@@ -29,8 +29,8 @@ function FilterSheet({
   onSortChange,
 }: {
   categories: CategoryTransformed[];
-  selectedCategory: any;
-  onCategoryChange: (value: any) => void;
+  selectedCategory: string;
+  onCategoryChange: (value: string) => void;
   sortBy: SortOption;
   onSortChange: (value: SortOption) => void;
 }) {
@@ -91,16 +91,16 @@ function FilterSheet({
 
 export function ProdukList({ initialData, categories = [], wishlistData = [] }: ProdukListProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<any>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<SortOption>("default");
-  const [products] = useState<any[]>(initialData);
+  const [products] = useState<ProdukItemResourceTransformed[]>(initialData);
 
   const wishlistProductIds = useMemo(() => {
     if (!wishlistData) return new Set<number>();
     return new Set(wishlistData.map((item) => item.id));
   }, [wishlistData]);
 
-  const filteredProducts = useMemo((): any[] => {
+  const filteredProducts = useMemo((): ProdukItemResourceTransformed[] => {
     let result = [...(products || [])];
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
@@ -159,7 +159,7 @@ export function ProdukList({ initialData, categories = [], wishlistData = [] }: 
                 type="search"
                 placeholder="Cari produk..."
                 value={searchQuery}
-                onChange={(e: any) => setSearchQuery(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
               />
               {searchQuery && (
                 <SearchClearBtn onClick={() => setSearchQuery("")}>
@@ -170,7 +170,7 @@ export function ProdukList({ initialData, categories = [], wishlistData = [] }: 
 
             {/* Sort — desktop */}
             <SortDesktopWrapper>
-              <Select value={sortBy} onValueChange={(val: any) => setSortBy(val as SortOption)}>
+              <Select value={sortBy} onValueChange={(val) => setSortBy(val as SortOption)}>
                 <StyledSelectTrigger>
                   <SelectValue placeholder="Urutkan" />
                 </StyledSelectTrigger>
@@ -237,7 +237,7 @@ export function ProdukList({ initialData, categories = [], wishlistData = [] }: 
               )}
               {selectedCategory !== "all" && (
                 <ActiveFiltersContainer.chip>
-                  {categories.find((c: any) => c.id === Number(selectedCategory))?.nama}
+                  {categories.find((c) => c.id === Number(selectedCategory))?.nama}
                   <ActiveFilterChipBtn onClick={() => setSelectedCategory("all")}><IconX size={10} /></ActiveFilterChipBtn>
                 </ActiveFiltersContainer.chip>
               )}

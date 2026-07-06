@@ -6202,28 +6202,5 @@
         "jumlahReview": "(int) ($this->frontend?->jumlah_review ?? 0)"
       }
     }
-  ],
-  "frontend": {
-    "router": "next",
-    "groupAliases": {
-      "keranjang": "cart"
-    },
-    "domains": {
-      "cart": {
-        "type": "cart",
-        "items": "cartItems",
-        "promo": "cartPromo"
-      }
-    }
-  },
-  "pages": {
-    "payment.success": {
-      "path": "/payment/success",
-      "query": [
-        "orderId",
-        "invoice",
-        "status"
-      ]
-    }
-  }
+  ]
 }

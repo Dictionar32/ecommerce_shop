@@ -22,7 +22,6 @@ export const Entity = {
   CARTPROMO: "cartPromo",
   CHECKOUT: "checkout",
   BUYNOW: "buyNow",
-  KERANJANG: "keranjang",
   WISHLIST: "wishlist",
   PAYMENT: "payment",
   ORDERSINVOICE: "ordersInvoice",
@@ -144,6 +143,7 @@ export const QueryKey = {
   cart: {
     all: () => [Entity.CART] as const,
     delete: () => [Entity.CART, "delete"] as const,
+    list: () => [Entity.CART, "list"] as const,
   },
 
   /* ===== CARTPROMO ===== */
@@ -163,12 +163,6 @@ export const QueryKey = {
   buyNow: {
     all: () => [Entity.BUYNOW] as const,
     create: () => [Entity.BUYNOW, "create"] as const,
-  },
-
-  /* ===== KERANJANG ===== */
-  keranjang: {
-    all: () => [Entity.KERANJANG] as const,
-    list: () => [Entity.KERANJANG, "list"] as const,
   },
 
   /* ===== WISHLIST ===== */
@@ -226,7 +220,6 @@ export const cartKeys = QueryKey.cart
 export const cartPromoKeys = QueryKey.cartPromo
 export const checkoutKeys = QueryKey.checkout
 export const buyNowKeys = QueryKey.buyNow
-export const keranjangKeys = QueryKey.keranjang
 export const wishlistKeys = QueryKey.wishlist
 export const paymentKeys = QueryKey.payment
 export const ordersInvoiceKeys = QueryKey.ordersInvoice

@@ -29,16 +29,12 @@ export const ApiSchema = {
     token: z.string(),
     password: z.string(),
   }),
-  ProdukReviewsPost: z.object({
+  ProdukReviewsCreate: z.object({
     rating: z.number(),
     title: z.string().optional().nullable(),
     comment: z.string().optional().nullable(),
   }),
-  ProfilePut: z.object({
-    name: z.string(),
-    email: z.string(),
-  }),
-  ProfilePatch: z.object({
+  ProfileUpdate: z.object({
     name: z.string(),
     email: z.string(),
   }),
@@ -75,7 +71,7 @@ export const ApiSchema = {
   WishlistCreate: z.object({
     produkItemId: z.string(),
   }),
-  PaymentPost: z.object({
+  PaymentCreate: z.object({
     metode: z.string(),
     detail: z.array(z.unknown()).optional().nullable(),
     provider: z.enum(['mock', 'midtrans']).optional().nullable(),
@@ -103,16 +99,15 @@ export type ApiFormValues = {
   SocialLoginCreate: z.infer<typeof ApiSchema.SocialLoginCreate>
   ForgotPasswordCreate: z.infer<typeof ApiSchema.ForgotPasswordCreate>
   ResetPasswordCreate: z.infer<typeof ApiSchema.ResetPasswordCreate>
-  ProdukReviewsPost: z.infer<typeof ApiSchema.ProdukReviewsPost>
-  ProfilePut: z.infer<typeof ApiSchema.ProfilePut>
-  ProfilePatch: z.infer<typeof ApiSchema.ProfilePatch>
+  ProdukReviewsCreate: z.infer<typeof ApiSchema.ProdukReviewsCreate>
+  ProfileUpdate: z.infer<typeof ApiSchema.ProfileUpdate>
   CartItemsCreate: z.infer<typeof ApiSchema.CartItemsCreate>
   CartItemsUpdate: z.infer<typeof ApiSchema.CartItemsUpdate>
   CartPromoCreate: z.infer<typeof ApiSchema.CartPromoCreate>
   CheckoutCreate: z.infer<typeof ApiSchema.CheckoutCreate>
   BuyNowCreate: z.infer<typeof ApiSchema.BuyNowCreate>
   WishlistCreate: z.infer<typeof ApiSchema.WishlistCreate>
-  PaymentPost: z.infer<typeof ApiSchema.PaymentPost>
+  PaymentCreate: z.infer<typeof ApiSchema.PaymentCreate>
   AdminProdukCreate: z.infer<typeof ApiSchema.AdminProdukCreate>
 }
 
@@ -123,15 +118,37 @@ export const ApiDefaultValues = {
   socialLoginCreate: {} as ApiFormValues['SocialLoginCreate'],
   forgotPasswordCreate: {} as ApiFormValues['ForgotPasswordCreate'],
   resetPasswordCreate: {} as ApiFormValues['ResetPasswordCreate'],
-  produkReviewsPost: {} as ApiFormValues['ProdukReviewsPost'],
-  profilePut: {} as ApiFormValues['ProfilePut'],
-  profilePatch: {} as ApiFormValues['ProfilePatch'],
+  produkReviewsCreate: {} as ApiFormValues['ProdukReviewsCreate'],
+  profileUpdate: {} as ApiFormValues['ProfileUpdate'],
   cartItemsCreate: {} as ApiFormValues['CartItemsCreate'],
   cartItemsUpdate: {} as ApiFormValues['CartItemsUpdate'],
   cartPromoCreate: {} as ApiFormValues['CartPromoCreate'],
   checkoutCreate: {} as ApiFormValues['CheckoutCreate'],
   buyNowCreate: {} as ApiFormValues['BuyNowCreate'],
   wishlistCreate: {} as ApiFormValues['WishlistCreate'],
-  paymentPost: {} as ApiFormValues['PaymentPost'],
+  paymentCreate: {} as ApiFormValues['PaymentCreate'],
   adminProdukCreate: {} as ApiFormValues['AdminProdukCreate'],
 }
+
+export type ApiFormIndex = keyof ApiFormValues
+
+export const ApiFormValidators = {
+  validateRegisterCreate: (data: unknown): ApiFormValues['RegisterCreate'] => ApiSchema.RegisterCreate.parse(data),
+  validateLoginCreate: (data: unknown): ApiFormValues['LoginCreate'] => ApiSchema.LoginCreate.parse(data),
+  validateOauthRedirectGet: (data: unknown): ApiFormValues['OauthRedirectGet'] => ApiSchema.OauthRedirectGet.parse(data),
+  validateSocialLoginCreate: (data: unknown): ApiFormValues['SocialLoginCreate'] => ApiSchema.SocialLoginCreate.parse(data),
+  validateForgotPasswordCreate: (data: unknown): ApiFormValues['ForgotPasswordCreate'] => ApiSchema.ForgotPasswordCreate.parse(data),
+  validateResetPasswordCreate: (data: unknown): ApiFormValues['ResetPasswordCreate'] => ApiSchema.ResetPasswordCreate.parse(data),
+  validateProdukReviewsCreate: (data: unknown): ApiFormValues['ProdukReviewsCreate'] => ApiSchema.ProdukReviewsCreate.parse(data),
+  validateProfileUpdate: (data: unknown): ApiFormValues['ProfileUpdate'] => ApiSchema.ProfileUpdate.parse(data),
+  validateCartItemsCreate: (data: unknown): ApiFormValues['CartItemsCreate'] => ApiSchema.CartItemsCreate.parse(data),
+  validateCartItemsUpdate: (data: unknown): ApiFormValues['CartItemsUpdate'] => ApiSchema.CartItemsUpdate.parse(data),
+  validateCartPromoCreate: (data: unknown): ApiFormValues['CartPromoCreate'] => ApiSchema.CartPromoCreate.parse(data),
+  validateCheckoutCreate: (data: unknown): ApiFormValues['CheckoutCreate'] => ApiSchema.CheckoutCreate.parse(data),
+  validateBuyNowCreate: (data: unknown): ApiFormValues['BuyNowCreate'] => ApiSchema.BuyNowCreate.parse(data),
+  validateWishlistCreate: (data: unknown): ApiFormValues['WishlistCreate'] => ApiSchema.WishlistCreate.parse(data),
+  validatePaymentCreate: (data: unknown): ApiFormValues['PaymentCreate'] => ApiSchema.PaymentCreate.parse(data),
+  validateAdminProdukCreate: (data: unknown): ApiFormValues['AdminProdukCreate'] => ApiSchema.AdminProdukCreate.parse(data),
+}
+
+export type ApiFormErrors<T extends ApiFormIndex> = Partial<Record<keyof ApiFormValues[T], string>>

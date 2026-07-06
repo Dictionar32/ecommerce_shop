@@ -41,7 +41,7 @@ function ForgotPasswordContent() {
 
   const forgotMutation = useForgotPassword.useCreate()
 
-  const form = useForm<any>({
+  const form = useForm<ForgotPasswordFormValues>({
     resolver: zodResolver(ForgotPasswordSchema),
     defaultValues: {
       ...DefaultValues,
@@ -49,7 +49,7 @@ function ForgotPasswordContent() {
     },
   })
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: ForgotPasswordFormValues) => {
     try {
       await forgotMutation.mutateAsync(values)
       setSentEmail(values.email)

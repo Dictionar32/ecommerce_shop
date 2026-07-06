@@ -5,9 +5,8 @@ import Link from 'next/link';
 import { X, Minus, Plus, Trash2, Tag, ShoppingBag, ArrowRight } from 'lucide-react';
 import { useCartUiStore } from '@/lib/stores/cart-ui-store';
 import { formatPrice } from '@/lib/utils-frontend';
-import { toast } from 'sonner';
 import type * as Types from '@/api/types';
-import { useKeranjang, useCartItems, useCartPromo } from '@/api/hooks';
+import { useCart } from '@/api';
 import {
   Overlay, Backdrop, Drawer, Header, HeaderTitleArea, Title, CartCountBadge, CloseButton, ContentArea, SkeletonRow, SkeletonImage, SkeletonInfo,
   SkeletonText, SkeletonTextShort, EmptyState, EmptyStateIcon, EmptyStateTitle, EmptyStateSub,
@@ -23,14 +22,8 @@ import {
 export default function CartModal() {
   const { isOpen, closeCart } = useCartUiStore();
   
-  // Use generated hooks directly
-  const { data: res, isLoading } = useKeranjang.index();
-  const cart = res as Types.OrderResourceTransformed | undefined;
-  
-  const updateItemMut = useCartItems.useUpdate();
-  const removeItemMut = useCartItems.useRemove();
-  const applyPromoMut = useCartPromo.useCreate();
-  const removePromoMut = useCartPromo.useDelete();
+  // Use SDK-generated hook
+  const { cart, isLoading, inc, dec, remove, applyPromo, removePromo, removePromoMut, applyPromoMut } = useCart();
 
   const [promoInput, setPromoInput] = useState('');
 
@@ -39,44 +32,9 @@ export default function CartModal() {
   const items = cart?.items ?? [];
   const cartCount = items.reduce((s: number, i) => s + i.qty, 0);
 
-  const handleUpdateQty = async (produkItemId: number, newQty: number) => {
-    if (newQty < 1) {
-      removeItemMut.mutate(produkItemId, {
-        onError: () => toast.error('Gagal hapus item'),
-      });
-      return;
-    }
-    updateItemMut.mutate(
-      { id: produkItemId, data: { qty: newQty } },
-      { onError: () => toast.error('Gagal update jumlah') }
-    );
-  };
-
-  const handleRemove = (produkItemId: number) => {
-    removeItemMut.mutate(produkItemId, {
-      onSuccess: () => toast.success('Item dihapus'),
-      onError: () => toast.error('Gagal hapus'),
-    });
-  };
-
   const handleApplyPromo = () => {
     if (!promoInput.trim()) return;
-    applyPromoMut.mutate({ code: promoInput.trim() }, {
-      onSuccess: () => {
-        toast.success('Kode promo diterapkan!');
-        setPromoInput('');
-      },
-      onError: () => {
-        toast.error('Kode promo tidak valid');
-      },
-    });
-  };
-
-  const handleRemovePromo = () => {
-    removePromoMut.mutate(1, {
-      onSuccess: () => toast.success('Promo dihapus'),
-      onError: () => toast.error('Gagal hapus promo'),
-    });
+    applyPromo(promoInput.trim()).then(() => setPromoInput(''));
   };
 
   return (
@@ -132,11 +90,11 @@ export default function CartModal() {
               <CartItemRow key={item.produkItemId}>
                 {/* Image */}
                 <CartItemImageContainer>
-                  {item.produk?.imageUrl ? (
+                  {item.produkImageUrl ? (
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img
-                      src={item.produk.imageUrl}
-                      alt={item.produk?.nama}
+                      src={item.produkImageUrl}
+                      alt={item.produkNama}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   ) : (
@@ -148,23 +106,23 @@ export default function CartModal() {
 
                 {/* Info */}
                 <CartItemInfo>
-                  <CartItemName>{item.produk?.nama}</CartItemName>
+                  <CartItemName>{item.produkNama}</CartItemName>
                   <CartItemPrice>{formatPrice(item.harga)}</CartItemPrice>
 
                   <CartItemActions>
                     <QtyControls>
-                      <QtyBtn onClick={() => handleUpdateQty(item.produkItemId, item.qty - 1)}>
+                      <QtyBtn onClick={() => dec(item.produkItemId)}>
                         <Minus size={12} />
                       </QtyBtn>
                       <QtyDisplay>{item.qty}</QtyDisplay>
-                      <QtyBtn onClick={() => handleUpdateQty(item.produkItemId, item.qty + 1)}>
+                      <QtyBtn onClick={() => inc(item.produkItemId)}>
                         <Plus size={12} />
                       </QtyBtn>
                     </QtyControls>
 
                     <SubtotalArea>
                       <SubtotalText>{formatPrice(item.subtotal)}</SubtotalText>
-                      <RemoveBtn onClick={() => handleRemove(item.produkItemId)}>
+                      <RemoveBtn onClick={() => remove(item.produkItemId)}>
                         <Trash2 size={13} />
                       </RemoveBtn>
                     </SubtotalArea>
@@ -179,18 +137,18 @@ export default function CartModal() {
         {cart && items.length > 0 && (
           <Footer>
             {/* Promo code */}
-            {cart.promotion?.code ? (
+            {cart.promotionCode ? (
               <AppliedPromoContainer>
                 <AppliedPromoInfo>
                   <StyledTagIcon>
                     <Tag size={14} />
                   </StyledTagIcon>
-                  <AppliedPromoCode>{cart.promotion.code}</AppliedPromoCode>
-                  {cart.promotion.discountMinor && (
-                    <AppliedPromoDiscount>-{formatPrice(cart.promotion.discountMinor)}</AppliedPromoDiscount>
+                  <AppliedPromoCode>{cart.promotionCode}</AppliedPromoCode>
+                  {cart.promotionDiscountMinor && (
+                    <AppliedPromoDiscount>-{formatPrice(cart.promotionDiscountMinor)}</AppliedPromoDiscount>
                   )}
                 </AppliedPromoInfo>
-                <RemovePromoBtn onClick={handleRemovePromo}>
+                <RemovePromoBtn onClick={removePromo}>
                   <X size={14} />
                 </RemovePromoBtn>
               </AppliedPromoContainer>

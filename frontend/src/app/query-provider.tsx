@@ -6,10 +6,15 @@ import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axio
 import { createClient } from 'routesync';
 import { API_URL } from '@/api';
 import useAuthStore from '@/lib/stores/auth-store';
+import { toast } from 'sonner';
 
 // Initialize RouteSync client globally
 const client = createClient({
   baseURL: API_URL,
+  toast: {
+    success: (msg) => toast.success(msg),
+    error: (msg) => toast.error(msg),
+  },
 });
 
 // Add dynamic authorization header interceptor

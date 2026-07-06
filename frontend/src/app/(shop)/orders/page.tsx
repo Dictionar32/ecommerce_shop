@@ -164,13 +164,13 @@ export default function OrdersPage() {
                 </DetailHeaderRow>
 
                 {/* Shipping */}
-                {detail.shipping?.nama && (
+                {detail.shippingNama && (
                   <ShippingCard>
                     <ShippingTitle>Alamat Pengiriman</ShippingTitle>
-                    <ShippingName>{detail.shipping.nama}</ShippingName>
-                    <ShippingAddress>{detail.shipping.alamat}</ShippingAddress>
-                    <ShippingCity>{detail.shipping.kota}{detail.shipping.kodePos ? `, ${detail.shipping.kodePos}` : ""}</ShippingCity>
-                    {detail.shipping.telepon && <ShippingPhone>{detail.shipping.telepon}</ShippingPhone>}
+                    <ShippingName>{detail.shippingNama}</ShippingName>
+                    <ShippingAddress>{detail.shippingAlamat}</ShippingAddress>
+                    <ShippingCity>{detail.shippingKota}{detail.shippingKodePos ? `, ${detail.shippingKodePos}` : ""}</ShippingCity>
+                    {detail.shippingTelepon && <ShippingPhone>{detail.shippingTelepon}</ShippingPhone>}
                   </ShippingCard>
                 )}
 
@@ -180,16 +180,16 @@ export default function OrdersPage() {
                   {detail.items?.map((item: any) => (
                     <ItemCard key={item.produkItemId}>
                       <ItemImageBox>
-                        {item.produk?.imageUrl
+                        {item.produkImageUrl
                           ? (
                             /* eslint-disable-next-line @next/next/no-img-element */
-                            <ItemImage src={item.produk.imageUrl} alt={item.produk.nama} />
+                            <ItemImage src={item.produkImageUrl} alt={item.produkNama} />
                           )
                           : <ItemImagePlaceholder><Package size={18} className="text-obsidian-600" /></ItemImagePlaceholder>
                         }
                       </ItemImageBox>
                       <ItemInfoWrapper>
-                        <ItemName>{item.produk?.nama}</ItemName>
+                        <ItemName>{item.produkNama}</ItemName>
                         <ItemQty>{item.qty} × {formatPrice(item.harga)}</ItemQty>
                       </ItemInfoWrapper>
                       <ItemSubtotal>{formatPrice(item.subtotal)}</ItemSubtotal>
@@ -202,7 +202,7 @@ export default function OrdersPage() {
                 <TotalsWrapper>
                   {[
                     { label: "Subtotal", val: detail.subtotalMinor, show: true },
-                    { label: `Diskon${detail.promotion?.code ? ` (${detail.promotion.code})` : ""}`, val: -(detail.discountMinor ?? 0), show: (detail.discountMinor ?? 0) > 0, cls: "gold" as const },
+                    { label: `Diskon${detail.promotionCode ? ` (${detail.promotionCode})` : ""}`, val: -(detail.discountMinor ?? 0), show: (detail.discountMinor ?? 0) > 0, cls: "gold" as const },
                     { label: "Ongkos Kirim", val: detail.shippingMinor ?? 0, show: (detail.shippingMinor ?? 0) > 0 },
                   ].filter(r => r.show).map(row => (
                     <TotalRowBox key={row.label} color={row.cls ?? "default"}>

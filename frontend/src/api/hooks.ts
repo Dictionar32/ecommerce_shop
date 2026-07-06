@@ -15,22 +15,21 @@ import type {
   OauthRedirectForm,
   OrderResourceIndex,
   OrderResourceShow,
+  PaymentForm,
   ProdukItemResourceIndex,
   ProdukItemResourceShow,
+  ProdukReviewsForm,
+  ProfileForm,
+  ProfileIndex,
   RegisterForm,
   ResetPasswordForm,
   SocialLoginForm,
   WishlistForm,
 } from './types/index'
-import type {
-  PaymentPostPayload,
-  ProdukReviewsPostPayload,
-  ProfileListResponse,
-} from './contract/api-contract'
 
 export const typeOf = <T>() => ({} as T)
 
-export const hooks = defineHooks({
+const baseHooks = defineHooks({
   register: {
     types: {
       list: typeOf<never>(),
@@ -180,7 +179,7 @@ export const hooks = defineHooks({
     types: {
       list: typeOf<never>(),
       detail: typeOf<never>(),
-      create: typeOf<ProdukReviewsPostPayload>(),
+      create: typeOf<ProdukReviewsForm['Create']>(),
       update: typeOf<never>(),
     },
 
@@ -195,6 +194,7 @@ export const hooks = defineHooks({
       post: {
         invalidate: [
           QueryKey.produkReviews.get,
+          QueryKey.produk.lists,
         ],
       },
     },
@@ -203,7 +203,7 @@ export const hooks = defineHooks({
     types: {
       list: typeOf<never>(),
       detail: typeOf<never>(),
-      create: typeOf<never>(),
+      create: typeOf<void>(),
       update: typeOf<never>(),
     },
 
@@ -215,10 +215,10 @@ export const hooks = defineHooks({
   },
   profile: {
     types: {
-      list: typeOf<ProfileListResponse>(),
+      list: typeOf<ProfileIndex>(),
       detail: typeOf<never>(),
       create: typeOf<never>(),
-      update: typeOf<never>(),
+      update: typeOf<ProfileForm['Update']>(),
     },
 
     queryKey: QueryKey.profile,
@@ -282,27 +282,27 @@ export const hooks = defineHooks({
     cache: {
       create: {
         invalidate: [
-          QueryKey.keranjang.list,
           QueryKey.orders.lists,
+          QueryKey.cart.list,
         ],
       },
       update: {
         invalidate: [
-          QueryKey.keranjang.list,
           QueryKey.orders.lists,
+          QueryKey.cart.list,
         ],
       },
       remove: {
         invalidate: [
-          QueryKey.keranjang.list,
           QueryKey.orders.lists,
+          QueryKey.cart.list,
         ],
       },
     },
   },
   cart: {
     types: {
-      list: typeOf<never>(),
+      list: typeOf<OrderResourceShow>(),
       detail: typeOf<never>(),
       create: typeOf<never>(),
       update: typeOf<never>(),
@@ -311,17 +311,20 @@ export const hooks = defineHooks({
     queryKey: QueryKey.cart,
     actionKeys: {
       delete: QueryKey.cart.delete,
+      list: QueryKey.cart.list,
     },
     endpoint: api.cart,
 
     cache: {
+      list: QueryKey.cart.list,
       delete: {
         invalidate: [
-          QueryKey.keranjang.list,
+          QueryKey.cart.list,
           QueryKey.orders.lists,
         ],
       },
     },
+    domain: '[object Object]',
   },
   cartPromo: {
     types: {
@@ -341,14 +344,14 @@ export const hooks = defineHooks({
     cache: {
       create: {
         invalidate: [
-          QueryKey.keranjang.list,
           QueryKey.orders.lists,
+          QueryKey.cart.list,
         ],
       },
       delete: {
         invalidate: [
-          QueryKey.keranjang.list,
           QueryKey.orders.lists,
+          QueryKey.cart.list,
         ],
       },
     },
@@ -370,8 +373,8 @@ export const hooks = defineHooks({
     cache: {
       create: {
         invalidate: [
-          QueryKey.keranjang.list,
           QueryKey.orders.lists,
+          QueryKey.cart.list,
         ],
       },
     },
@@ -393,28 +396,10 @@ export const hooks = defineHooks({
     cache: {
       create: {
         invalidate: [
-          QueryKey.keranjang.list,
           QueryKey.orders.lists,
+          QueryKey.cart.list,
         ],
       },
-    },
-  },
-  keranjang: {
-    types: {
-      list: typeOf<OrderResourceShow>(),
-      detail: typeOf<never>(),
-      create: typeOf<never>(),
-      update: typeOf<never>(),
-    },
-
-    queryKey: QueryKey.keranjang,
-    actionKeys: {
-      list: QueryKey.keranjang.list,
-    },
-    endpoint: api.keranjang,
-
-    cache: {
-      list: QueryKey.keranjang.list,
     },
   },
   wishlist: {
@@ -438,11 +423,13 @@ export const hooks = defineHooks({
       create: {
         invalidate: [
           QueryKey.wishlist.list,
+          QueryKey.produk.lists,
         ],
       },
       remove: {
         invalidate: [
           QueryKey.wishlist.list,
+          QueryKey.produk.lists,
         ],
       },
     },
@@ -451,7 +438,7 @@ export const hooks = defineHooks({
     types: {
       list: typeOf<never>(),
       detail: typeOf<never>(),
-      create: typeOf<PaymentPostPayload>(),
+      create: typeOf<PaymentForm['Create']>(),
       update: typeOf<never>(),
     },
 
@@ -465,7 +452,8 @@ export const hooks = defineHooks({
       post: {
         invalidate: [
           QueryKey.orders.lists,
-          QueryKey.keranjang.list,
+          QueryKey.orders.detail,
+          QueryKey.cart.list,
         ],
       },
     },
@@ -488,7 +476,7 @@ export const hooks = defineHooks({
     types: {
       list: typeOf<never>(),
       detail: typeOf<never>(),
-      create: typeOf<never>(),
+      create: typeOf<void>(),
       update: typeOf<never>(),
     },
 
@@ -497,6 +485,17 @@ export const hooks = defineHooks({
       create: QueryKey.logout.create,
     },
     endpoint: api.logout,
+
+    cache: {
+      create: {
+        invalidate: [
+          QueryKey.profile.list,
+          QueryKey.orders.lists,
+          QueryKey.cart.list,
+          QueryKey.wishlist.list,
+        ],
+      },
+    },
   },
   adminProduk: {
     types: {
@@ -516,11 +515,77 @@ export const hooks = defineHooks({
       create: {
         invalidate: [
           QueryKey.produk.lists,
+          QueryKey.wishlist.list,
         ],
       },
     },
   },
 })
+
+// Custom Domain Cart Hook Wrapper to enforce Zero-Boilerplate Intent Pattern
+const useCartWrapper = (optionsOrId?: number | { id?: number; list?: boolean }) => {
+  const result = baseHooks.cart(optionsOrId)
+  const createItemMut = baseHooks.cartItems.useCreate()
+  const updateItemMut = baseHooks.cartItems.useUpdate()
+  const removeItemMut = baseHooks.cartItems.useRemove()
+  const applyPromoMut = baseHooks.cartPromo.useCreate()
+  const removePromoMut = baseHooks.cartPromo.useDelete()
+
+  const getQty = (produkItemId: number): number => {
+    const cartData = (result as Record<string, unknown>).cart as { items?: Array<{ id?: number; produkItemId?: number; qty?: number; jumlah?: number }> } | undefined
+    if (cartData && Array.isArray(cartData.items)) {
+      const item = cartData.items.find((i) => i.produkItemId === produkItemId || i.id === produkItemId)
+      return item ? item.qty || item.jumlah || 0 : 0
+    }
+    return 0
+  }
+
+  const inc = async (produkItemId: number) => {
+    const currentQty = getQty(produkItemId)
+    if (currentQty === 0) {
+      return createItemMut.mutateAsync({ produkItemId: String(produkItemId), qty: 1 })
+    } else {
+      return updateItemMut.mutateAsync({ id: produkItemId, data: { qty: currentQty + 1 } })
+    }
+  }
+
+  const dec = async (produkItemId: number) => {
+    const currentQty = getQty(produkItemId)
+    if (currentQty <= 1) {
+      return removeItemMut.mutateAsync(produkItemId)
+    } else {
+      return updateItemMut.mutateAsync({ id: produkItemId, data: { qty: currentQty - 1 } })
+    }
+  }
+
+  const remove = async (produkItemId: number) => {
+    return removeItemMut.mutateAsync(produkItemId)
+  }
+
+  const add = async (produkItemId: number, qty = 1) => {
+    const currentQty = getQty(produkItemId)
+    if (currentQty === 0) {
+      return createItemMut.mutateAsync({ produkItemId: String(produkItemId), qty })
+    } else {
+      return updateItemMut.mutateAsync({ id: produkItemId, data: { qty: currentQty + qty } })
+    }
+  }
+
+  const applyPromo = async (code: string) => {
+    return applyPromoMut.mutateAsync({ code })
+  }
+
+  const removePromo = async () => {
+    return removePromoMut.mutateAsync(1)
+  }
+
+  return Object.assign(result, { inc, dec, remove, add, applyPromo, removePromo, createItemMut, updateItemMut, removeItemMut, applyPromoMut, removePromoMut })
+}
+
+export const hooks = {
+  ...baseHooks,
+  cart: useCartWrapper,
+}
 
 export const useRegister = hooks.register
 export const useLogin = hooks.login
@@ -540,7 +605,6 @@ export const useCart = hooks.cart
 export const useCartPromo = hooks.cartPromo
 export const useCheckout = hooks.checkout
 export const useBuyNow = hooks.buyNow
-export const useKeranjang = hooks.keranjang
 export const useWishlist = hooks.wishlist
 export const usePayment = hooks.payment
 export const useOrdersInvoice = hooks.ordersInvoice

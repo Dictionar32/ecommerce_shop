@@ -46,7 +46,7 @@ export type ResetPasswordForm = {
 }
 
 export type ProdukReviewsForm = {
-  Post: {
+  Create: {
     rating: number
     title?: string | undefined | null
     comment?: string | undefined | null
@@ -54,12 +54,7 @@ export type ProdukReviewsForm = {
 }
 
 export type ProfileForm = {
-  Put: {
-    name: string
-    email: string
-  }
-
-  Patch: {
+  Update: {
     name: string
     email: string
   }
@@ -115,7 +110,7 @@ export type WishlistForm = {
 }
 
 export type PaymentForm = {
-  Post: {
+  Create: {
     metode: string
     detail?: unknown[] | undefined | null
     provider?: 'mock' | 'midtrans' | undefined | null

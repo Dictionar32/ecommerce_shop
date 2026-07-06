@@ -375,3 +375,46 @@ export interface ProdukItemResourceTransformed {
 
 export type ProdukItemResourceShow = ProdukItemResourceTransformed
 export type ProdukItemResourceIndex = ProdukItemResourceTransformed[]
+
+export interface OauthRedirectTransformed {
+  provider: string
+  authUrl: unknown
+}
+
+export type OauthRedirectShow = OauthRedirectTransformed
+export type OauthRedirectIndex = OauthRedirectTransformed[]
+
+export interface OauthCallbackTransformed {
+  message: string
+  error: unknown
+}
+
+export type OauthCallbackShow = OauthCallbackTransformed
+export type OauthCallbackIndex = OauthCallbackTransformed[]
+
+export interface CategoriesTransformed {
+  data: CategoryTransformed[]
+}
+
+export type CategoriesShow = CategoriesTransformed
+export type CategoriesIndex = CategoriesTransformed[]
+
+export interface ProdukReviewsTransformed {
+  summaryAvgRating: number
+  summaryTotalReview: number
+  reviewsData: ProductReviewTransformed[]
+  reviewsCurrentPage?: number
+  reviewsTotal?: number
+}
+
+export type ProdukReviewsShow = ProdukReviewsTransformed
+export type ProdukReviewsIndex = ProdukReviewsTransformed[]
+
+export interface ProfileTransformed {
+  id: number
+  name: string
+  email: string
+}
+
+export type ProfileShow = ProfileTransformed
+export type ProfileIndex = ProfileTransformed[]

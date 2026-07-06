@@ -38,12 +38,12 @@ import { useLogin } from '@/api/hooks'
 export default function LoginPage() {
   const loginMutation = useLogin.useCreate()
 
-  const form = useForm<any>({
+  const form = useForm<LoginFormValues>({
     resolver: zodResolver(LoginSchema),
     defaultValues: DefaultValues,
   })
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: LoginFormValues) => {
     try {
       await loginMutation.mutateAsync(values)
       toast.success("Selamat datang kembali!")

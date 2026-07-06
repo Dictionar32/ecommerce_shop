@@ -388,10 +388,6 @@ export const RegisterCreatePayloadSchema = z.object({
 export type RegisterCreatePayload = z.infer<typeof RegisterCreatePayloadSchema>
 export const validateRegisterCreatePayload = (payload: unknown): RegisterCreatePayload => RegisterCreatePayloadSchema.parse(payload)
 
-export const RegisterCreateResponseSchema = RegisterResponseSchema
-export type RegisterCreateResponse = z.infer<typeof RegisterCreateResponseSchema>
-export const validateRegisterCreateResponse = (payload: unknown): RegisterCreateResponse => RegisterCreateResponseSchema.parse(payload)
-
 export const LoginCreatePayloadSchema = z.object({
     email: z.string(),
     password: z.string(),
@@ -399,9 +395,9 @@ export const LoginCreatePayloadSchema = z.object({
 export type LoginCreatePayload = z.infer<typeof LoginCreatePayloadSchema>
 export const validateLoginCreatePayload = (payload: unknown): LoginCreatePayload => LoginCreatePayloadSchema.parse(payload)
 
-export const LoginCreateResponseSchema = z.object({ success: z.boolean(), message: z.string(), data: z.object({ token: z.string(), user: z.object({ id: z.number(), name: z.string(), email: z.string(), role: z.string(), created_at: z.string(), updated_at: z.string() }) }) })
-export type LoginCreateResponse = z.infer<typeof LoginCreateResponseSchema>
-export const validateLoginCreateResponse = (payload: unknown): LoginCreateResponse => LoginCreateResponseSchema.parse(payload)
+export const LoginResponseSchema = z.object({ success: z.boolean(), message: z.string(), data: z.object({ token: z.string(), user: z.object({ id: z.number(), name: z.string(), email: z.string(), role: z.string(), created_at: z.string(), updated_at: z.string() }) }) })
+export type LoginResponse = z.infer<typeof LoginResponseSchema>
+export const validateLoginResponse = (payload: unknown): LoginResponse => LoginResponseSchema.parse(payload)
 
 export const OauthRedirectGetPayloadSchema = z.object({
     redirect_to: z.string().optional().nullable(),
@@ -409,17 +405,17 @@ export const OauthRedirectGetPayloadSchema = z.object({
 export type OauthRedirectGetPayload = z.infer<typeof OauthRedirectGetPayloadSchema>
 export const validateOauthRedirectGetPayload = (payload: unknown): OauthRedirectGetPayload => OauthRedirectGetPayloadSchema.parse(payload)
 
-export const OauthRedirectGetResponseSchema = z.object({ provider: z.string(), auth_url: z.unknown() })
-export type OauthRedirectGetResponse = z.infer<typeof OauthRedirectGetResponseSchema>
-export const validateOauthRedirectGetResponse = (payload: unknown): OauthRedirectGetResponse => OauthRedirectGetResponseSchema.parse(payload)
+export const OauthRedirectResponseSchema = z.object({ provider: z.string(), auth_url: z.unknown() })
+export type OauthRedirectResponse = z.infer<typeof OauthRedirectResponseSchema>
+export const validateOauthRedirectResponse = (payload: unknown): OauthRedirectResponse => OauthRedirectResponseSchema.parse(payload)
 
 export const OauthCallbackGetResponseSchema = z.object({ message: z.string(), error: z.unknown() })
 export type OauthCallbackGetResponse = z.infer<typeof OauthCallbackGetResponseSchema>
 export const validateOauthCallbackGetResponse = (payload: unknown): OauthCallbackGetResponse => OauthCallbackGetResponseSchema.parse(payload)
 
-export const OauthCallbackPostResponseSchema = z.object({ message: z.string(), error: z.unknown() })
-export type OauthCallbackPostResponse = z.infer<typeof OauthCallbackPostResponseSchema>
-export const validateOauthCallbackPostResponse = (payload: unknown): OauthCallbackPostResponse => OauthCallbackPostResponseSchema.parse(payload)
+export const OauthCallbackCreateResponseSchema = z.object({ message: z.string(), error: z.unknown() })
+export type OauthCallbackCreateResponse = z.infer<typeof OauthCallbackCreateResponseSchema>
+export const validateOauthCallbackCreateResponse = (payload: unknown): OauthCallbackCreateResponse => OauthCallbackCreateResponseSchema.parse(payload)
 
 export const SocialLoginCreatePayloadSchema = z.object({
     provider: z.enum(['google', 'facebook', 'apple']),
@@ -431,9 +427,9 @@ export const SocialLoginCreatePayloadSchema = z.object({
 export type SocialLoginCreatePayload = z.infer<typeof SocialLoginCreatePayloadSchema>
 export const validateSocialLoginCreatePayload = (payload: unknown): SocialLoginCreatePayload => SocialLoginCreatePayloadSchema.parse(payload)
 
-export const SocialLoginCreateResponseSchema = z.object({ token: z.string(), user: z.object({ id: z.number(), name: z.string(), email: z.string(), role: z.string(), created_at: z.string(), updated_at: z.string() }) })
-export type SocialLoginCreateResponse = z.infer<typeof SocialLoginCreateResponseSchema>
-export const validateSocialLoginCreateResponse = (payload: unknown): SocialLoginCreateResponse => SocialLoginCreateResponseSchema.parse(payload)
+export const SocialLoginResponseSchema = z.object({ token: z.string(), user: z.object({ id: z.number(), name: z.string(), email: z.string(), role: z.string(), created_at: z.string(), updated_at: z.string() }) })
+export type SocialLoginResponse = z.infer<typeof SocialLoginResponseSchema>
+export const validateSocialLoginResponse = (payload: unknown): SocialLoginResponse => SocialLoginResponseSchema.parse(payload)
 
 export const ForgotPasswordCreatePayloadSchema = z.object({
     email: z.string(),
@@ -449,13 +445,13 @@ export const ResetPasswordCreatePayloadSchema = z.object({
 export type ResetPasswordCreatePayload = z.infer<typeof ResetPasswordCreatePayloadSchema>
 export const validateResetPasswordCreatePayload = (payload: unknown): ResetPasswordCreatePayload => ResetPasswordCreatePayloadSchema.parse(payload)
 
-export const ResetPasswordCreateResponseSchema = z.object({ message: z.string() })
-export type ResetPasswordCreateResponse = z.infer<typeof ResetPasswordCreateResponseSchema>
-export const validateResetPasswordCreateResponse = (payload: unknown): ResetPasswordCreateResponse => ResetPasswordCreateResponseSchema.parse(payload)
+export const ResetPasswordResponseSchema = z.object({ message: z.string() })
+export type ResetPasswordResponse = z.infer<typeof ResetPasswordResponseSchema>
+export const validateResetPasswordResponse = (payload: unknown): ResetPasswordResponse => ResetPasswordResponseSchema.parse(payload)
 
-export const CategoriesListResponseSchema = z.object({ data: z.array(CategorySchema) })
-export type CategoriesListResponse = z.infer<typeof CategoriesListResponseSchema>
-export const validateCategoriesListResponse = (payload: unknown): CategoriesListResponse => CategoriesListResponseSchema.parse(payload)
+export const CategoriesResponseSchema = z.object({ data: z.array(CategorySchema) })
+export type CategoriesResponse = z.infer<typeof CategoriesResponseSchema>
+export const validateCategoriesResponse = (payload: unknown): CategoriesResponse => CategoriesResponseSchema.parse(payload)
 
 export const ProdukListResponseSchema = z.array(ProdukItemResourceSchema)
 export type ProdukListResponse = z.infer<typeof ProdukListResponseSchema>
@@ -469,43 +465,32 @@ export const ProdukReviewsGetResponseSchema = z.object({ summary: z.object({ avg
 export type ProdukReviewsGetResponse = z.infer<typeof ProdukReviewsGetResponseSchema>
 export const validateProdukReviewsGetResponse = (payload: unknown): ProdukReviewsGetResponse => ProdukReviewsGetResponseSchema.parse(payload)
 
-export const ProdukReviewsPostPayloadSchema = z.object({
+export const ProdukReviewsCreatePayloadSchema = z.object({
     rating: z.number(),
     title: z.string().optional().nullable(),
     comment: z.string().optional().nullable(),
   })
-export type ProdukReviewsPostPayload = z.infer<typeof ProdukReviewsPostPayloadSchema>
-export const validateProdukReviewsPostPayload = (payload: unknown): ProdukReviewsPostPayload => ProdukReviewsPostPayloadSchema.parse(payload)
+export type ProdukReviewsCreatePayload = z.infer<typeof ProdukReviewsCreatePayloadSchema>
+export const validateProdukReviewsCreatePayload = (payload: unknown): ProdukReviewsCreatePayload => ProdukReviewsCreatePayloadSchema.parse(payload)
 
-export const ProdukReviewsPostResponseSchema = z.object({ message: z.string(), data: z.object({ id: z.number(), rating: z.number(), title: z.string().nullable(), comment: z.string().nullable(), is_verified_purchase: z.number(), created_at: z.string().nullable() }) })
-export type ProdukReviewsPostResponse = z.infer<typeof ProdukReviewsPostResponseSchema>
-export const validateProdukReviewsPostResponse = (payload: unknown): ProdukReviewsPostResponse => ProdukReviewsPostResponseSchema.parse(payload)
+export const ProdukReviewsCreateResponseSchema = z.object({ message: z.string(), data: z.object({ id: z.number(), rating: z.number(), title: z.string().nullable(), comment: z.string().nullable(), is_verified_purchase: z.number(), created_at: z.string().nullable() }) })
+export type ProdukReviewsCreateResponse = z.infer<typeof ProdukReviewsCreateResponseSchema>
+export const validateProdukReviewsCreateResponse = (payload: unknown): ProdukReviewsCreateResponse => ProdukReviewsCreateResponseSchema.parse(payload)
 
 export const ProfileListResponseSchema = z.array(z.object({ id: z.number(), name: z.string(), email: z.string() }))
 export type ProfileListResponse = z.infer<typeof ProfileListResponseSchema>
 export const validateProfileListResponse = (payload: unknown): ProfileListResponse => ProfileListResponseSchema.parse(payload)
 
-export const ProfilePutPayloadSchema = z.object({
+export const ProfileUpdatePayloadSchema = z.object({
     name: z.string(),
     email: z.string(),
   })
-export type ProfilePutPayload = z.infer<typeof ProfilePutPayloadSchema>
-export const validateProfilePutPayload = (payload: unknown): ProfilePutPayload => ProfilePutPayloadSchema.parse(payload)
+export type ProfileUpdatePayload = z.infer<typeof ProfileUpdatePayloadSchema>
+export const validateProfileUpdatePayload = (payload: unknown): ProfileUpdatePayload => ProfileUpdatePayloadSchema.parse(payload)
 
-export const ProfilePutResponseSchema = z.object({ message: z.string(), data: z.object({ id: z.number(), name: z.string(), email: z.string() }) })
-export type ProfilePutResponse = z.infer<typeof ProfilePutResponseSchema>
-export const validateProfilePutResponse = (payload: unknown): ProfilePutResponse => ProfilePutResponseSchema.parse(payload)
-
-export const ProfilePatchPayloadSchema = z.object({
-    name: z.string(),
-    email: z.string(),
-  })
-export type ProfilePatchPayload = z.infer<typeof ProfilePatchPayloadSchema>
-export const validateProfilePatchPayload = (payload: unknown): ProfilePatchPayload => ProfilePatchPayloadSchema.parse(payload)
-
-export const ProfilePatchResponseSchema = z.object({ message: z.string(), data: z.object({ id: z.number(), name: z.string(), email: z.string() }) })
-export type ProfilePatchResponse = z.infer<typeof ProfilePatchResponseSchema>
-export const validateProfilePatchResponse = (payload: unknown): ProfilePatchResponse => ProfilePatchResponseSchema.parse(payload)
+export const ProfileUpdateResponseSchema = z.object({ message: z.string(), data: z.object({ id: z.number(), name: z.string(), email: z.string() }) })
+export type ProfileUpdateResponse = z.infer<typeof ProfileUpdateResponseSchema>
+export const validateProfileUpdateResponse = (payload: unknown): ProfileUpdateResponse => ProfileUpdateResponseSchema.parse(payload)
 
 export const OrdersListResponseSchema = z.array(OrderResourceSchema)
 export type OrdersListResponse = z.infer<typeof OrdersListResponseSchema>
@@ -544,6 +529,10 @@ export const CartDeleteResponseSchema = z.object({ message: z.string() })
 export type CartDeleteResponse = z.infer<typeof CartDeleteResponseSchema>
 export const validateCartDeleteResponse = (payload: unknown): CartDeleteResponse => CartDeleteResponseSchema.parse(payload)
 
+export const CartListResponseSchema = z.array(OrderResourceSchema)
+export type CartListResponse = z.infer<typeof CartListResponseSchema>
+export const validateCartListResponse = (payload: unknown): CartListResponse => CartListResponseSchema.parse(payload)
+
 export const CartPromoCreatePayloadSchema = z.object({
     code: z.string(),
   })
@@ -572,9 +561,9 @@ export const CheckoutCreatePayloadSchema = z.object({
 export type CheckoutCreatePayload = z.infer<typeof CheckoutCreatePayloadSchema>
 export const validateCheckoutCreatePayload = (payload: unknown): CheckoutCreatePayload => CheckoutCreatePayloadSchema.parse(payload)
 
-export const CheckoutCreateResponseSchema = OrderResourceSchema
-export type CheckoutCreateResponse = z.infer<typeof CheckoutCreateResponseSchema>
-export const validateCheckoutCreateResponse = (payload: unknown): CheckoutCreateResponse => CheckoutCreateResponseSchema.parse(payload)
+export const CheckoutResponseSchema = OrderResourceSchema
+export type CheckoutResponse = z.infer<typeof CheckoutResponseSchema>
+export const validateCheckoutResponse = (payload: unknown): CheckoutResponse => CheckoutResponseSchema.parse(payload)
 
 export const BuyNowCreatePayloadSchema = z.object({
     produk_item_id: z.string(),
@@ -588,13 +577,9 @@ export const BuyNowCreatePayloadSchema = z.object({
 export type BuyNowCreatePayload = z.infer<typeof BuyNowCreatePayloadSchema>
 export const validateBuyNowCreatePayload = (payload: unknown): BuyNowCreatePayload => BuyNowCreatePayloadSchema.parse(payload)
 
-export const BuyNowCreateResponseSchema = OrderResourceSchema
-export type BuyNowCreateResponse = z.infer<typeof BuyNowCreateResponseSchema>
-export const validateBuyNowCreateResponse = (payload: unknown): BuyNowCreateResponse => BuyNowCreateResponseSchema.parse(payload)
-
-export const KeranjangListResponseSchema = z.array(OrderResourceSchema)
-export type KeranjangListResponse = z.infer<typeof KeranjangListResponseSchema>
-export const validateKeranjangListResponse = (payload: unknown): KeranjangListResponse => KeranjangListResponseSchema.parse(payload)
+export const BuyNowResponseSchema = OrderResourceSchema
+export type BuyNowResponse = z.infer<typeof BuyNowResponseSchema>
+export const validateBuyNowResponse = (payload: unknown): BuyNowResponse => BuyNowResponseSchema.parse(payload)
 
 export const WishlistListResponseSchema = z.array(ProdukItemResourceSchema)
 export type WishlistListResponse = z.infer<typeof WishlistListResponseSchema>
@@ -614,7 +599,7 @@ export const WishlistRemoveResponseSchema = z.object({ message: z.string() })
 export type WishlistRemoveResponse = z.infer<typeof WishlistRemoveResponseSchema>
 export const validateWishlistRemoveResponse = (payload: unknown): WishlistRemoveResponse => WishlistRemoveResponseSchema.parse(payload)
 
-export const PaymentPostPayloadSchema = z.object({
+export const PaymentCreatePayloadSchema = z.object({
     metode: z.string(),
     detail: z.array(z.unknown()).optional().nullable(),
     provider: z.enum(['mock', 'midtrans']).optional().nullable(),
@@ -623,16 +608,16 @@ export const PaymentPostPayloadSchema = z.object({
     gateway_code: z.string().optional().nullable(),
     gateway_message: z.string().optional().nullable(),
   })
-export type PaymentPostPayload = z.infer<typeof PaymentPostPayloadSchema>
-export const validatePaymentPostPayload = (payload: unknown): PaymentPostPayload => PaymentPostPayloadSchema.parse(payload)
+export type PaymentCreatePayload = z.infer<typeof PaymentCreatePayloadSchema>
+export const validatePaymentCreatePayload = (payload: unknown): PaymentCreatePayload => PaymentCreatePayloadSchema.parse(payload)
 
-export const PaymentPostResponseSchema = PaymentResourceSchema
-export type PaymentPostResponse = z.infer<typeof PaymentPostResponseSchema>
-export const validatePaymentPostResponse = (payload: unknown): PaymentPostResponse => PaymentPostResponseSchema.parse(payload)
+export const PaymentResponseSchema = PaymentResourceSchema
+export type PaymentResponse = z.infer<typeof PaymentResponseSchema>
+export const validatePaymentResponse = (payload: unknown): PaymentResponse => PaymentResponseSchema.parse(payload)
 
-export const LogoutCreateResponseSchema = z.object({ message: z.string() })
-export type LogoutCreateResponse = z.infer<typeof LogoutCreateResponseSchema>
-export const validateLogoutCreateResponse = (payload: unknown): LogoutCreateResponse => LogoutCreateResponseSchema.parse(payload)
+export const LogoutResponseSchema = z.object({ message: z.string() })
+export type LogoutResponse = z.infer<typeof LogoutResponseSchema>
+export const validateLogoutResponse = (payload: unknown): LogoutResponse => LogoutResponseSchema.parse(payload)
 
 export const AdminProdukCreatePayloadSchema = z.object({
     nama: z.string(),
@@ -647,6 +632,6 @@ export const AdminProdukCreatePayloadSchema = z.object({
 export type AdminProdukCreatePayload = z.infer<typeof AdminProdukCreatePayloadSchema>
 export const validateAdminProdukCreatePayload = (payload: unknown): AdminProdukCreatePayload => AdminProdukCreatePayloadSchema.parse(payload)
 
-export const AdminProdukCreateResponseSchema = ProdukItemResourceSchema
-export type AdminProdukCreateResponse = z.infer<typeof AdminProdukCreateResponseSchema>
-export const validateAdminProdukCreateResponse = (payload: unknown): AdminProdukCreateResponse => AdminProdukCreateResponseSchema.parse(payload)
+export const AdminProdukResponseSchema = ProdukItemResourceSchema
+export type AdminProdukResponse = z.infer<typeof AdminProdukResponseSchema>
+export const validateAdminProdukResponse = (payload: unknown): AdminProdukResponse => AdminProdukResponseSchema.parse(payload)
