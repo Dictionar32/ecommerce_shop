@@ -30,23 +30,20 @@ export default function KeranjangPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const [promoInput, setPromoInput] = useState("")
 
-  const { cart, isLoading, inc, dec, remove, applyPromo, removePromo, updateItemMut, removeItemMut, removePromoMut, applyPromoMut } = useCart()
+  const cartState = useCart()
+  const { cart, isLoading } = cartState
 
   const handleQtyChange = (produkItemId: number, currentQty: number, delta: number) => {
-    if (delta > 0) {
-      inc(produkItemId)
-    } else {
-      dec(produkItemId)
-    }
+    cartState.items.changeQty(produkItemId, delta)
   }
 
   const handleRemove = (produkItemId: number) => {
-    remove(produkItemId)
+    cartState.items.remove(produkItemId)
   }
 
   const handleApplyPromo = () => {
     if (!promoInput.trim()) return
-    applyPromo(promoInput.trim()).then(() => setPromoInput(""))
+    cartState.promotions.apply(promoInput.trim()).then(() => setPromoInput(""))
   }
 
   if (!isAuthenticated) return <AuthGuard icon={ShoppingCart} title="Masuk untuk melihat keranjang" description="Item keranjang tersimpan di akun Anda" />
@@ -106,19 +103,19 @@ export default function KeranjangPage() {
                     <CartItemCard.actionRow>
                       <CartItemCard.qtyGroup>
                         <QtyBtn variant="ghost" size="icon"
-                          disabled={updateItemMut.isPending || removeItemMut.isPending}
+                          disabled={cartState.items.updateMut.isPending || cartState.items.removeMut.isPending}
                           onClick={() => handleQtyChange(item.produkItemId, item.qty, -1)}>
                           <IconMinus size={12} />
                         </QtyBtn>
                         <CartItemCard.qty>{item.qty}</CartItemCard.qty>
                         <QtyBtn variant="ghost" size="icon"
-                          disabled={updateItemMut.isPending || removeItemMut.isPending}
+                          disabled={cartState.items.updateMut.isPending || cartState.items.removeMut.isPending}
                           onClick={() => handleQtyChange(item.produkItemId, item.qty, 1)}>
                           <IconPlus size={12} />
                         </QtyBtn>
                       </CartItemCard.qtyGroup>
                       <RemoveBtn variant="ghost" size="icon"
-                        disabled={removeItemMut.isPending}
+                        disabled={cartState.items.removeMut.isPending}
                         onClick={() => handleRemove(item.produkItemId)}>
                         <IconTrash size={14} />
                       </RemoveBtn>
@@ -141,9 +138,9 @@ export default function KeranjangPage() {
                   <PromoCard.appliedWrapper>
                     <PromoCard.code>{cart.promotionCode}</PromoCard.code>
                     <RemovePromoBtn variant="ghost" size="icon"
-                      disabled={removePromoMut.isPending}
-                      onClick={() => removePromo()}>
-                      {removePromoMut.isPending ? <IconLoader size={12} /> : <IconX size={12} />}
+                      disabled={cartState.promotions.removeMut.isPending}
+                      onClick={() => cartState.promotions.remove()}>
+                      {cartState.promotions.removeMut.isPending ? <IconLoader size={12} /> : <IconX size={12} />}
                     </RemovePromoBtn>
                   </PromoCard.appliedWrapper>
                 ) : (
@@ -152,8 +149,8 @@ export default function KeranjangPage() {
                       onKeyDown={(e: any) => e.key === "Enter" && handleApplyPromo()}
                       placeholder="Kode promo" />
                     <ApplyPromoBtn variant="outline" onClick={handleApplyPromo}
-                      disabled={applyPromoMut.isPending || !promoInput.trim()}>
-                      {applyPromoMut.isPending ? <IconLoader size={12} /> : "Pakai"}
+                      disabled={cartState.promotions.applyMut.isPending || !promoInput.trim()}>
+                      {cartState.promotions.applyMut.isPending ? <IconLoader size={12} /> : "Pakai"}
                     </ApplyPromoBtn>
                   </PromoCard.inputGroup>
                 )}

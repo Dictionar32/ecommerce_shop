@@ -6209,11 +6209,7 @@
       "keranjang": "cart"
     },
     "domains": {
-      "cart": {
-        "type": "cart",
-        "items": "cartItems",
-        "promo": "cartPromo"
-      }
+      "cart": "cart"
     }
   },
   "pages": {

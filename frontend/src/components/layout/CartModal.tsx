@@ -23,7 +23,8 @@ export default function CartModal() {
   const { isOpen, closeCart } = useCartUiStore();
   
   // Use SDK-generated hook
-  const { cart, isLoading, inc, dec, remove, applyPromo, removePromo, removePromoMut, applyPromoMut } = useCart();
+  const cartState = useCart();
+  const { cart, isLoading } = cartState;
 
   const [promoInput, setPromoInput] = useState('');
 
@@ -34,7 +35,7 @@ export default function CartModal() {
 
   const handleApplyPromo = () => {
     if (!promoInput.trim()) return;
-    applyPromo(promoInput.trim()).then(() => setPromoInput(''));
+    cartState.promotions.apply(promoInput.trim()).then(() => setPromoInput(''));
   };
 
   return (
@@ -111,18 +112,18 @@ export default function CartModal() {
 
                   <CartItemActions>
                     <QtyControls>
-                      <QtyBtn onClick={() => dec(item.produkItemId)}>
+                      <QtyBtn onClick={() => cartState.items.changeQty(item.produkItemId, -1)}>
                         <Minus size={12} />
                       </QtyBtn>
                       <QtyDisplay>{item.qty}</QtyDisplay>
-                      <QtyBtn onClick={() => inc(item.produkItemId)}>
+                      <QtyBtn onClick={() => cartState.items.changeQty(item.produkItemId, 1)}>
                         <Plus size={12} />
                       </QtyBtn>
                     </QtyControls>
 
                     <SubtotalArea>
                       <SubtotalText>{formatPrice(item.subtotal)}</SubtotalText>
-                      <RemoveBtn onClick={() => remove(item.produkItemId)}>
+                      <RemoveBtn onClick={() => cartState.items.remove(item.produkItemId)}>
                         <Trash2 size={13} />
                       </RemoveBtn>
                     </SubtotalArea>
@@ -148,7 +149,7 @@ export default function CartModal() {
                     <AppliedPromoDiscount>-{formatPrice(cart.promotionDiscountMinor)}</AppliedPromoDiscount>
                   )}
                 </AppliedPromoInfo>
-                <RemovePromoBtn onClick={removePromo}>
+                <RemovePromoBtn onClick={cartState.promotions.remove}>
                   <X size={14} />
                 </RemovePromoBtn>
               </AppliedPromoContainer>
@@ -160,7 +161,7 @@ export default function CartModal() {
                   placeholder="Kode promo..."
                   onKeyDown={(e: any) => e.key === 'Enter' && handleApplyPromo()}
                 />
-                <PromoApplyBtn onClick={handleApplyPromo} disabled={applyPromoMut.isPending}>
+                <PromoApplyBtn onClick={handleApplyPromo} disabled={cartState.promotions.applyMut.isPending}>
                   Pakai
                 </PromoApplyBtn>
               </PromoInputContainer>
