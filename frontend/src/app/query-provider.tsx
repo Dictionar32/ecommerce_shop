@@ -29,20 +29,33 @@ client.getInstance().interceptors.request.use(
   (error: AxiosError) => Promise.reject(error)
 );
 
-// Add response interceptor to handle 401 Unauthorized globally
+// Add response interceptor to handle 401 Unauthorized globally and sync auth state
 client.getInstance().interceptors.response.use(
-  (response: AxiosResponse) => response,
-  (error: AxiosError) => {
-    const status = error?.status || error?.response?.status;
-    if (status === 401) {
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user');
-        if (!window.location.pathname.includes('/login')) {
-          window.location.href = '/login';
-        }
+  (response: AxiosResponse) => {
+    const data = response.data;
+    if (data) {
+      if (data.user && data.token) {
+        useAuthStore.getState().setAuth(data.user, data.token);
+      } else if (data.data && data.data.user && data.data.token) {
+        useAuthStore.getState().setAuth(data.data.user, data.data.token);
       }
     }
+    if (response.config.url?.endsWith('/logout')) {
+      useAuthStore.getState().logout();
+    }
+    return response;
+  },
+  (error: AxiosError) => {
+    const status = error?.status || error?.response?.status;
+    // if (status === 401) {
+    //   if (typeof window !== 'undefined') {
+    //     localStorage.removeItem('auth_token');
+    //     localStorage.removeItem('user');
+    //     if (!window.location.pathname.includes('/login')) {
+    //       window.location.href = '/login';
+    //     }
+    //   }
+    // }
     return Promise.reject(error);
   }
 );

@@ -1,10 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import { toast } from "sonner";
-import { useWishlist } from "@/features/wishlist/hooks/use-wishlist";
-import { useCartSummary } from "@/features/cart/hooks/use-cart-summary";
+import { useWishlist, useCart } from "@/api/hooks";
 import { useCartUiStore } from "@/lib/stores/cart-ui-store";
 import useAuthStore from "@/lib/stores/auth-store";
 import { ProdukIndex } from "@/features/produk/types/produk-read";
@@ -17,12 +17,18 @@ interface ProdukCardProps {
 
 export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  const addToCart = useCartSummary.useAddItem();
+  const cart = useCart();
   const { openCart } = useCartUiStore();
   const addToWishlist = useWishlist.useCreate();
-  const removeFromWishlist = useWishlist.useRemove();
+  const removeFromWishlist = useWishlist.useDelete();
 
   const isOutOfStock = item.stok === 0;
+
+  useEffect(() => {
+    return cart.on("add:success", () => {
+      openCart();
+    });
+  }, [cart, openCart]);
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -39,16 +45,7 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
       return;
     }
 
-    addToCart.mutate(
-      { produkItemId: item.firstItemId, qty: 1 },
-      {
-        onSuccess: () => {
-          toast.success("Ditambahkan ke keranjang!");
-          openCart();
-        },
-        onError: () => toast.error("Gagal menambahkan ke keranjang"),
-      }
-    );
+    cart.items.add(String(item.firstItemId));
   };
 
   const handleWishlist = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -65,15 +62,9 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
     }
 
     if (isInWishlist) {
-      removeFromWishlist.mutate(item.firstItemId, {
-        onSuccess: () => toast.success("Dihapus dari wishlist"),
-        onError: () => toast.error("Gagal menghapus dari wishlist"),
-      });
+      removeFromWishlist.mutate(item.firstItemId);
     } else {
-      addToWishlist.mutate({ produkItemId: item.firstItemId }, {
-        onSuccess: () => toast.success("Ditambahkan ke wishlist!"),
-        onError: () => toast.error("Gagal menambahkan ke wishlist"),
-      });
+      addToWishlist.mutate({ produkItemId: String(item.firstItemId) });
     }
   };
 
@@ -153,7 +144,7 @@ export function ProdukCard({ item, isInWishlist = false }: ProdukCardProps) {
           {/* Add to Cart */}
           <button
             onClick={handleAddToCart}
-            disabled={isOutOfStock || addToCart.isPending}
+            disabled={isOutOfStock || cart.items.createMut.isPending}
             className="w-full flex items-center justify-center gap-2 py-2.5 text-xs font-semibold tracking-wide uppercase
                        bg-obsidian-800/80 text-obsidian-300 border border-obsidian-700
                        hover:bg-gold-500 hover:text-obsidian-950 hover:border-gold-500

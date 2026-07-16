@@ -35,12 +35,20 @@ interface AuthStore {
   logout: () => void
 }
 
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null
+  return null
+}
+
 export const useAuthStore = create<AuthStore>()(
   persist(
     (set) => ({
       user: null,
-      accessToken: null,
-      isAuthenticated: false,
+      accessToken: typeof document !== 'undefined' ? getCookie('token') : null,
+      isAuthenticated: typeof document !== 'undefined' ? !!getCookie('token') : false,
 
       // ======================
       // SET FULL AUTH
@@ -119,10 +127,10 @@ export const useAuthStore = create<AuthStore>()(
         if (!state) return
 
         // jika token hilang setelah refresh → anggap logout
-        if (!state.accessToken) {
-          state.user = null
-          state.isAuthenticated = false
-        }
+        // if (!state.accessToken) {
+        //   state.user = null
+        //   state.isAuthenticated = false
+        // }
       },
     }
   )

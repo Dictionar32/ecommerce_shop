@@ -112,11 +112,11 @@ export default function CartModal() {
 
                   <CartItemActions>
                     <QtyControls>
-                      <QtyBtn onClick={() => cartState.items.changeQty(item.produkItemId, -1)}>
+                      <QtyBtn onClick={() => cartState.items.changeQty(String(item.produkItemId), -1)}>
                         <Minus size={12} />
                       </QtyBtn>
                       <QtyDisplay>{item.qty}</QtyDisplay>
-                      <QtyBtn onClick={() => cartState.items.changeQty(item.produkItemId, 1)}>
+                      <QtyBtn onClick={() => cartState.items.changeQty(String(item.produkItemId), 1)}>
                         <Plus size={12} />
                       </QtyBtn>
                     </QtyControls>
@@ -171,18 +171,18 @@ export default function CartModal() {
             <TotalsContainer>
               <TotalRow>
                 <span>Subtotal</span>
-                <span>{formatPrice(cart.subtotalMinor)}</span>
+                <span>{formatPrice(cart.subtotalMinor ?? 0)}</span>
               </TotalRow>
               {(cart.discountMinor ?? 0) > 0 && (
                 <DiscountRow>
                   <span>Diskon</span>
-                  <span>-{formatPrice(cart.discountMinor)}</span>
+                  <span>-{formatPrice(cart.discountMinor ?? 0)}</span>
                 </DiscountRow>
               )}
               {(cart.shippingMinor ?? 0) > 0 && (
                 <TotalRow>
                   <span>Pengiriman</span>
-                  <span>{formatPrice(cart.shippingMinor)}</span>
+                  <span>{formatPrice(cart.shippingMinor ?? 0)}</span>
                 </TotalRow>
               )}
               <Divider />

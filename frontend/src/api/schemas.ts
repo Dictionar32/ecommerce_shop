@@ -29,6 +29,11 @@ export const OrderAmountSchema = z.object({
   totalMinor: z.number(),
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable(),
+  subtotal: z.unknown().optional(), // accessor attribute
+  shipping: z.unknown().optional(), // accessor attribute
+  discount: z.unknown().optional(), // accessor attribute
+  tax: z.unknown().optional(), // accessor attribute
+  total: z.unknown().optional(), // accessor attribute
 })
 
 export const OrderDetailSchema = z.object({
@@ -41,7 +46,8 @@ export const OrderDetailSchema = z.object({
   updatedAt: z.string().nullable(),
   banana: z.string().nullable(),
   potato: z.number().nullable(),
-  flyingDog: z.number().nullable(),
+  flyingDog: z.boolean().nullable(),
+  foo: z.unknown().optional(), // accessor attribute
 })
 
 export const OrderFinancialSchema = z.object({
@@ -98,6 +104,13 @@ export const PaymentSchema = z.object({
   paidAt: z.string().nullable(),
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable(),
+  gatewayStatus: z.unknown().optional(), // accessor attribute
+  amountMinor: z.unknown().optional(), // accessor attribute
+  providerTxnId: z.unknown().optional(), // accessor attribute
+  provider: z.unknown().optional(), // accessor attribute
+  refundAmountMinor: z.unknown().optional(), // accessor attribute
+  foo: z.unknown().optional(), // accessor attribute
+  bar: z.unknown().optional(), // accessor attribute
 })
 
 export const PaymentAmountSchema = z.object({
@@ -214,6 +227,7 @@ export const UserSchema = z.object({
   role: z.union([z.literal('admin'), z.literal('user')]),
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable(),
+  useFactory: z.unknown().optional(), // accessor attribute
 })
 
 export const WishlistSchema = z.object({
@@ -227,25 +241,25 @@ export const WishlistSchema = z.object({
 export const RegisterResponseSchema = z.object({
   success: z.boolean(),
   message: z.string(),
-  data: z.string().nullable(),
+  data: z.unknown().nullable(),
 })
 
-export const RegisterPostSchema = z.object({
+export const RegisterCreateSchema = z.object({
   name: z.string(),
   email: z.string(),
   password: z.string(),
 })
 
-export const LoginPostSchema = z.object({
+export const LoginCreateSchema = z.object({
   email: z.string(),
   password: z.string(),
 })
 
-export const OauthGetProviderRedirectSchema = z.object({
+export const OauthRedirectGetSchema = z.object({
   redirectTo: z.string().optional().nullable(),
 })
 
-export const SocialPostLoginSchema = z.object({
+export const SocialLoginCreateSchema = z.object({
   provider: z.string(),
   providerUserId: z.string(),
   email: z.string(),
@@ -253,30 +267,20 @@ export const SocialPostLoginSchema = z.object({
   avatarUrl: z.string().optional().nullable(),
 })
 
-export const ForgotPasswordPostSchema = z.object({
+export const ForgotPasswordCreateSchema = z.object({
   email: z.string(),
 })
 
-export const ResetPasswordPostSchema = z.object({
+export const ResetPasswordCreateSchema = z.object({
   email: z.string(),
   token: z.string(),
   password: z.string(),
 })
 
-export const ProdukPostIdReviewsSchema = z.object({
+export const ProdukReviewsPostSchema = z.object({
   rating: z.number(),
   title: z.string().optional().nullable(),
   comment: z.string().optional().nullable(),
-})
-
-export const PaymentPostOrderIdSchema = z.object({
-  metode: z.string(),
-  detail: z.array(z.unknown()).optional().nullable(),
-  provider: z.string().optional().nullable(),
-  providerTxnId: z.string().optional().nullable(),
-  idempotencyKey: z.string().optional().nullable(),
-  gatewayCode: z.string().optional().nullable(),
-  gatewayMessage: z.string().optional().nullable(),
 })
 
 export const ProfilePutSchema = z.object({
@@ -289,20 +293,20 @@ export const ProfilePatchSchema = z.object({
   email: z.string(),
 })
 
-export const CartPostItemsSchema = z.object({
+export const CartItemsCreateSchema = z.object({
   produkItemId: z.string(),
   qty: z.number(),
 })
 
-export const CartPatchItemsProdukItemIdSchema = z.object({
+export const CartItemsUpdateSchema = z.object({
   qty: z.number(),
 })
 
-export const CartPostPromoSchema = z.object({
+export const CartPromoCreateSchema = z.object({
   code: z.string(),
 })
 
-export const CheckoutPostSchema = z.object({
+export const CheckoutCreateSchema = z.object({
   items: z.array(z.unknown()).optional(),
   "items.*.produkItemId": z.string(),
   "items.*.qty": z.number(),
@@ -313,7 +317,7 @@ export const CheckoutPostSchema = z.object({
   shippingKodePos: z.string().optional().nullable(),
 })
 
-export const BuyNowPostSchema = z.object({
+export const BuyNowCreateSchema = z.object({
   produkItemId: z.string(),
   qty: z.number(),
   shippingNama: z.string().optional().nullable(),
@@ -323,11 +327,21 @@ export const BuyNowPostSchema = z.object({
   shippingKodePos: z.string().optional().nullable(),
 })
 
-export const WishlistPostSchema = z.object({
+export const WishlistCreateSchema = z.object({
   produkItemId: z.string(),
 })
 
-export const AdminPostProdukSchema = z.object({
+export const PaymentPostSchema = z.object({
+  metode: z.string(),
+  detail: z.array(z.unknown()).optional().nullable(),
+  provider: z.string().optional().nullable(),
+  providerTxnId: z.string().optional().nullable(),
+  idempotencyKey: z.string().optional().nullable(),
+  gatewayCode: z.string().optional().nullable(),
+  gatewayMessage: z.string().optional().nullable(),
+})
+
+export const AdminProdukCreateSchema = z.object({
   nama: z.string(),
   deskripsi: z.string().optional().nullable(),
   gambar: z.string().optional().nullable(),

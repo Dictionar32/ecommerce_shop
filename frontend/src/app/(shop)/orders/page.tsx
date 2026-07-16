@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Package, Download, ChevronRight, FileText, Loader2, ShoppingBag, User } from "lucide-react"
 import { toast } from "sonner"
@@ -34,6 +34,8 @@ export default function OrdersPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [downloadingId, setDownloadingId] = useState<number | null>(null)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
 
   const { data: resOrders, isLoading, isError } = useOrders.index()
   const orders = resOrders ?? []
@@ -60,7 +62,7 @@ export default function OrdersPage() {
     }
   }
 
-  if (!isAuthenticated) return <AuthGuard icon={Package} title="Masuk untuk melihat pesanan" description="Lacak semua pesanan Anda di satu tempat" />
+  if (!mounted || !isAuthenticated) return <AuthGuard icon={Package} title="Masuk untuk melihat pesanan" description="Lacak semua pesanan Anda di satu tempat" />
   if (isLoading) return <PageLoader text="Memuat pesanan..." />
   if (isError) return <ErrorState title="Gagal memuat pesanan" />
 

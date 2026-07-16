@@ -3,22 +3,26 @@
 import { defineHooks, useAggregateCollectionIntent } from 'routesync/react'
 import { api } from './api'
 import { QueryKey } from './query-key'
+import { runtimeManifest } from './routesync.runtime'
 import type {
   AdminProdukForm,
   BuyNowForm,
   CartItemsForm,
   CartPromoForm,
-  CategoryIndex,
+  CategoriesIndex,
   CheckoutForm,
   ForgotPasswordForm,
   LoginForm,
+  OauthCallbackShow,
   OauthRedirectForm,
+  OauthRedirectShow,
   OrderResourceIndex,
   OrderResourceShow,
   PaymentForm,
   ProdukItemResourceIndex,
   ProdukItemResourceShow,
   ProdukReviewsForm,
+  ProdukReviewsShow,
   ProfileForm,
   ProfileIndex,
   RegisterForm,
@@ -61,7 +65,7 @@ const baseHooks = defineHooks({
   oauthRedirect: {
     types: {
       list: typeOf<never>(),
-      detail: typeOf<never>(),
+      detail: typeOf<OauthRedirectShow>(),
       create: typeOf<OauthRedirectForm['Get']>(),
       update: typeOf<never>(),
     },
@@ -75,7 +79,7 @@ const baseHooks = defineHooks({
   oauthCallback: {
     types: {
       list: typeOf<never>(),
-      detail: typeOf<never>(),
+      detail: typeOf<OauthCallbackShow>(),
       create: typeOf<never>(),
       update: typeOf<never>(),
     },
@@ -139,7 +143,7 @@ const baseHooks = defineHooks({
   },
   categories: {
     types: {
-      list: typeOf<CategoryIndex>(),
+      list: typeOf<CategoriesIndex>(),
       detail: typeOf<never>(),
       create: typeOf<never>(),
       update: typeOf<never>(),
@@ -178,7 +182,7 @@ const baseHooks = defineHooks({
   produkReviews: {
     types: {
       list: typeOf<never>(),
-      detail: typeOf<never>(),
+      detail: typeOf<ProdukReviewsShow>(),
       create: typeOf<ProdukReviewsForm['Create']>(),
       update: typeOf<never>(),
     },
@@ -283,26 +287,26 @@ const baseHooks = defineHooks({
       create: {
         invalidate: [
           QueryKey.orders.lists,
-          QueryKey.cart.list,
+          QueryKey.keranjang.list,
         ],
       },
       update: {
         invalidate: [
           QueryKey.orders.lists,
-          QueryKey.cart.list,
+          QueryKey.keranjang.list,
         ],
       },
       remove: {
         invalidate: [
           QueryKey.orders.lists,
-          QueryKey.cart.list,
+          QueryKey.keranjang.list,
         ],
       },
     },
   },
   cart: {
     types: {
-      list: typeOf<OrderResourceShow>(),
+      list: typeOf<never>(),
       detail: typeOf<never>(),
       create: typeOf<never>(),
       update: typeOf<never>(),
@@ -311,35 +315,15 @@ const baseHooks = defineHooks({
     queryKey: QueryKey.cart,
     actionKeys: {
       delete: QueryKey.cart.delete,
-      list: QueryKey.cart.list,
     },
     endpoint: api.cart,
 
     cache: {
-      list: QueryKey.cart.list,
       delete: {
         invalidate: [
-          QueryKey.cart.list,
-          QueryKey.orders.lists,
         ],
       },
     },
-    intent: {
-      "type": "AggregateCollection",
-      "operations": {
-            "createItem": "cartItems.useCreate",
-            "updateItem": "cartItems.useUpdate",
-            "removeItem": "cartItems.useRemove",
-            "applyPromo": "cartPromo.useCreate",
-            "removePromo": "cartPromo.useDelete"
-      },
-      "config": {
-            "itemsField": "details",
-            "itemKey": "produkItemId",
-            "qtyField": "qty",
-            "promoKey": "code"
-      }
-} as const,
   },
   cartPromo: {
     types: {
@@ -360,13 +344,13 @@ const baseHooks = defineHooks({
       create: {
         invalidate: [
           QueryKey.orders.lists,
-          QueryKey.cart.list,
+          QueryKey.keranjang.list,
         ],
       },
       delete: {
         invalidate: [
           QueryKey.orders.lists,
-          QueryKey.cart.list,
+          QueryKey.keranjang.list,
         ],
       },
     },
@@ -389,7 +373,7 @@ const baseHooks = defineHooks({
       create: {
         invalidate: [
           QueryKey.orders.lists,
-          QueryKey.cart.list,
+          QueryKey.keranjang.list,
         ],
       },
     },
@@ -412,9 +396,27 @@ const baseHooks = defineHooks({
       create: {
         invalidate: [
           QueryKey.orders.lists,
-          QueryKey.cart.list,
+          QueryKey.keranjang.list,
         ],
       },
+    },
+  },
+  keranjang: {
+    types: {
+      list: typeOf<OrderResourceShow>(),
+      detail: typeOf<never>(),
+      create: typeOf<never>(),
+      update: typeOf<never>(),
+    },
+
+    queryKey: QueryKey.keranjang,
+    actionKeys: {
+      list: QueryKey.keranjang.list,
+    },
+    endpoint: api.keranjang,
+
+    cache: {
+      list: QueryKey.keranjang.list,
     },
   },
   wishlist: {
@@ -468,7 +470,7 @@ const baseHooks = defineHooks({
         invalidate: [
           QueryKey.orders.lists,
           QueryKey.orders.detail,
-          QueryKey.cart.list,
+          QueryKey.keranjang.list,
         ],
       },
     },
@@ -506,7 +508,7 @@ const baseHooks = defineHooks({
         invalidate: [
           QueryKey.profile.list,
           QueryKey.orders.lists,
-          QueryKey.cart.list,
+          QueryKey.keranjang.list,
           QueryKey.wishlist.list,
         ],
       },
@@ -535,7 +537,7 @@ const baseHooks = defineHooks({
       },
     },
   },
-})
+}, runtimeManifest)
 
 export const hooks = baseHooks
 
@@ -557,6 +559,7 @@ export const useCart = hooks.cart
 export const useCartPromo = hooks.cartPromo
 export const useCheckout = hooks.checkout
 export const useBuyNow = hooks.buyNow
+export const useKeranjang = hooks.keranjang
 export const useWishlist = hooks.wishlist
 export const usePayment = hooks.payment
 export const useOrdersInvoice = hooks.ordersInvoice

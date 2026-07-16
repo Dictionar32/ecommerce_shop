@@ -14,7 +14,7 @@ export default function ProdukPage() {
   const { data: resWishlist } = useWishlist.index();
 
   const produk = resProduk;
-  const categories = resCat;
+  const categories = (resCat as unknown as { data?: CategoryTransformed[] })?.data;
   const wishlistData = resWishlist;
 
   // Show loading for initial data fetch

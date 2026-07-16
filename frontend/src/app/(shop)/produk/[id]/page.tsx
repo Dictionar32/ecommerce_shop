@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
@@ -17,7 +17,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { ErrorState } from "@/components/shared/error-state"
 import { StarRating } from "@/components/shared/star-rating"
 
-import { useProduk, useCart, useWishlist, useCartItems, useProdukReviews } from '@/api/hooks'
+import { useProduk, useCart, useWishlist, useProdukReviews } from '@/api/hooks'
 import { useCartUiStore } from "@/lib/stores/cart-ui-store"
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice } from "@/lib/utils-frontend"
@@ -77,10 +77,16 @@ export default function ProdukDetailPage() {
   const { openCart } = useCartUiStore()
 
   const { data: product, isLoading, isError } = useProduk.show(id)
-  const { data: reviewData } = useProdukReviews.useGet({ id })
-  const addToCart    = useCartItems.useCreate()
+  const { data: reviewData } = useProdukReviews.useShow(id)
+  const cart = useCart()
   const addToWishlist = useWishlist.useCreate()
   const submitReview = useProdukReviews.usePost()
+
+  useEffect(() => {
+    return cart.on("add:success", () => {
+      openCart();
+    });
+  }, [cart, openCart]);
 
   const form = useForm<z.infer<typeof ReviewSchema>>({
     resolver: zodResolver(ReviewSchema),
@@ -92,28 +98,19 @@ export default function ProdukDetailPage() {
   const handleAddToCart = () => {
     if (!isAuthenticated) { toast.error("Masuk untuk menambahkan ke keranjang"); return }
     if (!product?.id) { toast.error("Produk tidak tersedia"); return }
-    addToCart.mutate({ produkItemId: String(product.id), qty: qty }, {
-      onSuccess: () => { toast.success("Ditambahkan ke keranjang!"); openCart() },
-      onError: () => toast.error("Gagal menambahkan ke keranjang"),
-    })
+    cart.items.add(String(product.id), qty)
   }
 
   const handleBuyNow = () => {
     if (!isAuthenticated) { toast.error("Masuk terlebih dahulu"); return }
     if (!product?.id) return
-    addToCart.mutate({ produkItemId: String(product.id), qty: qty }, {
-      onSuccess: () => router.push("/keranjang"),
-      onError: () => toast.error("Gagal"),
-    })
+    cart.items.add(String(product.id), qty).then(() => router.push("/keranjang"))
   }
 
   const handleWishlist = () => {
     if (!isAuthenticated) { toast.error("Masuk untuk menambahkan ke wishlist"); return }
     if (!product?.id) return
-    addToWishlist.mutate({ produkItemId: String(product.id) }, {
-      onSuccess: () => toast.success("Ditambahkan ke wishlist!"),
-      onError: () => toast.error("Gagal"),
-    })
+    addToWishlist.mutate({ produkItemId: String(product.id) })
   }
 
   const onReviewSubmit = async (values: z.infer<typeof ReviewSchema>) => {
@@ -125,11 +122,8 @@ export default function ProdukDetailPage() {
         title: values.title ?? undefined,
         comment: values.comment ?? undefined
       })
-      toast.success("Ulasan berhasil dikirim!")
       form.reset()
-    } catch {
-      toast.error("Gagal mengirim ulasan")
-    }
+    } catch {}
   }
 
   if (isLoading) return <DetailSkeleton />
@@ -216,9 +210,9 @@ export default function ProdukDetailPage() {
 
             <ActionBtnsWrapper>
               <AddToCartBtn
-                disabled={isOutOfStock || addToCart.isPending}
+                disabled={isOutOfStock || cart.items.createMut.isPending}
                 onClick={handleAddToCart}>
-                {addToCart.isPending ? <IconLoader size={14} /> : <IconCart size={14} />}
+                {cart.items.createMut.isPending ? <IconLoader size={14} /> : <IconCart size={14} />}
                 {isOutOfStock ? "Stok Habis" : "Tambah ke Keranjang"}
               </AddToCartBtn>
               <BuyNowBtn variant="outline"

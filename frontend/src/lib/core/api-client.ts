@@ -38,17 +38,17 @@ apiClient.interceptors.response.use(
     return response
   },
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      // Unauthorized - clear auth data and redirect to login
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('auth_token')
-        localStorage.removeItem('user')
-        // Only redirect if not already on login page
-        if (!window.location.pathname.includes('/login')) {
-          window.location.href = '/login'
-        }
-      }
-    }
+    // if (error.response?.status === 401) {
+    //   // Unauthorized - clear auth data and redirect to login
+    //   if (typeof window !== 'undefined') {
+    //     localStorage.removeItem('auth_token')
+    //     localStorage.removeItem('user')
+    //     // Only redirect if not already on login page
+    //     if (!window.location.pathname.includes('/login')) {
+    //       window.location.href = '/login'
+    //     }
+    //   }
+    // }
     return Promise.reject(error)
   }
 )

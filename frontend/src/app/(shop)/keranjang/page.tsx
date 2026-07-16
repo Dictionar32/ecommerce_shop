@@ -34,7 +34,12 @@ export default function KeranjangPage() {
   const { cart, isLoading } = cartState
 
   const handleQtyChange = (produkItemId: number, currentQty: number, delta: number) => {
-    cartState.items.changeQty(produkItemId, delta)
+    const nextQty = currentQty + delta
+    if (nextQty <= 0) {
+      handleRemove(produkItemId)
+      return
+    }
+    cartState.items.changeQty(String(produkItemId), delta)
   }
 
   const handleRemove = (produkItemId: number) => {

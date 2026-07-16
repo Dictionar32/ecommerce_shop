@@ -30,7 +30,7 @@ import {
   StyledInput, StyledTextarea, SkelOrder, StyledSeparator, SubmitBtn, PaymentBtn, SummaryAddressChangeBtn, OrderItemImg
 } from "./checkout.styles"
 
-import { useCheckout, usePayment, Enums, routes, useCart } from '@/api'
+import { useCheckout, usePayment, Enums, useCart } from '@/api'
 import useAuthStore from "@/lib/stores/auth-store"
 import { formatPrice } from "@/lib/utils-frontend"
 import type * as Types from "@/api/types"
@@ -120,18 +120,15 @@ export default function CheckoutPage() {
   const onPaymentSubmit = async () => {
     if (!savedOrder) return
     try {
-      const payment = await createPayment.mutateAsync({
+      const paymentPayload = {
         orderId: savedOrder.id,
         metode: paymentMethod,
         provider: Enums.Payment.Provider.MOCK,
-      })
+      }
+      const payment = await createPayment.mutateAsync(paymentPayload)
       toast.success("Pembayaran berhasil!")
       router.push(
-        routes.payment.success({
-          orderId: savedOrder.id,
-          invoice: savedOrder.invoiceNumber,
-          status: payment.status,
-        })
+        `/payment/success?orderId=${savedOrder.id}&invoice=${savedOrder.invoiceNumber}&status=${payment.status}`
       )
     } catch {
       toast.error("Pembayaran gagal, coba lagi")
@@ -317,13 +314,13 @@ export default function CheckoutPage() {
                 {items.map((item) => (
                   <OrderSummaryCard.itemRow key={item.produkItemId}>
                     <OrderSummaryCard.imgWrapper>
-                      {item.produkImageUrl && (
+                      {typeof item.produkImageUrl === 'string' && item.produkImageUrl && (
                         /* eslint-disable-next-line @next/next/no-img-element */
-                        <OrderItemImg src={item.produkImageUrl} alt={item.produkNama} />
+                        <OrderItemImg src={item.produkImageUrl} alt={String(item.produkNama ?? '')} />
                       )}
                     </OrderSummaryCard.imgWrapper>
                     <OrderSummaryCard.itemInfo>
-                      <OrderSummaryCard.name>{item.produkNama}</OrderSummaryCard.name>
+                      <OrderSummaryCard.name>{String(item.produkNama ?? '')}</OrderSummaryCard.name>
                       <OrderSummaryCard.desc>×{item.qty} · {formatPrice(item.harga)}</OrderSummaryCard.desc>
                     </OrderSummaryCard.itemInfo>
                     <OrderSummaryCard.subtotal>{formatPrice(item.subtotal)}</OrderSummaryCard.subtotal>

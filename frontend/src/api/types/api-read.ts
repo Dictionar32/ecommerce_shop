@@ -293,14 +293,10 @@ export interface OrderDetailResourceTransformed {
   produkId: number
   produkNama: string
   produkGambar: (string) | null
-  produkImageUrl: string
+  produkImageUrl: (string) | null
   qty: number
   harga: number
   subtotal: number
-  banana: (string) | null
-  potato: (number) | null
-  flyingDog: (boolean) | null
-  foo: unknown
 }
 
 export type OrderDetailResourceShow = OrderDetailResourceTransformed
@@ -311,16 +307,16 @@ export interface OrderResourceTransformed {
   status: string
   totalHarga: number
   invoiceNumber: (string) | null
-  paymentStatus: string
-  financialStatus: string
-  fulfillmentStatus: string
-  subtotalMinor: number
-  discountMinor: number
-  shippingMinor: number
-  taxMinor: number
-  totalHargaMinor: number
+  paymentStatus: (string) | null
+  financialStatus: (string) | null
+  fulfillmentStatus: (string) | null
+  subtotalMinor: (number) | null
+  discountMinor: (number) | null
+  shippingMinor: (number) | null
+  taxMinor: (number) | null
+  totalHargaMinor: (number) | null
   items?: OrderDetailResourceTransformed[]
-  promotionCode: string
+  promotionCode: (string) | null
   promotionDiscountMinor: number
   shippingNama: (string) | null
   shippingTelepon: (string) | null
@@ -338,21 +334,21 @@ export interface PaymentResourceTransformed {
   orderId: number
   invoiceNumber: (string) | null
   metode: (string) | null
-  detail: (unknown) | null
+  detail: (string) | null
   status: string
   paidAt: (string) | null
-  provider: string
+  provider: (string) | null
   providerTxnId: string
   gatewayStatus: string
   amountMinor: number
-  refundAmountMinor: unknown
+  refundAmountMinor: number
   items?: OrderDetailResourceTransformed[]
-  promotionCode: string
+  promotionCode: (string) | null
   promotionDiscountMinor: number
-  gatewayName: null
-  gatewayOrderId: null
-  gatewayToken: null
-  gatewayRedirectUrl: null
+  gatewayName: string
+  gatewayOrderId: number
+  gatewayToken: string
+  gatewayRedirectUrl: string
   totalHarga: number
 }
 
@@ -364,9 +360,9 @@ export interface ProdukItemResourceTransformed {
   nama: string
   deskripsi: (string) | null
   image: (string) | null
-  imageUrl: string
+  imageUrl: (string) | null
   categoryId: (number) | null
-  categoryName: string
+  categoryName: (string) | null
   harga: number
   stok: number
   rating: number

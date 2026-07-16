@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { ShoppingCart, Heart, User, Menu, X, LogOut, Package } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCartUiStore } from '@/lib/stores/cart-ui-store'
 import { useLogout, useCart } from '@/api'
 import type * as Types from "@/api/types"
@@ -30,6 +30,9 @@ export function Navbar() {
   const pathname = usePathname()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  // Prevent hydration mismatch: auth state only available after client mount
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
 
   const { openCart } = useCartUiStore()
   const { cart } = useCart()
@@ -49,6 +52,8 @@ export function Navbar() {
   }
 
   const isActive = (href: string) => pathname === href
+  // Only show auth-dependent UI after hydration
+  const showAuth = mounted && isAuthenticated
 
   return (
     <>
@@ -93,7 +98,7 @@ export function Navbar() {
             </IconLink>
 
             {/* User */}
-            {isAuthenticated ? (
+            {showAuth ? (
               <UserMenuContainer>
                 <UserMenuTrigger onClick={() => setUserMenuOpen(!userMenuOpen)}>
                   <User size={16} />
@@ -152,7 +157,7 @@ export function Navbar() {
                 )
               })}
               <MobileActionRow>
-                {isAuthenticated ? (
+                {showAuth ? (
                   <>
                     <MobileProfileLink href="/profile" onClick={() => setIsMenuOpen(false)}>
                       Profil
