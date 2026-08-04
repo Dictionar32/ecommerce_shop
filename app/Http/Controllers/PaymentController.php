@@ -47,6 +47,82 @@ class PaymentController extends Controller
             default => abort(422, 'Provider payment tidak didukung.'),
         };
     }
+    
+    public function webhook(Request $request)
+    {
+        $payload = $request->all();
+ 
+        // MidtransGateway::isValidSignature() sudah ada, cuma belum pernah
+        // dipanggil dari mana pun — signature verification WAJIB, ini yang
+        // mastiin request beneran dari Midtrans, bukan dari sembarang orang
+        // yang nembak endpoint ini langsung.
+        if (! $this->midtransGateway->isValidSignature($payload)) {
+            abort(403, 'Signature tidak valid.');
+        }
+ 
+        return DB::transaction(function () use ($payload) {
+            $orderNumber = (string) ($payload['order_id'] ?? '');
+ 
+            $order = Order::where('order_number', $orderNumber)
+                ->lockForUpdate()
+                ->with('payment')
+                ->first();
+ 
+            if (! $order || ! $order->payment) {
+                // Order/payment belum ada di sisi kita (mis. race condition,
+                // atau order_number yang dikirim Midtrans ga match apa pun).
+                // Tetap balas 200 supaya Midtrans ga retry terus-terusan,
+                // tapi ga ngapa-ngapain di sisi kita.
+                return response()->json(['message' => 'Order tidak ditemukan, diabaikan.'], 200);
+            }
+ 
+            $payment = Payment::whereKey($order->payment->id)->lockForUpdate()->firstOrFail();
+ 
+            $transactionStatus = (string) ($payload['transaction_status'] ?? '');
+            $fraudStatus = (string) ($payload['fraud_status'] ?? '');
+ 
+            // Mapping status Midtrans -> status internal. Lihat dokumentasi
+            // Midtrans utk daftar lengkap transaction_status yang mungkin:
+            // https://docs.midtrans.com/docs/https-notification-webhooks
+            [$paymentStatus, $orderStatus, $financialStatus] = match (true) {
+                in_array($transactionStatus, ['capture', 'settlement'], true) && $fraudStatus !== 'challenge'
+                    => ['success', 'paid', 'paid'],
+                $transactionStatus === 'pending'
+                    => ['pending', $order->status, 'pending'],
+                in_array($transactionStatus, ['deny', 'cancel', 'expire'], true)
+                    => ['failed', $order->status, 'failed'],
+                $transactionStatus === 'refund'
+                    => ['refunded', $order->status, 'refunded'],
+                default
+                    => [$payment->status, $order->status, $order->financial_status],
+            };
+ 
+            $payment->update([
+                'status' => $paymentStatus,
+                'gateway_status' => $transactionStatus ?: $payment->gateway_status,
+                'provider_txn_id' => $payload['transaction_id'] ?? $payment->provider_txn_id,
+                'paid_at' => $paymentStatus === 'success' ? ($payment->paid_at ?? now()) : $payment->paid_at,
+                'captured_at' => $paymentStatus === 'success' ? ($payment->captured_at ?? now()) : $payment->captured_at,
+            ]);
+ 
+            $encoded = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            $payment->paymentDetail()->updateOrCreate(
+                ['payment_id' => $payment->id],
+                [
+                    'detail' => $payload,
+                    'payload_hash' => hash('sha256', $encoded ?: '{}'),
+                    'payload_received_at' => now(),
+                ]
+            );
+ 
+            $order->update([
+                'status' => $orderStatus,
+                'financial_status' => $financialStatus,
+            ]);
+ 
+            return response()->json(['message' => 'Webhook diterima.'], 200);
+        });
+    }
 
     private function storeWithMock(StorePaymentRequest $request, Order $order)
     {
